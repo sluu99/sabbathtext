@@ -12,7 +12,10 @@ namespace SabbathText.Core
         private static void SetupEnvironmentVariables()
         {
 #if DEBUG
-            Environment.SetEnvironmentVariable("ST_TWILIO_INBOUND_KEY_PRIMARY", "key");
+            if (Environment.GetEnvironmentVariable("ST_TWILIO_INBOUND_KEY_PRIMARY") == null)
+            {
+                Environment.SetEnvironmentVariable("ST_TWILIO_INBOUND_KEY_PRIMARY", "key");
+            }
 #endif
         }
 
