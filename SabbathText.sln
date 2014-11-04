@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueStorage", "QueueStorag
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.Core", "SabbathText.Core\SabbathText.Core.csproj", "{B45EA451-A493-4E23-A7A6-A496838EDC00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.InboundMessageWorker", "SabbathText.InboundMessageWorker\SabbathText.InboundMessageWorker.csproj", "{056EEAA8-275C-4F2D-88E0-BF796994D546}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workers", "Workers", "{A5CE5378-ACEA-4986-8FB6-B55FF88AD679}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.OutboundMessageWorker", "SabbathText.OutboundMessageWorker\SabbathText.OutboundMessageWorker.csproj", "{FB28C453-1686-43AC-8E86-806D396E63EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,8 +33,20 @@ Global
 		{B45EA451-A493-4E23-A7A6-A496838EDC00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B45EA451-A493-4E23-A7A6-A496838EDC00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B45EA451-A493-4E23-A7A6-A496838EDC00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{056EEAA8-275C-4F2D-88E0-BF796994D546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{056EEAA8-275C-4F2D-88E0-BF796994D546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{056EEAA8-275C-4F2D-88E0-BF796994D546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{056EEAA8-275C-4F2D-88E0-BF796994D546}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB28C453-1686-43AC-8E86-806D396E63EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB28C453-1686-43AC-8E86-806D396E63EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB28C453-1686-43AC-8E86-806D396E63EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB28C453-1686-43AC-8E86-806D396E63EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{056EEAA8-275C-4F2D-88E0-BF796994D546} = {A5CE5378-ACEA-4986-8FB6-B55FF88AD679}
+		{FB28C453-1686-43AC-8E86-806D396E63EB} = {A5CE5378-ACEA-4986-8FB6-B55FF88AD679}
 	EndGlobalSection
 EndGlobal

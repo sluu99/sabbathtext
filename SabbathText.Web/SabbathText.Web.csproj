@@ -139,8 +139,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Properties\WebJobs.xml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Properties\ligershark.webjobs.targets" />
+    <Content Include="Properties\ligershark.webjobs.ext.targets" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -168,6 +171,7 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="webjobs.wpp.targets" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -184,6 +188,14 @@
     <ProjectReference Include="..\SabbathText.Core\SabbathText.Core.csproj">
       <Project>{b45ea451-a493-4e23-a7a6-a496838edc00}</Project>
       <Name>SabbathText.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SabbathText.InboundMessageWorker\SabbathText.InboundMessageWorker.csproj">
+      <Project>{056EEAA8-275C-4F2D-88E0-BF796994D546}</Project>
+      <Name>SabbathText.InboundMessageWorker</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SabbathText.OutboundMessageWorker\SabbathText.OutboundMessageWorker.csproj">
+      <Project>{FB28C453-1686-43AC-8E86-806D396E63EB}</Project>
+      <Name>SabbathText.OutboundMessageWorker</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
