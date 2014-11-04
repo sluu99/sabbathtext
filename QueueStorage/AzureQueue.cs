@@ -35,5 +35,17 @@ namespace QueueStorage
             CloudQueue queue = this.client.GetQueueReference(queueName);
             return queue.AddMessageAsync(message);
         }
+
+        public Task<CloudQueueMessage> GetMessage(string queueName)
+        {
+            CloudQueue queue = this.client.GetQueueReference(queueName);
+            return queue.GetMessageAsync();
+        }
+
+        public Task DeleteMessage(string queueName, CloudQueueMessage message)
+        {
+            CloudQueue queue = this.client.GetQueueReference(queueName);
+            return queue.DeleteMessageAsync(message);
+        }
     }
 }

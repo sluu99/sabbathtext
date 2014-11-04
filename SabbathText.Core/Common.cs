@@ -1,9 +1,5 @@
 ﻿using QueueStorage;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SabbathText.Core
 {
@@ -21,7 +17,7 @@ namespace SabbathText.Core
 
         private static void SetupQueues()
         {
-            string[] queueNames = { MessageManager.InboundMessageQueue };
+            string[] queueNames = { MessageQueue.InboundMessageQueue, MessageQueue.OutboundMessageQueue };
             IQueue queue = new AzureQueue();
 
             foreach (string q in queueNames)
