@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <title>Simulate inbound SMS</title>
+    </head>
+    <body>
+        <h1>Simulate inbound SMS</h1>
+        <form method="post" action="http://localhost:1844/twilio/sms?key=key">
+            <p>
+                To:<br/>
+                <input name="To" value="+14234381844" />
+            </p>
+            <p>
+                From:<br/>
+                <input name="From" />
+            </p>
+            <p>
+                Message ID:<br/>
+                <input name="MessageSid" />
+            </p>
+            <p>
+                Body:<br/>
+                <input name="Body" />
+            </p>
+            <p>
+                <input type="submit" />
+            </p>
+        </form>
+    </body>
+</html>
