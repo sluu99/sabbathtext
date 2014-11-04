@@ -14,20 +14,19 @@ namespace SabbathText.Core
 
         public MessageQueue()
         {
-            Queue = new AzureQueue();
+            this.Queue = new AzureQueue();
         }
 
         public IQueue Queue { get; set; }
 
         public Task QueueInboundMessage(Message message)
         {
-            CloudQueueMessage queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(message));
-            return Queue.AddMessage(MessageQueue.InboundMessageQueue, queueMessage);
+            return this.AddMessage(MessageQueue.InboundMessageQueue, message);
         }
 
         public async Task<Tuple<CloudQueueMessage, Message>> GetInboundMessage()
         {
-            CloudQueueMessage queueMessage = await Queue.GetMessage(MessageQueue.InboundMessageQueue);
+            CloudQueueMessage queueMessage = await this.Queue.GetMessage(MessageQueue.InboundMessageQueue);
 
             if (queueMessage == null)
             {
@@ -39,7 +38,18 @@ namespace SabbathText.Core
 
         public Task DeleteInboundMessage(CloudQueueMessage queueMessage)
         {
-            return Queue.DeleteMessage(MessageQueue.InboundMessageQueue, queueMessage);
+            return this.Queue.DeleteMessage(MessageQueue.InboundMessageQueue, queueMessage);
+        }
+
+        public Task QueueOutboundMessage(Message message)
+        {
+            return this.AddMessage(MessageQueue.OutboundMessageQueue, message);
+        }
+
+        private Task AddMessage(string queueName, Message message)
+        {
+            CloudQueueMessage queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(message));
+            return this.Queue.AddMessage(queueName, queueMessage);
         }
     }
 }

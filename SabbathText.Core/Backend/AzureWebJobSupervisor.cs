@@ -34,10 +34,14 @@ namespace SabbathText.Core.Backend
             watcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.FileName | NotifyFilters.LastWrite;
             watcher.IncludeSubdirectories = false;
             watcher.EnableRaisingEvents = true;
+            
         }
 
         private void ShutdownDirectoryChanged(object sender, FileSystemEventArgs e)
         {
+            Trace.TraceInformation("ShutdownDirectoryChanged");
+            Trace.TraceInformation(e.FullPath);
+
             if (e.FullPath.IndexOf(Path.GetFileName(this.shutdownFile), StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 this.RequestStop();

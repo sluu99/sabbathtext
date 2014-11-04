@@ -1,22 +1,29 @@
 ﻿using SabbathText.Core.Backend;
-using SabbathText.Core.Entities;
-using System.Threading.Tasks;
+using SabbathText.Core.Backend.InboundProcessors;
 
 namespace SabbathText.InboundMessageWorker
 {
     class Program
     {
-        private static Supervisor supervisor = null;
-
         static void Main(string[] args)
-        {                        
-            Program.supervisor = new AzureWebJobSupervisor();
-            Program.supervisor.Start(Program.ProcessMessage).Wait();
+        {
+            SabbathText.Core.Common.Setup();
+
+            InboundMessageRouter router = new InboundMessageRouter();
+            Program.AddProcessors(router);
+
+            Supervisor supervisor = new AzureWebJobSupervisor();
+            supervisor.Start(router.Route).Wait();
         }
 
-        static Task<bool> ProcessMessage(Message message)
+        static void AddProcessors(InboundMessageRouter router)
         {
-            return Task.FromResult(false);
+            router
+                .AddProcessor<HelloProcessor>("hello")
+                .AddProcessor<HelpProcessor>("help")
+                .AddProcessor<HelpProcessor>("who")
+                .AddProcessor<HelpProcessor>("?")
+            ;
         }
     }
 }

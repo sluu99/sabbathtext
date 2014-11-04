@@ -37,14 +37,14 @@ namespace SabbathText.Web.Controllers
             {
                 MessageId = Guid.NewGuid().ToString(),
                 ExternalId = model.MessageSid,
-                From = model.From,
-                To = model.To,
+                Sender = model.From,
+                Recipient = model.To,
                 Body = model.Body,
                 CreateOn = Clock.UtcNow,
             };
 
-            MessageQueue manager = new MessageQueue();
-            await manager.QueueInboundMessage(message);
+            MessageQueue queue = new MessageQueue();
+            await queue.QueueInboundMessage(message);
 
             string content = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><Response></Response>";
             return this.Content(content, "text/xml");
