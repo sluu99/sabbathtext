@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SabbathText.Core
+namespace SabbathText.Core.Backend
 {
     public class Supervisor
     {
@@ -73,7 +73,7 @@ namespace SabbathText.Core
             else
             {
                 delay = this.DelayIntervals[this.delayIndex];
-                delayIndex++;
+                this.delayIndex++;
             }
 
             Trace.TraceInformation("Chilling for {0}ms", delay);
