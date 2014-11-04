@@ -61,6 +61,7 @@ namespace SabbathText.Core.Backend
         public void RequestStop()
         {
             this.stopRequested = true;
+            Trace.TraceInformation("Stop requested");
         }
 
         private void Chillax()
