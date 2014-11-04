@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace SabbathText.Core.Backend
 
         public AzureWebJobSupervisor()
         {
-            this.shutdownFile = Environment.GetEnvironmentVariable("WEBJOBS_SHUTDOWN_FILE");
+            this.shutdownFile = Environment.GetEnvironmentVariable("WEBJOBS_SHUTDOWN_FILE");            
             this.StartWatchingShutdownFile();
         }
 
@@ -21,8 +22,11 @@ namespace SabbathText.Core.Backend
         {
             if (string.IsNullOrWhiteSpace(this.shutdownFile))
             {
+                Trace.TraceWarning("No shutdown file specified");
                 return;
             }
+
+            Trace.TraceInformation("Shut down file: {0}", this.shutdownFile);
 
             FileSystemWatcher watcher = new FileSystemWatcher(Path.GetDirectoryName(this.shutdownFile));
             watcher.Created += this.ShutdownDirectoryChanged;
@@ -34,7 +38,7 @@ namespace SabbathText.Core.Backend
 
         private void ShutdownDirectoryChanged(object sender, FileSystemEventArgs e)
         {
-            if (File.Exists(this.shutdownFile))
+            if (e.FullPath.IndexOf(Path.GetFileName(this.shutdownFile), StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 this.RequestStop();
             }
