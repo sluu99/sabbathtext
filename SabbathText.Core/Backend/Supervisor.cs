@@ -56,6 +56,8 @@ namespace SabbathText.Core.Backend
                     Trace.TraceError(ex.Message);         
                 }
             }
+
+            Trace.TraceInformation("Finished gracefully");
         }
 
         public void RequestStop()
