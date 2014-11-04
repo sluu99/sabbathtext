@@ -1,10 +1,7 @@
 ﻿using Microsoft.WindowsAzure.Storage.Queue;
 using SabbathText.Core.Entities;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -56,8 +53,7 @@ namespace SabbathText.Core
                 }
                 catch (Exception ex)
                 {
-                    Trace.TraceError(ex.Message);
-         
+                    Trace.TraceError(ex.Message);         
                 }
             }
         }
