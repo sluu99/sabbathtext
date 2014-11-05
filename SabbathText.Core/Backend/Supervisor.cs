@@ -15,7 +15,7 @@ namespace SabbathText.Core.Backend
 
         public Supervisor(string queueName)
         {
-            this.DelayIntervals = new int[]{ 500, 1000, 1000, 3000, 5000 };
+            this.DelayIntervals = new int[]{ 500, 1000, 1000, 3000 };
             this.delayIndex = 0;
             this.rand = new Random();
             this.MessageQueue = new MessageQueue(queueName);
