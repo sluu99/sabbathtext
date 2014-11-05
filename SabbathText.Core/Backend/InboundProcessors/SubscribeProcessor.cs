@@ -14,7 +14,14 @@ namespace SabbathText.Core.Backend.InboundProcessors
             account.Status = AccountStatus.Subscribed;
             await this.DataProvider.UpdateAccount(account);
 
-            return MessageFactory.CreateSubscribedSuccessfully(message.Sender);
+            if (string.IsNullOrWhiteSpace(account.ZipCode))
+            {
+                return MessageFactory.CreateSubscribedMissingZipCode(message.Sender);
+            }
+            else
+            {
+                return MessageFactory.CreateSubscribedConfirmZipCode(message.Sender, account.ZipCode);
+            }
         }
     }
 }

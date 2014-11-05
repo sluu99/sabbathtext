@@ -6,7 +6,7 @@ namespace SabbathText.Core.Entities
         public const string GeneralGreetings = "GeneralGreetings";
         public const string SubscriberGreetings = "SubscriberGreetings";
         public const string Help = "Help";
-        public const string SubscribedSuccessfully = "SubscribedSuccessfully";
-        public const string RequestZipCode = "RequestZipCode";
+        public const string SubscribedMissingZipCode = "SubscribedMissingZipCode";
+        public const string SubscribedConfirmZipCode = "SubscribedConfirmZipCode";
     }
 }

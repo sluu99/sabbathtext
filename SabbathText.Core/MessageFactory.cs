@@ -25,14 +25,24 @@ namespace SabbathText.Core
             );
         }
 
-        public static TemplatedMessage CreateSubscribedSuccessfully(string recipient)
+        public static TemplatedMessage CreateSubscribedMissingZipCode(string recipient)
         {
             return Create(
-                MessageTemplate.SubscribedSuccessfully,
+                MessageTemplate.SubscribedMissingZipCode,
                 null,
                 recipient,
-                "Thank you for subscribing!"
+                "Thank you for subscribing! Text us your ZIP code so we can find out when Sabbath starts. For example, \"Zip 12345\""
             );
+        }
+
+        public static TemplatedMessage CreateSubscribedConfirmZipCode(string recipient, string zipCode)
+        {
+            string body = string.Format(
+                "Thank you for subscribing! We currently have {0} as your ZIP code. Text \"Zip <your ZIP code>\" to update!",
+                zipCode
+            );
+
+            return Create(MessageTemplate.SubscribedConfirmZipCode, null, recipient, body);
         }
         
         public static TemplatedMessage Create(string template, string sender, string recipient, string body)
