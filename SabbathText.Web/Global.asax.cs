@@ -17,6 +17,7 @@ namespace SabbathText.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             SabbathText.Core.Common.Setup();
+            SabbathText.Core.Common.SetupStorage();
         }
     }
 }

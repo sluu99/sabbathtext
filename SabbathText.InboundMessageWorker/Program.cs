@@ -9,6 +9,7 @@ namespace SabbathText.InboundMessageWorker
         static void Main(string[] args)
         {
             SabbathText.Core.Common.Setup();
+            SabbathText.Core.Common.SetupStorage();
 
             InboundMessageRouter router = new InboundMessageRouter();
             Program.AddProcessors(router);
@@ -21,9 +22,13 @@ namespace SabbathText.InboundMessageWorker
         {
             router
                 .AddProcessor<HelloProcessor>("hello")
+                .AddProcessor<HelloProcessor>("hi")
+                
                 .AddProcessor<HelpProcessor>("help")
                 .AddProcessor<HelpProcessor>("who")
                 .AddProcessor<HelpProcessor>("?")
+
+                .AddProcessor<SubscribeProcessor>("subscribe")
             ;
         }
     }

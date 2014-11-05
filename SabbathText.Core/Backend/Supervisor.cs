@@ -11,11 +11,13 @@ namespace SabbathText.Core.Backend
     {
         private int delayIndex;
         private volatile bool stopRequested;
+        private Random rand;
 
         public Supervisor(string queueName)
         {
             this.DelayIntervals = new int[]{ 500, 1000, 1000, 3000, 5000 };
             this.delayIndex = 0;
+            this.rand = new Random();
             this.MessageQueue = new MessageQueue(queueName);
         }
 
@@ -53,7 +55,8 @@ namespace SabbathText.Core.Backend
                 }
                 catch (Exception ex)
                 {
-                    Trace.TraceError(ex.Message);         
+                    Trace.TraceError(ex.Message);
+                    Trace.TraceError(ex.StackTrace);
                 }
             }
 
@@ -79,7 +82,11 @@ namespace SabbathText.Core.Backend
                 this.delayIndex++;
             }
 
-            Trace.TraceInformation("Chilling for {0}ms", delay);
+            // only log this 10% of the time
+            if (this.rand.Next(0, 100) < 10)
+            {
+                Trace.TraceInformation("Chilling for {0}ms", delay);
+            }            
             Thread.Sleep(delay);
         }
     }

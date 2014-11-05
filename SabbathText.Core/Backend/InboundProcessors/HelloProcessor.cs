@@ -5,23 +5,23 @@ using System.Threading.Tasks;
 
 namespace SabbathText.Core.Backend.InboundProcessors
 {
-    public class HelloProcessor : IProcessor
+    public class HelloProcessor : AccountBasedProcessor
     {
-        public Task<TemplatedMessage> ProcessMessage(Message message)
+        protected override Task<TemplatedMessage> ProcessMessageWithAccount(Message message, Account account)
         {
-            if (string.IsNullOrWhiteSpace(message.Sender))
+            TemplatedMessage response = null;
+            string recipient = message.Sender.Trim();
+
+            if (account.Status == AccountStatus.Subscribed)
             {
-                throw new ApplicationException("Message sender cannot be null or white space");
+                response = MessageFactory.CreateSubscriberGreetings(recipient);
+            }
+            else
+            {
+                response = MessageFactory.CreateGeneralGreetings(recipient);
             }
 
-            return Task.FromResult(new TemplatedMessage
-            {
-                MessageId = Guid.NewGuid().ToString(),
-                Recipient = message.Sender,
-                Template = MessageTemplate.Greetings,
-                CreateOn = Clock.UtcNow,
-                Body = "Greetings from SabbathText.com!",
-            });
+            return Task.FromResult(response);
         }
     }
 }

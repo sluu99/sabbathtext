@@ -40,7 +40,7 @@ namespace SabbathText.Web.Controllers
                 Sender = model.From,
                 Recipient = model.To,
                 Body = model.Body,
-                CreateOn = Clock.UtcNow,
+                CreationTime = Clock.UtcNow,
             };
 
             MessageQueue queue = new MessageQueue(MessageQueue.InboundMessageQueue);

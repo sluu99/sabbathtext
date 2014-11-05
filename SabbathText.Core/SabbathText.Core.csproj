@@ -75,21 +75,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AzureDataProvider.cs" />
     <Compile Include="Backend\AzureWebJobSupervisor.cs" />
     <Compile Include="Backend\ConsoleSupervisor.cs" />
+    <Compile Include="Backend\InboundProcessors\AccountBasedProcessor.cs" />
     <Compile Include="Backend\InboundProcessors\HelloProcessor.cs" />
     <Compile Include="Backend\InboundProcessors\HelpProcessor.cs" />
+    <Compile Include="Backend\InboundProcessors\SubscribeProcessor.cs" />
     <Compile Include="Backend\IProcessor.cs" />
     <Compile Include="Backend\InboundMessageRouter.cs" />
     <Compile Include="Clock.cs" />
     <Compile Include="Common.cs" />
+    <Compile Include="Entities\Account.cs" />
+    <Compile Include="Entities\AccountStatus.cs" />
     <Compile Include="Entities\Message.cs" />
     <Compile Include="Entities\TemplatedMessage.cs" />
     <Compile Include="Extensions\PhoneNumberExtension.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
+    <Compile Include="IDataProvider.cs" />
     <Compile Include="IMessageSender.cs" />
+    <Compile Include="MessageFactory.cs" />
     <Compile Include="MessageQueue.cs" />
-    <Compile Include="MessageTemplate.cs" />
+    <Compile Include="Entities\MessageTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Backend\Supervisor.cs" />
     <Compile Include="TwilioMessageSender.cs" />

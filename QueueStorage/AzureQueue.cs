@@ -7,18 +7,17 @@ namespace QueueStorage
 {
     public class AzureQueue : IQueue
     {
-        private string connectionString = null;
         private CloudStorageAccount account = null;
         private CloudQueueClient client = null;
 
         public AzureQueue()
         {
-            this.connectionString = Environment.GetEnvironmentVariable("ST_QUEUE_CONN_STR");
+            string connectionString = Environment.GetEnvironmentVariable("ST_QUEUE_CONN_STR");
             this.account = CloudStorageAccount.DevelopmentStorageAccount;
             
-            if (!string.IsNullOrWhiteSpace(this.connectionString))
+            if (!string.IsNullOrWhiteSpace(connectionString))
             {
-                this.account = CloudStorageAccount.Parse(this.connectionString);
+                this.account = CloudStorageAccount.Parse(connectionString);
             }
 
             this.client = this.account.CreateCloudQueueClient();

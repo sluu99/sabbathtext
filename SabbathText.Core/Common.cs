@@ -26,10 +26,26 @@ namespace SabbathText.Core
             }
         }
 
+        private static void SetupTables()
+        {
+            string[] tableNames = { AzureDataProvider.AccountTable, AzureDataProvider.MessageTable };
+            AzureDataProvider dp = new AzureDataProvider();
+
+            foreach (string t in tableNames)
+            {
+                dp.CreateTableIfNotExists(t).Wait();
+            }
+        }
+
+        public static void SetupStorage()
+        {
+            Common.SetupQueues();
+            Common.SetupTables();
+        }
+
         public static void Setup()
         {
-            Common.SetupEnvironmentVariables();
-            Common.SetupQueues();
+            Common.SetupEnvironmentVariables();            
         }
     }
 }
