@@ -12,11 +12,11 @@ namespace SabbathText.Core.Backend
         private int delayIndex;
         private volatile bool stopRequested;
 
-        public Supervisor()
+        public Supervisor(string queueName)
         {
             this.DelayIntervals = new int[]{ 500, 1000, 1000, 3000, 5000 };
             this.delayIndex = 0;
-            this.MessageQueue = new MessageQueue();
+            this.MessageQueue = new MessageQueue(queueName);
         }
 
         public int[] DelayIntervals { get; set; }
@@ -26,7 +26,7 @@ namespace SabbathText.Core.Backend
         {
             while (!this.stopRequested)
             {
-                Tuple<CloudQueueMessage, Message> message = await this.MessageQueue.GetInboundMessage();
+                Tuple<CloudQueueMessage, Message> message = await this.MessageQueue.GetMessage();
                 
                 if (message == null)
                 {
@@ -44,7 +44,7 @@ namespace SabbathText.Core.Backend
 
                     if (success)
                     {
-                        await this.MessageQueue.DeleteInboundMessage(message.Item1);
+                        await this.MessageQueue.DeleteMessage(message.Item1);
                     }
                     else
                     {

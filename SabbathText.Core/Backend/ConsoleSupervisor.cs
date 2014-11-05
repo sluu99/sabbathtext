@@ -5,7 +5,7 @@ namespace SabbathText.Core.Backend
 {
     public class ConsoleSupervisor : Supervisor
     {
-        public ConsoleSupervisor()
+        public ConsoleSupervisor(string queueName) : base(queueName)
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
             Console.CancelKeyPress += this.CancelKeyPress;

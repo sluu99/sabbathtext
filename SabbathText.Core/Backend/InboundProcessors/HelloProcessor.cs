@@ -9,10 +9,10 @@ namespace SabbathText.Core.Backend.InboundProcessors
     {
         public HelloProcessor()
         {
-            this.MessageQueue = new MessageQueue();
+            this.OutboundMessageQueue = new MessageQueue(MessageQueue.OutboundMessageQueue);
         }
 
-        public MessageQueue MessageQueue { get; set; }
+        public MessageQueue OutboundMessageQueue { get; set; }
 
         public async Task<bool> ProcessMessage(Message message)
         {
@@ -22,7 +22,7 @@ namespace SabbathText.Core.Backend.InboundProcessors
             }
 
             Message response = MessageFactory.CreateGreetingsMessage(message.Sender);
-            await this.MessageQueue.QueueOutboundMessage(response);
+            await this.OutboundMessageQueue.AddMessage(response);
 
             Trace.TraceInformation("Greeting message queued for {0}", response.Recipient.Mask(2));
 

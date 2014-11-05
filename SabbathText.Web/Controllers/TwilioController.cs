@@ -43,8 +43,8 @@ namespace SabbathText.Web.Controllers
                 CreateOn = Clock.UtcNow,
             };
 
-            MessageQueue queue = new MessageQueue();
-            await queue.QueueInboundMessage(message);
+            MessageQueue queue = new MessageQueue(MessageQueue.InboundMessageQueue);
+            await queue.AddMessage(message);
 
             string content = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><Response></Response>";
             return this.Content(content, "text/xml");

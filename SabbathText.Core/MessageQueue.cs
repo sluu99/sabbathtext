@@ -12,21 +12,24 @@ namespace SabbathText.Core
         public const string InboundMessageQueue = "inboundmsgs";
         public const string OutboundMessageQueue = "outboundmsgs";
 
-        public MessageQueue()
+        private string queueName;
+
+        public MessageQueue(string queueName)
         {
             this.Queue = new AzureQueue();
+            this.queueName = queueName;
         }
 
         public IQueue Queue { get; set; }
 
-        public Task QueueInboundMessage(Message message)
+        public Task DeleteMessage(CloudQueueMessage queueMessage)
         {
-            return this.AddMessage(MessageQueue.InboundMessageQueue, message);
+            return this.Queue.DeleteMessage(this.queueName, queueMessage);
         }
 
-        public async Task<Tuple<CloudQueueMessage, Message>> GetInboundMessage()
+        public async Task<Tuple<CloudQueueMessage, Message>> GetMessage()
         {
-            CloudQueueMessage queueMessage = await this.Queue.GetMessage(MessageQueue.InboundMessageQueue);
+            CloudQueueMessage queueMessage = await this.Queue.GetMessage(this.queueName);
 
             if (queueMessage == null)
             {
@@ -36,20 +39,10 @@ namespace SabbathText.Core
             return new Tuple<CloudQueueMessage,Message>(queueMessage, JsonConvert.DeserializeObject<Message>(queueMessage.AsString));
         }
 
-        public Task DeleteInboundMessage(CloudQueueMessage queueMessage)
-        {
-            return this.Queue.DeleteMessage(MessageQueue.InboundMessageQueue, queueMessage);
-        }
-
-        public Task QueueOutboundMessage(Message message)
-        {
-            return this.AddMessage(MessageQueue.OutboundMessageQueue, message);
-        }
-
-        private Task AddMessage(string queueName, Message message)
+        public Task AddMessage(Message message)
         {
             CloudQueueMessage queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(message));
-            return this.Queue.AddMessage(queueName, queueMessage);
+            return this.Queue.AddMessage(this.queueName, queueMessage);
         }
     }
 }

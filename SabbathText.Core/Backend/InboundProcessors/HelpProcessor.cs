@@ -8,10 +8,10 @@ namespace SabbathText.Core.Backend.InboundProcessors
     {
         public HelpProcessor()
         {
-            this.MessageQueue = new MessageQueue();
+            this.OutboundMessageQueue = new MessageQueue(MessageQueue.OutboundMessageQueue);
         }
 
-        public MessageQueue MessageQueue { get; set; }
+        public MessageQueue OutboundMessageQueue { get; set; }
 
         public async Task<bool> ProcessMessage(Message message)
         {
@@ -21,7 +21,7 @@ namespace SabbathText.Core.Backend.InboundProcessors
             }
 
             Message response = MessageFactory.CreateHelpMessage(message.Sender);
-            await this.MessageQueue.QueueOutboundMessage(response);
+            await this.OutboundMessageQueue.AddMessage(response);
 
             return true;
         }

@@ -12,7 +12,7 @@ namespace SabbathText.Core.Backend
     {
         private string shutdownFile = null;
 
-        public AzureWebJobSupervisor()
+        public AzureWebJobSupervisor(string queueName) : base(queueName)
         {
             this.shutdownFile = Environment.GetEnvironmentVariable("WEBJOBS_SHUTDOWN_FILE");            
             this.StartWatchingShutdownFile();

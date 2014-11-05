@@ -1,4 +1,5 @@
-﻿using SabbathText.Core.Backend;
+﻿using SabbathText.Core;
+using SabbathText.Core.Backend;
 using SabbathText.Core.Backend.InboundProcessors;
 
 namespace SabbathText.InboundMessageWorker
@@ -12,7 +13,7 @@ namespace SabbathText.InboundMessageWorker
             InboundMessageRouter router = new InboundMessageRouter();
             Program.AddProcessors(router);
 
-            Supervisor supervisor = new AzureWebJobSupervisor();
+            Supervisor supervisor = new AzureWebJobSupervisor(MessageQueue.InboundMessageQueue);
             supervisor.Start(router.Route).Wait();
         }
 
