@@ -8,10 +8,12 @@ namespace SabbathText.Core.Backend
     public class InboundMessageRouter
     {
         private Dictionary<string, Type> processors;
+        private MessageQueue outboundQueue;
 
         public InboundMessageRouter()
         {
             this.processors = new Dictionary<string, Type>();
+            this.outboundQueue = new MessageQueue(MessageQueue.OutboundMessageQueue);
         }
 
         public InboundMessageRouter AddProcessor<T>(string verb) where T : IProcessor
@@ -28,7 +30,7 @@ namespace SabbathText.Core.Backend
             return this;
         }
 
-        public Task<bool> Route(Message message)
+        public async Task<bool> Route(Message message)
         {
             if (message == null)
             {
@@ -57,7 +59,7 @@ namespace SabbathText.Core.Backend
 
             if (!this.processors.ContainsKey(verb))
             {
-                return Task.FromResult(false);
+                return false;
             }
 
             Type processorType = this.processors[verb];
@@ -65,10 +67,17 @@ namespace SabbathText.Core.Backend
 
             if (processor == null)
             {
-                return Task.FromResult(false);
+                return false;
             }
 
-            return processor.ProcessMessage(message);
+            Message response = await processor.ProcessMessage(message);
+
+            if (response != null)
+            {
+                await this.outboundQueue.AddMessage(response);
+            }
+
+            return true;
         }
     }
 }

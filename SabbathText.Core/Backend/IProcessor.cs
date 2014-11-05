@@ -5,6 +5,6 @@ namespace SabbathText.Core.Backend
 {
     public interface IProcessor
     {
-        Task<bool> ProcessMessage(Message message);
+        Task<TemplatedMessage> ProcessMessage(Message message);
     }
 }
