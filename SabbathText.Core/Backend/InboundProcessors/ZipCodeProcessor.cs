@@ -40,12 +40,9 @@ namespace SabbathText.Core.Backend.InboundProcessors
                 account.ZipCode = location.ZipCode;
                 await this.DataProvider.UpdateAccount(account);
 
-                return MessageFactory.Create(
-                    MessageTemplate.ConfirmZipCodeUpdate,
-                    null,
-                    message.Sender,
-                    string.Format("Your location is {0}", location.LocationName)
-                );
+                DateTime sabbath = Sabbath.GetLocationNextSabbath(location.Latitude, location.Longitude, location.TimeZoneOffset);
+
+                return MessageFactory.CreateConfirmZipCodeUpdate(message.Sender, location.ZipCode, location.LocationName, sabbath);
             }
             else
             {

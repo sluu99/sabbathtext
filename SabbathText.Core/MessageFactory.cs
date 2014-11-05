@@ -45,6 +45,16 @@ namespace SabbathText.Core
             return Create(MessageTemplate.SubscribedConfirmZipCode, null, recipient, body);
         }
         
+        public static TemplatedMessage CreateConfirmZipCodeUpdate(string recipient, string zipCode, string locationName, DateTime sabbath)
+        {
+            string body = string.Format(
+                "Your location is updated to {0}! Sabbath starts around {1:h:mm} on {1:m}",
+                locationName,
+                sabbath
+            );
+            return Create(MessageTemplate.ConfirmZipCodeUpdate, null, recipient, body);
+        }
+
         public static TemplatedMessage CreateSubscriberRequired(string recipient)
         {
             return Create(

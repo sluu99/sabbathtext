@@ -85,6 +85,7 @@
     <Compile Include="Backend\InboundProcessors\ZipCodeProcessor.cs" />
     <Compile Include="Backend\IProcessor.cs" />
     <Compile Include="Backend\InboundMessageRouter.cs" />
+    <Compile Include="CalcSunTimes.cs" />
     <Compile Include="Clock.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Entities\Account.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Entities\MessageTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Backend\Supervisor.cs" />
+    <Compile Include="Sabbath.cs" />
     <Compile Include="TwilioMessageSender.cs" />
     <Compile Include="WwoLocationProvider.cs" />
   </ItemGroup>

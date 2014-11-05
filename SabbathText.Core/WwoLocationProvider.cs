@@ -71,9 +71,9 @@ namespace SabbathText.Core
                     Country = country,
                     Region = SelectNodeInnerText(node, "region", "UNKNOWN"),
                     ZipCode = zipCode,
-                    Latitude = decimal.Parse(SelectNodeInnerText(node, "latitude", "0")),
-                    Longitude = decimal.Parse(SelectNodeInnerText(node, "longitude", "0")),
-                    TimeZoneOffset = decimal.Parse(SelectNodeInnerText(node, "timezone/offset", "0")),
+                    Latitude = double.Parse(SelectNodeInnerText(node, "latitude", "0")),
+                    Longitude = double.Parse(SelectNodeInnerText(node, "longitude", "0")),
+                    TimeZoneOffset = double.Parse(SelectNodeInnerText(node, "timezone/offset", "0")),
                 };
             }
 
