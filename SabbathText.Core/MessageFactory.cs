@@ -45,6 +45,21 @@ namespace SabbathText.Core
             return Create(MessageTemplate.SubscribedConfirmZipCode, null, recipient, body);
         }
         
+        public static TemplatedMessage CreateSubscriberRequired(string recipient)
+        {
+            return Create(
+                MessageTemplate.SubscriberRequired,
+                null,
+                recipient,
+                "Please text \"subscribe\" to get started!"
+            );
+        }
+
+        public static TemplatedMessage CreateBadRequest(string recipient, string messaage)
+        {
+            return Create(MessageTemplate.BadRequest, null, recipient, messaage);
+        }
+
         public static TemplatedMessage Create(string template, string sender, string recipient, string body)
         {
             return new TemplatedMessage

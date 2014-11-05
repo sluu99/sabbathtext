@@ -28,7 +28,13 @@ namespace SabbathText.Core
 
         private static void SetupTables()
         {
-            string[] tableNames = { AzureDataProvider.AccountTable, AzureDataProvider.MessageTable };
+            string[] tableNames = 
+            { 
+                AzureDataProvider.AccountTable, 
+                AzureDataProvider.MessageTable,
+                AzureDataProvider.LocationByZipTable,
+            };
+
             AzureDataProvider dp = new AzureDataProvider();
 
             foreach (string t in tableNames)

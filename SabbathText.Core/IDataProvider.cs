@@ -9,6 +9,8 @@ namespace SabbathText.Core
         Task CreateAccountWithPhoneNumber(string phoneNumber);
         Task UpdateAccount(Account account);
 
-        Task RecordMessage(string accountId, Message message);        
+        Task RecordMessage(string accountId, Message message);
+
+        Task<Location> GetLocationByZipCode(string zipCode);
     }
 }

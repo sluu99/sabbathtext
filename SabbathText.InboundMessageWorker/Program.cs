@@ -29,6 +29,9 @@ namespace SabbathText.InboundMessageWorker
                 .AddProcessor<HelpProcessor>("?")
 
                 .AddProcessor<SubscribeProcessor>("subscribe")
+
+                .AddProcessor<ZipCodeProcessor>("zipcode")
+                .AddProcessor<ZipCodeProcessor>("zip")
             ;
         }
     }

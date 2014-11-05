@@ -9,9 +9,20 @@ namespace SabbathText.Core.Backend.InboundProcessors
 {
     public abstract class AccountBasedProcessor : IProcessor
     {
-        public AccountBasedProcessor()
+        private bool subscriberRequired = false;
+
+        public AccountBasedProcessor() : this(false)
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="subscriberRequired">Requires the account to be in "Subscribed" status</param>
+        public AccountBasedProcessor(bool subscriberRequired)
         {
             this.DataProvider = new AzureDataProvider();
+            this.subscriberRequired = subscriberRequired;
         }
 
         public IDataProvider DataProvider { get; set; }
@@ -44,7 +55,12 @@ namespace SabbathText.Core.Backend.InboundProcessors
             }
 
             await this.DataProvider.RecordMessage(account.AccountId, message);
-
+                        
+            if (this.subscriberRequired && account.Status != AccountStatus.Subscribed)
+            {
+                return MessageFactory.CreateSubscriberRequired(message.Sender);
+            }
+            
             return await this.ProcessMessageWithAccount(message, account);
 
         }

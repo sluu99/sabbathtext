@@ -2,6 +2,7 @@
 using Microsoft.WindowsAzure.Storage.Table;
 using SabbathText.Core.Entities;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace SabbathText.Core
@@ -10,6 +11,7 @@ namespace SabbathText.Core
     {
         public const string AccountTable = "accounts";
         public const string MessageTable = "messages";
+        public const string LocationByZipTable = "locationbyzip";
 
         CloudStorageAccount account = null;
         CloudTableClient client = null;
@@ -25,7 +27,10 @@ namespace SabbathText.Core
             }
 
             this.client = this.account.CreateCloudTableClient();
+            this.LocationProvider = new WwoLocationProvider();
         }
+
+        public ILocationProvider LocationProvider { get; set; }
 
         public Task CreateTableIfNotExists(string tableName)
         {
@@ -73,6 +78,52 @@ namespace SabbathText.Core
         public Task UpdateAccount(Account account)
         {
             return this.UpdateEntity(AccountTable, account);
+        }
+
+        public async Task<Location> GetLocationByZipCode(string zipCode)
+        {
+            // look into the cache first
+            if (string.IsNullOrWhiteSpace(zipCode))
+            {
+                return null;
+            }
+            zipCode = zipCode.Trim();
+
+            Location location = await this.GetEntity<Location>(LocationByZipTable, zipCode, zipCode);
+
+            if (location != null)
+            {
+                return location;
+            }
+
+            // not found in the DB
+            location = await this.LocationProvider.GetLocationByZipCode(zipCode);
+
+            if (location != null)
+            {
+                location.PartitionKey = location.ZipCode;
+                location.RowKey = location.ZipCode;
+
+                try
+                {
+                    await this.UpsertEntity(LocationByZipTable, location);
+                }
+                catch (Exception ex)
+                {
+                    Trace.TraceWarning("Failed to cache location {0}. Exception message: {1}", zipCode, ex.Message);
+                }
+            }
+
+            return location;
+        }
+
+
+        private Task UpsertEntity<T>(string tableName, T entity)
+            where T : class, ITableEntity
+        {
+            CloudTable table = this.client.GetTableReference(tableName);
+            TableOperation operation = TableOperation.InsertOrReplace(entity);
+            return table.ExecuteAsync(operation);
         }
 
         private Task InsertEntity<T>(string tableName, T entity)
