@@ -5,7 +5,18 @@ namespace SabbathText.Core
 {
     public class MessageFactory
     {
-        public static TemplatedMessage CreateSubscriberGreetings(string recipient)
+        private string locale;
+
+        public MessageFactory() : this("en-US")
+        {
+        }
+
+        public MessageFactory(string locale)
+        {
+            this.locale = locale;
+        }
+
+        public TemplatedMessage CreateSubscriberGreetings(string recipient)
         {
             return Create(
                 MessageTemplate.SubscriberGreetings,
@@ -15,7 +26,7 @@ namespace SabbathText.Core
             );
         }
 
-        public static TemplatedMessage CreateGeneralGreetings(string recipient)
+        public TemplatedMessage CreateGeneralGreetings(string recipient)
         {
             return Create(
                 MessageTemplate.GeneralGreetings,
@@ -25,17 +36,17 @@ namespace SabbathText.Core
             );
         }
 
-        public static TemplatedMessage CreateSubscribedMissingZipCode(string recipient)
+        public TemplatedMessage CreateSubscribedMissingZipCode(string recipient)
         {
             return Create(
                 MessageTemplate.SubscribedMissingZipCode,
                 null,
                 recipient,
-                "Thank you for subscribing! Text us your ZIP code so we can find out when Sabbath starts. For example, \"Zip 12345\""
+                "Thank you for subscribing! Text us your ZIP code and we'll send you a Bible text to start each Sabbath. For example, \"Zip 12345\""
             );
         }
 
-        public static TemplatedMessage CreateSubscribedConfirmZipCode(string recipient, string zipCode)
+        public TemplatedMessage CreateSubscribedConfirmZipCode(string recipient, string zipCode)
         {
             string body = string.Format(
                 "Thank you for subscribing! We currently have {0} as your ZIP code. Text \"Zip <your ZIP code>\" to update!",
@@ -45,7 +56,7 @@ namespace SabbathText.Core
             return Create(MessageTemplate.SubscribedConfirmZipCode, null, recipient, body);
         }
         
-        public static TemplatedMessage CreateConfirmZipCodeUpdate(string recipient, string zipCode, string locationName, DateTime sabbath)
+        public TemplatedMessage CreateConfirmZipCodeUpdate(string recipient, string zipCode, string locationName, DateTime sabbath)
         {
             string body = string.Format(
                 "Your location is updated to \"{0}.\" Sabbath starts around {1:h:mm} on {1:m}. Expect a message around that time!",
@@ -55,7 +66,7 @@ namespace SabbathText.Core
             return Create(MessageTemplate.ConfirmZipCodeUpdate, null, recipient, body);
         }
 
-        public static TemplatedMessage CreateSubscriberRequired(string recipient)
+        public TemplatedMessage CreateSubscriberRequired(string recipient)
         {
             return Create(
                 MessageTemplate.SubscriberRequired,
@@ -65,7 +76,7 @@ namespace SabbathText.Core
             );
         }
 
-        public static TemplatedMessage CreateHappySabbath(string recipient)
+        public TemplatedMessage CreateHappySabbath(string recipient)
         {
             return Create(
                 MessageTemplate.HappySabbath,
@@ -75,7 +86,7 @@ namespace SabbathText.Core
             );
         }
 
-        public static TemplatedMessage CreateBadRequest(string recipient, string messaage)
+        public TemplatedMessage CreateBadRequest(string recipient, string messaage)
         {
             return Create(MessageTemplate.BadRequest, null, recipient, messaage);
         }

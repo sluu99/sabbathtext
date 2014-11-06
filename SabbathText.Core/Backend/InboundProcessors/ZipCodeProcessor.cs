@@ -28,7 +28,7 @@ namespace SabbathText.Core.Backend.InboundProcessors
 
             if (parts.Length < 2 || string.IsNullOrWhiteSpace(parts[1]))
             {
-                return MessageFactory.CreateBadRequest(message.Sender, "Cannot update ZIP code");
+                return new MessageFactory().CreateBadRequest(message.Sender, "Cannot update ZIP code");
             }
 
             string zipCode = parts[1].Trim();
@@ -45,11 +45,11 @@ namespace SabbathText.Core.Backend.InboundProcessors
 
                 await this.EventQueue.AddMessage(EventMessage.Create(message.Sender, EventType.ZipCodeUpdated, string.Empty));
 
-                return MessageFactory.CreateConfirmZipCodeUpdate(message.Sender, location.ZipCode, location.LocationName, sabbath);
+                return new MessageFactory().CreateConfirmZipCodeUpdate(message.Sender, location.ZipCode, location.LocationName, sabbath);
             }
             else
             {
-                return MessageFactory.CreateBadRequest(message.Sender, string.Format("Cannot find your location {0}", zipCode));
+                return new MessageFactory().CreateBadRequest(message.Sender, string.Format("Cannot find your location {0}", zipCode));
             }
         }
     }

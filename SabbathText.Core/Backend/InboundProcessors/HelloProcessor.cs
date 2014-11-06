@@ -14,11 +14,11 @@ namespace SabbathText.Core.Backend.InboundProcessors
 
             if (account.Status == AccountStatus.Subscribed)
             {
-                response = MessageFactory.CreateSubscriberGreetings(recipient);
+                response = new MessageFactory().CreateSubscriberGreetings(recipient);
             }
             else
             {
-                response = MessageFactory.CreateGeneralGreetings(recipient);
+                response = new MessageFactory().CreateGeneralGreetings(recipient);
             }
 
             return Task.FromResult(response);

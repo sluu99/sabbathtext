@@ -22,11 +22,11 @@ namespace SabbathText.Core.Backend.InboundProcessors
             
             if (string.IsNullOrWhiteSpace(account.ZipCode))
             {
-                return MessageFactory.CreateSubscribedMissingZipCode(message.Sender);
+                return new MessageFactory().CreateSubscribedMissingZipCode(message.Sender);
             }
             else
             {
-                return MessageFactory.CreateSubscribedConfirmZipCode(message.Sender, account.ZipCode);
+                return new MessageFactory().CreateSubscribedConfirmZipCode(message.Sender, account.ZipCode);
             }
         }
     }

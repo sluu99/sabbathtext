@@ -65,7 +65,7 @@ namespace SabbathText.Core.Backend
                         
             if (this.subscriberRequired && account.Status == AccountStatus.BrandNew)
             {
-                return MessageFactory.CreateSubscriberRequired(message.Sender);
+                return new MessageFactory().CreateSubscriberRequired(message.Sender);
             }            
             
             if (account.Status == AccountStatus.Unsubscribed)

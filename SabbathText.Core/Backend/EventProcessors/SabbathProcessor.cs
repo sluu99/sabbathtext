@@ -26,7 +26,7 @@ namespace SabbathText.Core.Backend.EventProcessors
 
             await this.DataProvider.UpdateAccount(account);            
 
-            return MessageFactory.CreateHappySabbath(account.PhoneNumber);
+            return new MessageFactory().CreateHappySabbath(account.PhoneNumber);
         }
     }
 }
