@@ -224,6 +224,10 @@
       <Project>{b45ea451-a493-4e23-a7a6-a496838edc00}</Project>
       <Name>SabbathText.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SabbathText.EventMessageWorker\SabbathText.EventMessageWorker.csproj">
+      <Project>{CFBCD0E5-8DBF-4057-AB1D-08FBC9771103}</Project>
+      <Name>SabbathText.EventMessageWorker</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SabbathText.InboundMessageWorker\SabbathText.InboundMessageWorker.csproj">
       <Project>{056EEAA8-275C-4F2D-88E0-BF796994D546}</Project>
       <Name>SabbathText.InboundMessageWorker</Name>

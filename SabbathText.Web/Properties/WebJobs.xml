@@ -3,4 +3,5 @@
 <WebJobs>
   <WebJob Project="SabbathText.InboundMessageWorker" RelativePath="..\SabbathText.InboundMessageWorker\SabbathText.InboundMessageWorker.csproj" Schedule="continuous" />
   <WebJob Project="SabbathText.OutboundMessageWorker" RelativePath="..\SabbathText.OutboundMessageWorker\SabbathText.OutboundMessageWorker.csproj" Schedule="continuous" />
+  <WebJob Project="SabbathText.EventMessageWorker" RelativePath="..\SabbathText.EventMessageWorker\SabbathText.EventMessageWorker.csproj" Schedule="continuous" />
 </WebJobs>
