@@ -16,6 +16,7 @@ namespace SabbathText.Core
 
         CloudStorageAccount account = null;
         CloudTableClient client = null;
+        readonly TimeSpan locationCacheTime = TimeSpan.FromDays(7);
 
         public AzureDataProvider()
         {
@@ -92,12 +93,12 @@ namespace SabbathText.Core
 
             Location location = await this.GetEntity<Location>(LocationByZipTable, zipCode, zipCode);
 
-            if (location != null)
+            if (location != null && (Clock.UtcNow - location.UpdateTime) < this.locationCacheTime)
             {
                 return location;
             }
 
-            // not found in the DB
+            // not found in the DB or cache expired
             location = await this.LocationProvider.GetLocationByZipCode(zipCode);
 
             if (location != null)
