@@ -170,8 +170,6 @@
     <Content Include="Content\sunrise\img\bg.jpg" />
     <Content Include="Content\sunrise\img\hand-with-iphone.png" />
     <Content Include="Content\sunrise\js\jquery.min.js" />
-    <Content Include="Content\sunrise\js\sunrise.js" />
-    <Content Include="Content\sunrise\main.config.js" />
     <Content Include="Global.asax" />
     <Content Include="Properties\WebJobs.xml" />
     <Content Include="Properties\ligershark.webjobs.targets" />

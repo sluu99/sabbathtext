@@ -76,7 +76,7 @@ body {
     position: relative;
 }
 
-.subscription-email,
+.subscription-phone,
 .subscription-submit {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -92,7 +92,7 @@ body {
     -webkit-appearance: none;
 }
 
-.subscription-email {
+.subscription-phone {
     width: 350px;
     height: 54px;
     padding: 13px 5px 11px 20px;
@@ -111,7 +111,7 @@ body {
     box-shadow: none;
 }
 
-.subscription-email:focus {
+.subscription-phone:focus {
     padding-left: 19px;
     padding-right: 19px;
 
@@ -126,7 +126,7 @@ body {
     outline: none;
 }
 
-.subscription-email:focus:invalid {
+.subscription-phone:focus:invalid {
     padding-left: 19px;
     padding-right: 19px;
 
@@ -139,7 +139,7 @@ body {
     box-shadow: none;
 }
 
-.subscription-email:focus + .subscription-submit-container {
+.subscription-phone:focus + .subscription-submit-container {
     padding: 3px;
     padding-left: 0;
 
@@ -147,7 +147,7 @@ body {
     border-left-width: 0;
 }
 
-.subscription-email:focus:invalid + .subscription-submit-container {
+.subscription-phone:focus:invalid + .subscription-submit-container {
     padding: 3px;
     padding-left: 0;
 
@@ -155,8 +155,8 @@ body {
     border-left-width: 0;
 }
 
-.subscription-email.error,
-.subscription-email.error + .subscription-submit-container {
+.subscription-phone.error,
+.subscription-phone.error + .subscription-submit-container {
     border-color: #ED4116;
 }
 
@@ -275,7 +275,7 @@ body {
         margin-top: 25px;
     }
 
-    .subscription-email {
+    .subscription-phone {
         width: 250px;
     }
 }
@@ -290,19 +290,19 @@ body {
         display: block;
     }
 
-    .subscription-email,
+    .subscription-phone,
     .subscription-submit {
         width: 100%;
     }
 
-    .subscription-email {
+    .subscription-phone {
         float: none;
 
         border-radius: 27px;
     }
 
     .subscription-submit-container,
-    .subscription-email:focus + .subscription-submit-container {
+    .subscription-phone:focus + .subscription-submit-container {
         width: 100%;
         padding: 0;
         margin-top: 15px;
@@ -314,7 +314,7 @@ body {
         border: 0;
     }
 
-    .subscription-email:focus:invalid + .subscription-submit-container {
+    .subscription-phone:focus:invalid + .subscription-submit-container {
         padding: 0;
         border: 0;
     }
