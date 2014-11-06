@@ -10,7 +10,7 @@ namespace SabbathText.Web.Controllers
     {
         public ActionResult Index()
         {
-
+            return null;
         }
     }
 }
