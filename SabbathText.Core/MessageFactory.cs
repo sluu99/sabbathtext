@@ -32,7 +32,7 @@ namespace SabbathText.Core
                 MessageTemplate.GeneralGreetings,
                 null,
                 recipient,
-                "Greetings from SabbathText.com! Text \"subscribe\" to get started!"
+                "Greetings from SabbathText.com! Text \"subscribe\" to get started."
             );
         }
 
@@ -59,7 +59,7 @@ namespace SabbathText.Core
         public TemplatedMessage CreateConfirmZipCodeUpdate(string recipient, string zipCode, string locationName, DateTime sabbath)
         {
             string body = string.Format(
-                "Your location is updated to \"{0}.\" Sabbath starts around {1:h:mm} on {1:m}. Expect a message around that time!",
+                "Your location is set to \"{0}.\" Sabbath starts around {1:h:mm} on {1:m}. Expect a message around that time!",
                 locationName,
                 sabbath
             );
