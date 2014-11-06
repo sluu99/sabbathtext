@@ -70,7 +70,7 @@ namespace SabbathText.Core
             return Create(MessageTemplate.BadRequest, null, recipient, messaage);
         }
 
-        public static TemplatedMessage Create(string template, string sender, string recipient, string body)
+        public static TemplatedMessage Create(MessageTemplate template, string sender, string recipient, string body)
         {
             return new TemplatedMessage
             {

@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workers", "Workers", "{A5CE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.OutboundMessageWorker", "SabbathText.OutboundMessageWorker\SabbathText.OutboundMessageWorker.csproj", "{FB28C453-1686-43AC-8E86-806D396E63EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.EventMessageWorker", "SabbathText.EventMessageWorker\SabbathText.EventMessageWorker.csproj", "{CFBCD0E5-8DBF-4057-AB1D-08FBC9771103}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{FB28C453-1686-43AC-8E86-806D396E63EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB28C453-1686-43AC-8E86-806D396E63EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB28C453-1686-43AC-8E86-806D396E63EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFBCD0E5-8DBF-4057-AB1D-08FBC9771103}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFBCD0E5-8DBF-4057-AB1D-08FBC9771103}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFBCD0E5-8DBF-4057-AB1D-08FBC9771103}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFBCD0E5-8DBF-4057-AB1D-08FBC9771103}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,5 +54,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{056EEAA8-275C-4F2D-88E0-BF796994D546} = {A5CE5378-ACEA-4986-8FB6-B55FF88AD679}
 		{FB28C453-1686-43AC-8E86-806D396E63EB} = {A5CE5378-ACEA-4986-8FB6-B55FF88AD679}
+		{CFBCD0E5-8DBF-4057-AB1D-08FBC9771103} = {A5CE5378-ACEA-4986-8FB6-B55FF88AD679}
 	EndGlobalSection
 EndGlobal

@@ -1,16 +1,16 @@
 ﻿
 namespace SabbathText.Core.Entities
 {
-    public static class MessageTemplate
+    public enum MessageTemplate
     {
-        public const string BadRequest = "BadRequest";
-        public const string SubscriberRequired = "SubscriberRequired";
+        BadRequest = 0,
+        SubscriberRequired = 1,
 
-        public const string GeneralGreetings = "GeneralGreetings";
-        public const string SubscriberGreetings = "SubscriberGreetings";
-        public const string Help = "Help";
-        public const string SubscribedMissingZipCode = "SubscribedMissingZipCode";
-        public const string SubscribedConfirmZipCode = "SubscribedConfirmZipCode";
-        public const string ConfirmZipCodeUpdate = "ConfirmZipCodeUpdate";
+        GeneralGreetings = 2,
+        SubscriberGreetings = 3,
+        Help = 4,
+        SubscribedMissingZipCode = 5,
+        SubscribedConfirmZipCode = 6,
+        ConfirmZipCodeUpdate = 7,
     }
 }
