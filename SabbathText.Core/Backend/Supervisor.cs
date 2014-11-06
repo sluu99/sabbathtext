@@ -46,6 +46,7 @@ namespace SabbathText.Core.Backend
 
                     if (success)
                     {
+                        Trace.TraceInformation("Message {0} processed", message.Item1.Id);
                         await this.MessageQueue.DeleteMessage(message.Item1);
                     }
                     else
