@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SabbathText.Core.Backend.InboundProcessors
+namespace SabbathText.Core.Backend
 {
     public abstract class AccountBasedProcessor : IProcessor
     {
