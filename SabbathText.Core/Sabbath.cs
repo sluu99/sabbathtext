@@ -79,11 +79,9 @@ namespace SabbathText.Core
             {
                 return false;
             }
-
-
+            
             // sunSet now has the sunset time, in the local machine's time zone
-            DateTime sunSetTimeLocal = new DateTime(sunSet.Ticks, DateTimeKind.Local);
-            sunSetTimeUtc = sunSetTimeLocal.ToUniversalTime();
+            sunSetTimeUtc = sunSet.ToUniversalTime();
 
             Trace.TraceInformation("Sunset: {0}", sunSet);
             Trace.TraceInformation("Sunset local: {0}", sunSetTimeLocal);
