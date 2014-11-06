@@ -84,7 +84,6 @@ namespace SabbathText.Core
             sunSetTimeUtc = sunSet.ToUniversalTime();
 
             Trace.TraceInformation("Sunset: {0}", sunSet);
-            Trace.TraceInformation("Sunset local: {0}", sunSetTimeLocal);
             Trace.TraceInformation("Sunset UTC: {0}", sunSetTimeUtc);
 
             return true;
