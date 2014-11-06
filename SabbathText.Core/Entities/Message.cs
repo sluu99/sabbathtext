@@ -5,6 +5,11 @@ namespace SabbathText.Core.Entities
 {
     public class Message : TableEntity
     {
+        public Message()
+        {
+            this.CreationTime = Clock.MinValue;
+        }
+
         public string MessageId { get; set; }
         public string ExternalId { get; set; }
         public string Sender { get; set; }

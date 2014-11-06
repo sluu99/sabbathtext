@@ -5,10 +5,17 @@ namespace SabbathText.Core.Entities
 {
     public class Account : TableEntity
     {
+        public Account()
+        {
+            this.CreationTime = Clock.MinValue;
+            this.LastSabbathMessage = Clock.MinValue;
+        }
+
         public string AccountId { get; set; }
-        public DateTime CreationTime { get; set; }
+        public DateTime CreationTime { get; set; }        
         public string PhoneNumber { get; set; }
         public string ZipCode { get; set; }
         public string Status { get; set; }
+        public DateTime LastSabbathMessage { get; set; }
     }
 }

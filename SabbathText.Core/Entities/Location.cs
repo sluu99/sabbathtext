@@ -5,6 +5,12 @@ namespace SabbathText.Core.Entities
 {
     public class Location : TableEntity
     {
+        public Location()
+        {
+            this.CreationTime = Clock.MinValue;
+            this.CreationTime = Clock.MinValue;
+        }
+
         public string ZipCode { get; set; }
         public string LocationName { get; set; }
         public string Country { get; set; }

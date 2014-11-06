@@ -6,6 +6,9 @@ public class Clock
     static TimeSpan fakeClockOffset = TimeSpan.Zero;
     static bool frozen = false;
 
+    public static readonly DateTime MinValue = new DateTime(1601, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+    public static readonly DateTime MaxValue = new DateTime(9999, 12, 31, 0, 0, 0, DateTimeKind.Utc);
+
     public static DateTime UtcNow
     {
         get
