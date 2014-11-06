@@ -48,7 +48,7 @@ namespace SabbathText.Core
         public static TemplatedMessage CreateConfirmZipCodeUpdate(string recipient, string zipCode, string locationName, DateTime sabbath)
         {
             string body = string.Format(
-                "Your location is updated to \"{0}\"! Sabbath starts around {1:h:mm} on {1:m}. Expect a message around that time!",
+                "Your location is updated to \"{0}.\" Sabbath starts around {1:h:mm} on {1:m}. Expect a message around that time!",
                 locationName,
                 sabbath
             );

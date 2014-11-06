@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,10 @@ namespace SabbathText.Core
         public static DateTime GetLocationNextSabbath(double latitude, double longitude, double timeZoneOffset)
         {
             DateTime destinationTime = Clock.UtcNow.AddHours(timeZoneOffset);
+            Trace.TraceInformation("Destination time: {0}", destinationTime);
 
             int daysUntilFriday = DaysUntilFriday(destinationTime.Date);
+            Trace.TraceInformation("Days until Friday: {0}", daysUntilFriday);
 
             DateTime utcSunsetTime = Clock.UtcNow;
             DateTime destinationSunsetTime = Clock.UtcNow;
@@ -36,6 +39,7 @@ namespace SabbathText.Core
 
             // go to next Friday
             DateTime destinationNextFriday = destinationTime.AddDays(daysUntilFriday);
+            Trace.TraceInformation("Next Friday: {0}", destinationNextFriday);
 
             TryGetUtcSunSetTime(destinationNextFriday.Date, latitude, longitude, out utcSunsetTime);
             destinationSunsetTime = utcSunsetTime.AddHours(timeZoneOffset);
