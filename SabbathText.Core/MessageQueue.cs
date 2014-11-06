@@ -11,6 +11,7 @@ namespace SabbathText.Core
     {
         public const string InboundMessageQueue = "inboundmsgs";
         public const string OutboundMessageQueue = "outboundmsgs";
+        public const string EventMessageQueue = "eventmsgs";
 
         private string queueName;
 

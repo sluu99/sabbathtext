@@ -17,7 +17,13 @@ namespace SabbathText.Core
 
         private static void SetupQueues()
         {
-            string[] queueNames = { MessageQueue.InboundMessageQueue, MessageQueue.OutboundMessageQueue };
+            string[] queueNames = 
+            {
+                MessageQueue.InboundMessageQueue, 
+                MessageQueue.OutboundMessageQueue,
+                MessageQueue.EventMessageQueue,
+            };
+
             IQueue queue = new AzureQueue();
 
             foreach (string q in queueNames)

@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 
 namespace SabbathText.Core.Backend
 {
-    public class InboundMessageRouter
+    public class MessageRouter
     {
         private Dictionary<string, Type> processors;
         private MessageQueue outboundQueue;
 
-        public InboundMessageRouter()
+        public MessageRouter()
         {
             this.processors = new Dictionary<string, Type>();
             this.outboundQueue = new MessageQueue(MessageQueue.OutboundMessageQueue);
         }
 
-        public InboundMessageRouter AddProcessor<T>(string verb) where T : IProcessor
+        public MessageRouter AddProcessor<T>(string verb) where T : IProcessor
         {
             if (string.IsNullOrWhiteSpace(verb))
             {

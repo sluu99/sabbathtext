@@ -11,14 +11,14 @@ namespace SabbathText.InboundMessageWorker
             SabbathText.Core.Common.Setup();
             SabbathText.Core.Common.SetupStorage();
 
-            InboundMessageRouter router = new InboundMessageRouter();
+            MessageRouter router = new MessageRouter();
             Program.AddProcessors(router);
 
             Supervisor supervisor = new AzureWebJobSupervisor(MessageQueue.InboundMessageQueue);
             supervisor.Start(router.Route).Wait();
         }
 
-        static void AddProcessors(InboundMessageRouter router)
+        static void AddProcessors(MessageRouter router)
         {
             router
                 .AddProcessor<HelloProcessor>("hello")
