@@ -3,7 +3,9 @@ namespace SabbathText.Core.Entities
 {
     public enum EventType
     {
-        ZipCodeUpdated = 0,
         Sabbath = 7,
+
+        ZipCodeUpdated = 0,
+        AccountCycle = 1,        
     }
 }

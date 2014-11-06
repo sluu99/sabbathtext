@@ -37,4 +37,22 @@ public static class StringExtension
             return BitConverter.ToString(hashBytes).Replace("-", string.Empty);
         }
     }
+
+    public static string GetParameters(this string str)
+    {
+        if (string.IsNullOrEmpty(str))
+        {
+            return str;
+        }
+
+        str = str.Trim();
+        int index = str.IndexOf(' ');
+
+        if (index == -1)
+        {
+            return null;
+        }
+
+        return str.Substring(index + 1);
+    }
 }

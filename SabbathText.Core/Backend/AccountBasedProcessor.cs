@@ -33,7 +33,7 @@ namespace SabbathText.Core.Backend
 
         protected abstract Task<TemplatedMessage> ProcessMessageWithAccount(Message message, Account account);
 
-        public async Task<TemplatedMessage> ProcessMessage(Message message)
+        public virtual async Task<TemplatedMessage> ProcessMessage(Message message)
         {
             if (message == null)
             {
@@ -63,13 +63,17 @@ namespace SabbathText.Core.Backend
                 await this.DataProvider.RecordMessage(account.AccountId, message);
             }
                         
-            if (this.subscriberRequired && account.Status != AccountStatus.Subscribed)
+            if (this.subscriberRequired && account.Status == AccountStatus.BrandNew)
             {
                 return MessageFactory.CreateSubscriberRequired(message.Sender);
+            }            
+            
+            if (account.Status == AccountStatus.Unsubscribed)
+            {
+                return null;
             }
             
             return await this.ProcessMessageWithAccount(message, account);
-
         }
     }
 }

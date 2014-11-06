@@ -5,6 +5,8 @@ namespace SabbathText.Core
 {
     public class Sabbath
     {
+        public static readonly TimeSpan TimeUntilTestLocationSunSet = TimeSpan.FromMinutes(2);
+
         /// <remarks>If this is called on the Sabbath day, it'll return up to 10 minutes of margin</remarks>
         /// <returns></returns>
         public static DateTime GetLocationNextSabbath(double latitude, double longitude, double timeZoneOffset)
@@ -17,7 +19,7 @@ namespace SabbathText.Core
             // test location
             if (latitude == Location.TestLocation.Latitude && longitude == Location.TestLocation.Longitude)
             {
-                return Clock.UtcNow.AddMinutes(2);
+                return Clock.UtcNow.AddHours(timeZoneOffset) + TimeUntilTestLocationSunSet;
             }
 
             DateTime destinationTime = Clock.UtcNow.AddHours(timeZoneOffset);

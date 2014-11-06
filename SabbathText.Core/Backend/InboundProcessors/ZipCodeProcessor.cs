@@ -39,7 +39,7 @@ namespace SabbathText.Core.Backend.InboundProcessors
             {
                 account.ZipCode = location.ZipCode;
 
-                await this.DataProvider.UpdateAccount(account);                
+                await this.DataProvider.UpdateAccount(account);
 
                 DateTime sabbath = Sabbath.GetLocationNextSabbath(location.Latitude, location.Longitude, location.TimeZoneOffset);
 

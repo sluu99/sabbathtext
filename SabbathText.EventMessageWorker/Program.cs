@@ -23,7 +23,8 @@ namespace SabbathText.EventMessageWorker
         {
             router
                 .AddProcessor<ZipCodeUpdatedProcessor>(EventType.ZipCodeUpdated.ToString())
-                .AddProcessor<SabbathProcessor>(EventType.Sabbath.ToString());
+                .AddProcessor<SabbathProcessor>(EventType.Sabbath.ToString())
+                .AddProcessor<AccountCycleProcessor>(EventType.AccountCycle.ToString())
             ;
         }
     }

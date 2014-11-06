@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SabbathText.Core.Entities;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -21,8 +22,9 @@ namespace SabbathText.Core.Backend.EventProcessors
                 Trace.TraceInformation("Time since last Sabbath message for account {0} is {1}. Skipped!", account.AccountId.Mask(4), timeSinceLastSabbathMessage);
             }
 
-            account.LastSabbathMessageTime = Clock.UtcNow;
-            await this.DataProvider.UpdateAccount(account);
+            account.LastSabbathMessageTime = Clock.UtcNow;            
+
+            await this.DataProvider.UpdateAccount(account);            
 
             return MessageFactory.CreateHappySabbath(account.PhoneNumber);
         }

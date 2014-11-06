@@ -13,7 +13,12 @@ namespace SabbathText.Core.Backend.InboundProcessors
         {
             account.Status = AccountStatus.Subscribed;
 
+            // create a new cycle key to make sure the other cycle events won't try to reschedule themselves
+            account.CycleKey = Guid.NewGuid().ToString(); 
+
             await this.DataProvider.UpdateAccount(account);
+
+            await this.EventQueue.AddMessage(EventMessage.Create(account.AccountId, EventType.AccountCycle, account.CycleKey));
             
             if (string.IsNullOrWhiteSpace(account.ZipCode))
             {
