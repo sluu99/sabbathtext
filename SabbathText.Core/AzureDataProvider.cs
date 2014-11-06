@@ -12,6 +12,7 @@ namespace SabbathText.Core
         public const string AccountTable = "accounts";
         public const string MessageTable = "messages";
         public const string LocationByZipTable = "locationbyzip";
+        public const string PoisonMessageTable = "poisonmessages";
 
         CloudStorageAccount account = null;
         CloudTableClient client = null;
@@ -117,6 +118,21 @@ namespace SabbathText.Core
             }
 
             return location;
+        }
+
+        public Task RecordPoisonMessage(string queueName, string message)
+        {
+            string key = Guid.NewGuid().ToString();
+
+            PoisonMessage poison = new PoisonMessage
+            {
+                PartitionKey = key,
+                RowKey = key,
+                QueueName = queueName,
+                Body = message,
+            };
+
+            return this.InsertEntity(PoisonMessageTable, poison);
         }
 
 

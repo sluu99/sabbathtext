@@ -10,6 +10,7 @@ namespace SabbathText.Core
         Task UpdateAccount(Account account);
 
         Task RecordMessage(string accountId, Message message);
+        Task RecordPoisonMessage(string queueName, string message);
 
         Task<Location> GetLocationByZipCode(string zipCode);
     }
