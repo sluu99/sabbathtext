@@ -1,11 +1,25 @@
-﻿using System;
+﻿using SabbathText.Core.Entities;
+using System;
 
 namespace SabbathText.Core
 {
     public class Sabbath
     {
+        /// <remarks>If this is called on the Sabbath day, it'll return up to 10 minutes of margin</remarks>
+        /// <returns></returns>
         public static DateTime GetLocationNextSabbath(double latitude, double longitude, double timeZoneOffset)
         {
+            return GetLocationNextSabbath(latitude, longitude, timeZoneOffset, TimeSpan.FromMinutes(10));
+        }
+
+        public static DateTime GetLocationNextSabbath(double latitude, double longitude, double timeZoneOffset, TimeSpan sabbathDayMargin)
+        {
+            // test location
+            if (latitude == Location.TestLocation.Latitude && longitude == Location.TestLocation.Longitude)
+            {
+                return Clock.UtcNow.AddMinutes(2);
+            }
+
             DateTime destinationTime = Clock.UtcNow.AddHours(timeZoneOffset);
 
             int daysUntilFriday = DaysUntilFriday(destinationTime.Date);
@@ -21,9 +35,9 @@ namespace SabbathText.Core
                 destinationSunsetTime = new DateTime(destinationTime.Year, destinationTime.Month, destinationTime.Day, destinationSunsetTime.Hour, destinationSunsetTime.Minute, destinationSunsetTime.Second);
 
                 // Sun has not set yet, Sabbath is today!
-                if (destinationSunsetTime > destinationTime)
+                if ((destinationSunsetTime + sabbathDayMargin) > destinationTime)
                 {
-                    return destinationSunsetTime;
+                    return destinationSunsetTime + sabbathDayMargin;
                 }
                 else
                 {

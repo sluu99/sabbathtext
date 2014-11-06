@@ -5,10 +5,23 @@ namespace SabbathText.Core.Entities
 {
     public class Location : TableEntity
     {
+        public static readonly Location TestLocation = new Location
+        {
+            ZipCode = "00000",
+            LocationName = "Test Site",
+            Country = "Republic of Bananas",
+            Region = "Mall-The",
+            Longitude = -500,
+            Latitude = -500,
+            TimeZoneOffset = 0, 
+            CreationTime = Clock.MaxValue,
+            UpdateTime = Clock.MaxValue,
+        };
+
         public Location()
         {
             this.CreationTime = Clock.MinValue;
-            this.CreationTime = Clock.MinValue;
+            this.UpdateTime = Clock.MinValue;
         }
 
         public string ZipCode { get; set; }

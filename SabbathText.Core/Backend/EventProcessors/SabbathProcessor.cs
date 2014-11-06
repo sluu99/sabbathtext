@@ -12,7 +12,7 @@ namespace SabbathText.Core.Backend.EventProcessors
         {
         }
 
-        protected override Task<Entities.TemplatedMessage> ProcessMessageWithAccount(Entities.Message message, Entities.Account account)
+        protected override async Task<Entities.TemplatedMessage> ProcessMessageWithAccount(Entities.Message message, Entities.Account account)
         {
             TimeSpan timeSinceLastSabbathMessage = Clock.UtcNow - account.LastSabbathMessageTime;
 
@@ -22,8 +22,9 @@ namespace SabbathText.Core.Backend.EventProcessors
             }
 
             account.LastSabbathMessageTime = Clock.UtcNow;
+            await this.DataProvider.UpdateAccount(account);
 
-            return Task.FromResult(MessageFactory.CreateHappySabbath(account.PhoneNumber));
+            return MessageFactory.CreateHappySabbath(account.PhoneNumber);
         }
     }
 }
