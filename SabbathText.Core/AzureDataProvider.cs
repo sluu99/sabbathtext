@@ -12,8 +12,7 @@ namespace SabbathText.Core
         public const string AccountTable = "accounts";
         public const string MessageTable = "messages";
         public const string LocationByZipTable = "locationbyzip";
-        public const string PoisonMessageTable = "poisonmessages";
-        public const string ResourceLockTable = "resourcelocks";
+        public const string PoisonMessageTable = "poisonmessages";        
 
         CloudStorageAccount account = null;
         CloudTableClient client = null;
@@ -136,71 +135,6 @@ namespace SabbathText.Core
             };
 
             return this.InsertEntity(PoisonMessageTable, poison);
-        }
-
-        public async Task<string> LockResource(string resourceId)
-        {
-            if (string.IsNullOrWhiteSpace(resourceId))
-            {
-                throw new ArgumentException("resourceId cannot be null or white space");
-            }
-
-            resourceId = resourceId.Sha256(); // hash resource in case it is sensitive data
-            ResourceLock resourceLock = await this.GetEntity<ResourceLock>(ResourceLockTable, resourceId, resourceId);
-
-            if (resourceLock == null || resourceLock.LockExpiresOn < Clock.UtcNow)
-            {
-                bool lockExisted = true;
-
-                if (resourceLock == null)
-                {
-                    resourceLock = new ResourceLock
-                    {
-                        ResourceId = resourceId,
-                        PartitionKey = resourceId,
-                        RowKey = resourceId,
-                    };
-
-                    lockExisted = false;
-                }
-
-                resourceLock.LockKey = Guid.NewGuid().ToString();
-                resourceLock.LockedOn = Clock.UtcNow;
-                resourceLock.LockExpiresOn = resourceLock.LockedOn + this.resourceLockDuration;
-
-                if (lockExisted)
-                {
-                    await this.UpdateEntity(ResourceLockTable, resourceLock);
-                }
-                else
-                {
-                    await this.InsertEntity(ResourceLockTable, resourceLock);
-                }
-
-                return resourceLock.LockKey;
-            }
-            else
-            {
-                throw new ApplicationException("Cannot lock resource");
-            }
-        }
-
-        public async Task UnlockResource(string resourceId, string unlockKey)
-        {
-            if (string.IsNullOrWhiteSpace(resourceId))
-            {
-                throw new ArgumentException("resourceId cannot be null or white space");
-            }
-
-            resourceId = resourceId.Sha256(); // hash resource in case it is sensitive data
-            ResourceLock resourceLock = await this.GetEntity<ResourceLock>(ResourceLockTable, resourceId, resourceId);
-
-            if (resourceLock == null || !string.Equals(resourceLock.LockKey, unlockKey))
-            {
-                throw new ApplicationException("Cannot unlock resource");
-            }
-
-            await this.DeleteEntity(ResourceLockTable, resourceLock);
         }
 
         private Task UpsertEntity<T>(string tableName, T entity)

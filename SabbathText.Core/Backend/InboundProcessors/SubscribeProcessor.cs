@@ -13,12 +13,8 @@ namespace SabbathText.Core.Backend.InboundProcessors
         {
             account.Status = AccountStatus.Subscribed;
 
-            string lockKey = await this.DataProvider.LockResource(account.AccountId);
-
             await this.DataProvider.UpdateAccount(account);
-
-            await this.DataProvider.UnlockResource(account.AccountId, lockKey);
-
+            
             if (string.IsNullOrWhiteSpace(account.ZipCode))
             {
                 return MessageFactory.CreateSubscribedMissingZipCode(message.Sender);

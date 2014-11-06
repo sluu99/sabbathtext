@@ -8,7 +8,7 @@ namespace SabbathText.Core.Entities
         public Account()
         {
             this.CreationTime = Clock.MinValue;
-            this.LastSabbathMessage = Clock.MinValue;
+            this.LastSabbathMessageTime = Clock.MinValue;
         }
 
         public string AccountId { get; set; }
@@ -16,6 +16,6 @@ namespace SabbathText.Core.Entities
         public string PhoneNumber { get; set; }
         public string ZipCode { get; set; }
         public string Status { get; set; }
-        public DateTime LastSabbathMessage { get; set; }
+        public DateTime LastSabbathMessageTime { get; set; }
     }
 }
