@@ -23,6 +23,7 @@ namespace SabbathText.Core
                 // today is Friday, check if the Sun already set                
                 TryGetUtcSunSetTime(destinationTime.Date, latitude, longitude, out utcSunsetTime);
                 destinationSunsetTime = utcSunsetTime.AddHours(timeZoneOffset);
+                destinationSunsetTime = new DateTime(destinationTime.Year, destinationTime.Month, destinationTime.Day, destinationSunsetTime.Hour, destinationSunsetTime.Minute, destinationSunsetTime.Second);
 
                 // Sun has not set yet, Sabbath is today!
                 if (destinationSunsetTime > destinationTime)

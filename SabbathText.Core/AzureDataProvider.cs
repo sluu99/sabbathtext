@@ -103,6 +103,8 @@ namespace SabbathText.Core
             {
                 location.PartitionKey = location.ZipCode;
                 location.RowKey = location.ZipCode;
+                location.CreationTime = Clock.UtcNow;
+                location.UpdateTime = Clock.UtcNow;
 
                 try
                 {
