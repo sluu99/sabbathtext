@@ -65,6 +65,16 @@ namespace SabbathText.Core
             );
         }
 
+        public static TemplatedMessage CreateHappySabbath(string recipient)
+        {
+            return Create(
+                MessageTemplate.HappySabbath,
+                null,
+                recipient,
+                "Happy Sabbath!"
+            );
+        }
+
         public static TemplatedMessage CreateBadRequest(string recipient, string messaage)
         {
             return Create(MessageTemplate.BadRequest, null, recipient, messaage);

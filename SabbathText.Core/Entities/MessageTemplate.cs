@@ -6,11 +6,13 @@ namespace SabbathText.Core.Entities
         BadRequest = 0,
         SubscriberRequired = 1,
 
+        HappySabbath = 7,
+
         GeneralGreetings = 2,
         SubscriberGreetings = 3,
         Help = 4,
         SubscribedMissingZipCode = 5,
         SubscribedConfirmZipCode = 6,
-        ConfirmZipCodeUpdate = 7,
+        ConfirmZipCodeUpdate = 8,
     }
 }
