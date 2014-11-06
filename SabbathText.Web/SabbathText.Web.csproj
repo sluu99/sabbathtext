@@ -165,6 +165,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\images\subscribe.png" />
     <Content Include="Content\sunrise\css\bootstrap.css" />
     <Content Include="Content\sunrise\css\bootstrap.min.css" />
     <Content Include="Content\sunrise\css\sunrise.css" />
