@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SabbathText.Core;
+using SabbathText.Core.Backend;
 
 namespace SabbathText.EventMessageWorker
 {
@@ -10,6 +7,19 @@ namespace SabbathText.EventMessageWorker
     {
         static void Main(string[] args)
         {
+            SabbathText.Core.Common.Setup();
+            SabbathText.Core.Common.SetupStorage();
+
+            MessageRouter router = new MessageRouter();
+            Program.AddProcessors(router);
+
+            Supervisor supervisor = new AzureWebJobSupervisor(MessageQueue.EventMessageQueue);
+            supervisor.Start(router.Route).Wait();
+        }
+
+        static void AddProcessors(MessageRouter router)
+        {
+            
         }
     }
 }
