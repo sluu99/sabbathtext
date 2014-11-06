@@ -12,7 +12,12 @@ namespace SabbathText.Core.Backend.InboundProcessors
         protected override async Task<TemplatedMessage> ProcessMessageWithAccount(Message message, Account account)
         {
             account.Status = AccountStatus.Subscribed;
+
+            string lockKey = await this.DataProvider.LockResource(account.AccountId);
+
             await this.DataProvider.UpdateAccount(account);
+
+            await this.DataProvider.UnlockResource(account.AccountId, lockKey);
 
             if (string.IsNullOrWhiteSpace(account.ZipCode))
             {

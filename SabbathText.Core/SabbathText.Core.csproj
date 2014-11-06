@@ -87,6 +87,7 @@
     <Compile Include="Backend\InboundProcessors\ZipCodeProcessor.cs" />
     <Compile Include="Backend\IProcessor.cs" />
     <Compile Include="Backend\MessageRouter.cs" />
+    <Compile Include="Entities\ResourceLock.cs" />
     <Compile Include="Entities\EventMessage.cs" />
     <Compile Include="Entities\EventType.cs" />
     <Compile Include="Entities\PoisonMessage.cs" />

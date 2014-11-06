@@ -5,16 +5,6 @@ namespace SabbathText.Core
 {
     public static class Common
     {
-        private static void SetupEnvironmentVariables()
-        {
-#if DEBUG
-            if (Environment.GetEnvironmentVariable("ST_TWILIO_INBOUND_KEY_PRIMARY") == null)
-            {
-                Environment.SetEnvironmentVariable("ST_TWILIO_INBOUND_KEY_PRIMARY", "key");
-            }
-#endif
-        }
-
         private static void SetupQueues()
         {
             string[] queueNames = 
@@ -40,6 +30,7 @@ namespace SabbathText.Core
                 AzureDataProvider.MessageTable,
                 AzureDataProvider.LocationByZipTable,
                 AzureDataProvider.PoisonMessageTable,
+                AzureDataProvider.ResourceLockTable,
             };
 
             AzureDataProvider dp = new AzureDataProvider();
@@ -57,8 +48,7 @@ namespace SabbathText.Core
         }
 
         public static void Setup()
-        {
-            Common.SetupEnvironmentVariables();            
+        {            
         }
     }
 }

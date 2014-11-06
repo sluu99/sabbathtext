@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Security.Cryptography;
+using System.Text;
 
 public static class StringExtension
 {
@@ -17,5 +19,22 @@ public static class StringExtension
         }
 
         return sb.ToString();
+    }
+
+    public static string Sha256(this string str)
+    {
+        if (str == null)
+        {
+            return null;
+        }
+
+        byte[] data = Encoding.UTF8.GetBytes(str);
+
+        using (SHA256Managed sha = new SHA256Managed())
+        {
+            byte[] hashBytes = sha.ComputeHash(data);
+
+            return BitConverter.ToString(hashBytes).Replace("-", string.Empty);
+        }
     }
 }

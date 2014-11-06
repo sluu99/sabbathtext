@@ -38,7 +38,12 @@ namespace SabbathText.Core.Backend.InboundProcessors
             if (location != null)
             {
                 account.ZipCode = location.ZipCode;
+
+                string lockKey = await this.DataProvider.LockResource(account.AccountId);
+
                 await this.DataProvider.UpdateAccount(account);
+                
+                await this.DataProvider.UnlockResource(account.AccountId, lockKey);
 
                 DateTime sabbath = Sabbath.GetLocationNextSabbath(location.Latitude, location.Longitude, location.TimeZoneOffset);
 
