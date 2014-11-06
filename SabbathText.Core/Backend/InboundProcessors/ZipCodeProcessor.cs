@@ -42,6 +42,8 @@ namespace SabbathText.Core.Backend.InboundProcessors
 
                 DateTime sabbath = Sabbath.GetLocationNextSabbath(location.Latitude, location.Longitude, location.TimeZoneOffset);
 
+                await this.EventQueue.AddMessage(EventMessage.Create(message.Sender, EventType.ZipCodeUpdated, string.Empty));
+
                 return MessageFactory.CreateConfirmZipCodeUpdate(message.Sender, location.ZipCode, location.LocationName, sabbath);
             }
             else

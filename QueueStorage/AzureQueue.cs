@@ -7,6 +7,8 @@ namespace QueueStorage
 {
     public class AzureQueue : IQueue
     {
+        static readonly TimeSpan TimeToLive = TimeSpan.FromDays(7);
+
         private CloudStorageAccount account = null;
         private CloudQueueClient client = null;
 
@@ -25,14 +27,20 @@ namespace QueueStorage
         
         public Task CreateIfNotExists(string queueName)
         {
-            CloudQueue queue = this.client.GetQueueReference(queueName);
+            CloudQueue queue = this.client.GetQueueReference(queueName);            
             return queue.CreateIfNotExistsAsync();
         }
 
         public Task AddMessage(string queueName, CloudQueueMessage message)
         {
-            CloudQueue queue = this.client.GetQueueReference(queueName);
+            CloudQueue queue = this.client.GetQueueReference(queueName);            
             return queue.AddMessageAsync(message);
+        }
+
+        public Task AddMessage(string queueName, CloudQueueMessage message, TimeSpan visibilityDelay)
+        {
+            CloudQueue queue = this.client.GetQueueReference(queueName);
+            return queue.AddMessageAsync(message, AzureQueue.TimeToLive, visibilityDelay, null, null);
         }
 
         public Task<CloudQueueMessage> GetMessage(string queueName)

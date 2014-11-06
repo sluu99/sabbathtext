@@ -9,6 +9,7 @@ namespace SabbathText.Core
 {
     public class MessageQueue
     {
+        public static readonly TimeSpan MaxVisiblityDelay = TimeSpan.FromDays(7);
         public const string InboundMessageQueue = "inboundmsgs";
         public const string OutboundMessageQueue = "outboundmsgs";
         public const string EventMessageQueue = "eventmsgs";
@@ -44,6 +45,12 @@ namespace SabbathText.Core
         {
             CloudQueueMessage queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(message));
             return this.Queue.AddMessage(this.queueName, queueMessage);
+        }
+
+        public Task AddMessage(Message message, TimeSpan visiblityDelay)
+        {
+            CloudQueueMessage queueMessage = new CloudQueueMessage(JsonConvert.SerializeObject(message));
+            return this.Queue.AddMessage(this.queueName, queueMessage, visiblityDelay);
         }
     }
 }

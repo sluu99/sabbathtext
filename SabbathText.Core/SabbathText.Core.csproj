@@ -79,6 +79,7 @@
     <Compile Include="Backend\AzureWebJobSupervisor.cs" />
     <Compile Include="Backend\ConsoleSupervisor.cs" />
     <Compile Include="Backend\AccountBasedProcessor.cs" />
+    <Compile Include="Backend\EventProcessors\ZipCodeUpdatedProcessor.cs" />
     <Compile Include="Backend\InboundProcessors\HelloProcessor.cs" />
     <Compile Include="Backend\InboundProcessors\HelpProcessor.cs" />
     <Compile Include="Backend\InboundProcessors\SubscribeProcessor.cs" />

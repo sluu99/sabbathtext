@@ -1,5 +1,7 @@
 ﻿using SabbathText.Core;
 using SabbathText.Core.Backend;
+using SabbathText.Core.Backend.EventProcessors;
+using SabbathText.Core.Entities;
 
 namespace SabbathText.EventMessageWorker
 {
@@ -19,7 +21,9 @@ namespace SabbathText.EventMessageWorker
 
         static void AddProcessors(MessageRouter router)
         {
-            
+            router
+                .AddProcessor<ZipCodeUpdatedProcessor>(EventType.ZipCodeUpdated.ToString())
+            ;
         }
     }
 }

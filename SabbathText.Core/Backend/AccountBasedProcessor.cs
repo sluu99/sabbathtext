@@ -10,22 +10,26 @@ namespace SabbathText.Core.Backend
     public abstract class AccountBasedProcessor : IProcessor
     {
         private bool subscriberRequired = false;
+        private bool skipRecordMessage = false;
 
-        public AccountBasedProcessor() : this(false)
+        public AccountBasedProcessor() : this(false, false)
         {
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="subscriberRequired">Requires the account to be in "Subscribed" status</param>
-        public AccountBasedProcessor(bool subscriberRequired)
+        public AccountBasedProcessor(bool subscriberRequired) : this(subscriberRequired, false)
+        {
+        }
+        
+        public AccountBasedProcessor(bool subscriberRequired, bool skipRecordMessage) 
         {
             this.DataProvider = new AzureDataProvider();
+            this.EventQueue = new MessageQueue(MessageQueue.EventMessageQueue);
             this.subscriberRequired = subscriberRequired;
+            this.skipRecordMessage = skipRecordMessage;
         }
 
         public IDataProvider DataProvider { get; set; }
+        public MessageQueue EventQueue { get; set; }
 
         protected abstract Task<TemplatedMessage> ProcessMessageWithAccount(Message message, Account account);
 
@@ -54,7 +58,10 @@ namespace SabbathText.Core.Backend
                 }
             }
 
-            await this.DataProvider.RecordMessage(account.AccountId, message);
+            if (!this.skipRecordMessage)
+            {
+                await this.DataProvider.RecordMessage(account.AccountId, message);
+            }
                         
             if (this.subscriberRequired && account.Status != AccountStatus.Subscribed)
             {

@@ -1,14 +1,22 @@
-﻿using Microsoft.WindowsAzure.Storage.Table;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace SabbathText.Core.Entities
 {
-    public class EventMessage : TableEntity
+    public class EventMessage : Message
     {
-        public EventType Event { get; set; }
+        public EventType EventType { get; set; }
+
+        public static EventMessage Create(string accountId, EventType eventType, string parameters)
+        {
+            return new EventMessage
+            {
+                MessageId = Guid.NewGuid().ToString(),
+                Sender = accountId,
+                Recipient = accountId,
+                CreationTime = Clock.UtcNow,
+                Body = string.IsNullOrEmpty(parameters)? eventType.ToString() : string.Format("{0} {1}", eventType.ToString(), parameters),
+                EventType = eventType,                
+            };
+        }
     }
 }
