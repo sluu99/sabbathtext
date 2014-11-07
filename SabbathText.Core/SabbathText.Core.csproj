@@ -86,6 +86,7 @@
     <Compile Include="Backend\InboundProcessors\HelloProcessor.cs" />
     <Compile Include="Backend\InboundProcessors\HelpProcessor.cs" />
     <Compile Include="Backend\InboundProcessors\SubscribeProcessor.cs" />
+    <Compile Include="Backend\InboundProcessors\UnknownMessageProcessor.cs" />
     <Compile Include="Backend\InboundProcessors\ZipCodeProcessor.cs" />
     <Compile Include="Backend\IProcessor.cs" />
     <Compile Include="Backend\MessageRouter.cs" />

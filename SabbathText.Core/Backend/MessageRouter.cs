@@ -16,6 +16,8 @@ namespace SabbathText.Core.Backend
             this.outboundQueue = new MessageQueue(MessageQueue.OutboundMessageQueue);
         }
 
+        public IProcessor UnknownProcessor { get; set; }
+
         public MessageRouter AddProcessor<T>(string verb) where T : IProcessor
         {
             if (string.IsNullOrWhiteSpace(verb))
@@ -57,13 +59,18 @@ namespace SabbathText.Core.Backend
 
             verb = verb.ToLowerInvariant();
 
-            if (!this.processors.ContainsKey(verb))
+            IProcessor processor = null;
+
+            if (this.processors.ContainsKey(verb))
             {
-                return false;
+                Type processorType = this.processors[verb];
+                processor = Activator.CreateInstance(processorType) as IProcessor;
             }
 
-            Type processorType = this.processors[verb];
-            IProcessor processor = Activator.CreateInstance(processorType) as IProcessor;
+            if (processor == null)
+            {
+                processor = this.UnknownProcessor;
+            }
 
             if (processor == null)
             {

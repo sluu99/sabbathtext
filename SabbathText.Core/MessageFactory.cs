@@ -91,6 +91,16 @@ namespace SabbathText.Core
             return Create(MessageTemplate.BadRequest, null, recipient, messaage);
         }
 
+        public TemplatedMessage CreateDidYouTextZipCode(string recipient, string zipCode)
+        {
+            string body = string.Format(
+                "\"{0}\" looks like a ZIP code. Please text \"Zip {0}\" (with the word \"zip\") if that is what you meant.",
+                zipCode.Trim()
+            );
+
+            return Create(MessageTemplate.DidYouTextZipCode, null, recipient, body);
+        }
+
         public static TemplatedMessage Create(MessageTemplate template, string sender, string recipient, string body)
         {
             return new TemplatedMessage

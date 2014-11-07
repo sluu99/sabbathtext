@@ -14,5 +14,7 @@ namespace SabbathText.Core.Entities
         SubscribedMissingZipCode = 5,
         SubscribedConfirmZipCode = 6,
         ConfirmZipCodeUpdate = 8,
+
+        DidYouTextZipCode = 9,
     }
 }
