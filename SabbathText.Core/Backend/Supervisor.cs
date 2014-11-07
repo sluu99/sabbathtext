@@ -10,8 +10,7 @@ namespace SabbathText.Core.Backend
     public class Supervisor
     {
         private int delayIndex;
-        private volatile bool stopRequested;
-        private Random rand;
+        private volatile bool stopRequested;        
         private int poisonMessageThreshold;
         private string queueName;
 
@@ -19,7 +18,6 @@ namespace SabbathText.Core.Backend
         {
             this.DelayIntervals = new int[]{ 500, 1000, 1000, 3000 };
             this.delayIndex = 0;
-            this.rand = new Random();
             this.MessageQueue = new MessageQueue(queueName);
             this.PoisonMessageThreshold = 10;
             this.DataProvider = new AzureDataProvider();
@@ -112,11 +110,6 @@ namespace SabbathText.Core.Backend
                 this.delayIndex++;
             }
 
-            // only log this 5% of the time
-            if (this.rand.Next(0, 100) < 5)
-            {
-                Trace.TraceInformation("Chilling for {0}ms", delay);
-            }            
             Thread.Sleep(delay);
         }
     }
