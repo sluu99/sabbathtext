@@ -20,6 +20,7 @@ namespace SabbathText.Core.Backend.EventProcessors
             if (timeSinceLastSabbathMessage < SabbathMessageGap)
             {
                 Trace.TraceInformation("Time since last Sabbath message for account {0} is {1}. Skipped!", account.AccountId.Mask(4), timeSinceLastSabbathMessage);
+                return;
             }
 
             account.LastSabbathMessageTime = Clock.UtcNow;            
