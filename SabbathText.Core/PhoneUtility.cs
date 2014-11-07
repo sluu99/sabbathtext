@@ -60,7 +60,7 @@ namespace SabbathText.Core
                 return string.Empty;
             }
 
-            MatchCollection matches = Regex.Matches(str, "[0-9]+");
+            MatchCollection matches = Regex.Matches(str, @"\d+");
 
             StringBuilder sb = new StringBuilder();
 
