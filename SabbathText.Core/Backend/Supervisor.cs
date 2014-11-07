@@ -112,8 +112,8 @@ namespace SabbathText.Core.Backend
                 this.delayIndex++;
             }
 
-            // only log this 10% of the time
-            if (this.rand.Next(0, 100) < 10)
+            // only log this 5% of the time
+            if (this.rand.Next(0, 100) < 5)
             {
                 Trace.TraceInformation("Chilling for {0}ms", delay);
             }            
