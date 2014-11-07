@@ -7,7 +7,12 @@ namespace SabbathText.Core.Backend
     {
         public ConsoleSupervisor(string queueName) : base(queueName)
         {
-            Trace.Listeners.Add(new ConsoleTraceListener());
+            string traceToConsole = Environment.GetEnvironmentVariable("TRACE_TO_CONSOLE");
+
+            if (traceToConsole == "1" || "true".Equals(traceToConsole, StringComparison.OrdinalIgnoreCase))
+            {
+                Trace.Listeners.Add(new ConsoleTraceListener());
+            }
             Console.CancelKeyPress += this.CancelKeyPress;
         }
 
