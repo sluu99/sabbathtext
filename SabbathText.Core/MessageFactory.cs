@@ -76,13 +76,15 @@ namespace SabbathText.Core
             );
         }
 
-        public TemplatedMessage CreateHappySabbath(string recipient)
+        public TemplatedMessage CreateHappySabbath(string recipient, string bibleVerseNumber, string bibleVerseContent)
         {
+            string body = string.Format("Happy Sabbath!\r\n\"{0}\" -- {1}", bibleVerseContent, bibleVerseNumber);
+
             return Create(
                 MessageTemplate.HappySabbath,
                 null,
                 recipient,
-                "Happy Sabbath!"
+                body
             );
         }
 
