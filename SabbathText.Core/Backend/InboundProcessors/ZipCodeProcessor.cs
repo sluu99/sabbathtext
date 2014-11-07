@@ -22,13 +22,13 @@ namespace SabbathText.Core.Backend.InboundProcessors
              * ZIPCODE 123456
              * 
              */
-            string body = message.Body;
+            string body = message.Body.StripPunctuation().Trim();
 
             string[] parts = body.Split(' ');
 
             if (parts.Length < 2 || string.IsNullOrWhiteSpace(parts[1]))
             {
-                return new MessageFactory().CreateBadRequest(message.Sender, "Cannot update ZIP code");
+                return new MessageFactory().CreateBadRequest(message.Sender, "Please provide a ZIP code!");
             }
 
             string zipCode = parts[1].Trim();
@@ -49,7 +49,7 @@ namespace SabbathText.Core.Backend.InboundProcessors
             }
             else
             {
-                return new MessageFactory().CreateBadRequest(message.Sender, string.Format("Cannot find your location {0}", zipCode));
+                return new MessageFactory().CreateBadRequest(message.Sender, string.Format("Cannot find your location \"{0}\".", zipCode));
             }
         }
     }
