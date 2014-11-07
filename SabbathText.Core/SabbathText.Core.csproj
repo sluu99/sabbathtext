@@ -80,6 +80,7 @@
     <Compile Include="Backend\ConsoleSupervisor.cs" />
     <Compile Include="Backend\AccountBasedProcessor.cs" />
     <Compile Include="Backend\EventProcessors\AccountCycleProcessor.cs" />
+    <Compile Include="Backend\EventProcessors\GreetingsRequestedProcessor.cs" />
     <Compile Include="Backend\EventProcessors\SabbathProcessor.cs" />
     <Compile Include="Backend\EventProcessors\ZipCodeUpdatedProcessor.cs" />
     <Compile Include="Backend\InboundProcessors\HelloProcessor.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Entities\EventMessage.cs" />
     <Compile Include="Entities\EventType.cs" />
     <Compile Include="Entities\PoisonMessage.cs" />
+    <Compile Include="PhoneUtility.cs" />
     <Compile Include="SunTimes.cs" />
     <Compile Include="Clock.cs" />
     <Compile Include="Common.cs" />

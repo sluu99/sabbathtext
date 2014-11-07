@@ -161,6 +161,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\GetStartedModel.cs" />
     <Compile Include="Models\TwilioInboundSmsModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -198,6 +199,10 @@
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
+    <Content Include="Views\GetStarted\_GetStartedLayout.cshtml" />
+    <Content Include="Views\GetStarted\Invalid.cshtml" />
+    <Content Include="Views\GetStarted\TextUs.cshtml" />
+    <Content Include="Views\GetStarted\Success.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QueueStorage\QueueStorage.csproj">

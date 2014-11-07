@@ -1,0 +1,24 @@
+﻿@model SabbathText.Web.Models.GetStartedModel
+
+@{
+    Layout = "~/Views/GetStarted/_GetStartedLayout.cshtml";
+}
+
+<div class="alert alert-danger">
+    <p>
+        <strong>Invalid phone number!</strong>
+    </p>
+
+    <p>
+        @if(string.IsNullOrWhiteSpace(Model.PhoneNumber))
+        {
+            <text>You did not enter a valid US phone number.</text>
+        }
+        else
+        {
+            <text>&ldquo;@Model.PhoneNumber&rdquo; does not appear to be a valid US phone number.</text>
+        }
+        
+        Please go back and try again!
+    </p>
+</div>

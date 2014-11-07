@@ -33,6 +33,13 @@ namespace SabbathText.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid inbound message");
             }
 
+            string phoneNumber = PhoneUtility.ExtractUSPhoneNumber(model.From);
+
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                return new HttpStatusCodeResult(501 /* not supported */, "Only US numbers are supported");
+            }
+
             Message message = new Message
             {
                 MessageId = Guid.NewGuid().ToString(),
@@ -42,7 +49,7 @@ namespace SabbathText.Web.Controllers
                 Body = model.Body,
                 CreationTime = Clock.UtcNow,
             };
-
+            
             MessageQueue queue = new MessageQueue(MessageQueue.InboundMessageQueue);
             await queue.AddMessage(message);
 

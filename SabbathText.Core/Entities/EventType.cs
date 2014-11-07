@@ -7,5 +7,7 @@ namespace SabbathText.Core.Entities
 
         ZipCodeUpdated = 0,
         AccountCycle = 1,        
+
+        GreetingsRequested = 2,
     }
 }

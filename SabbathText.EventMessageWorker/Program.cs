@@ -25,6 +25,7 @@ namespace SabbathText.EventMessageWorker
                 .AddProcessor<ZipCodeUpdatedProcessor>(EventType.ZipCodeUpdated.ToString())
                 .AddProcessor<SabbathProcessor>(EventType.Sabbath.ToString())
                 .AddProcessor<AccountCycleProcessor>(EventType.AccountCycle.ToString())
+                .AddProcessor<GreetingsRequestedProcessor>(EventType.GreetingsRequested.ToString())
             ;
         }
     }

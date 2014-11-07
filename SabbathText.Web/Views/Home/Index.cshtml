@@ -20,8 +20,8 @@
                     &ldquo;Then God blessed the seventh day and made it holy, <br /> because on it He rested from all the work of creating that He had done.&rdquo;
                 </p>
 
-                <form class="subscription-form form-inline" id="subscription-form" method="post">
-                    <input type="text" class="subscription-phone" id="subscription-phone" name="PhoneNumber" placeholder="Phone Number">
+                <form class="subscription-form form-inline" id="subscription-form" method="post" action="@Url.Action("Index", "GetStarted")">
+                    <input type="text" class="subscription-phone" id="subscription-phone" name="phoneNumber" placeholder="Phone Number" required>
 
                     <div class="subscription-submit-container">
                         <button class="subscription-submit btn btn-large" id="subscription-submit">GET STARTRTED</button>

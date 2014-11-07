@@ -1,0 +1,18 @@
+﻿@model SabbathText.Web.Models.GetStartedModel
+
+@{
+    Layout = "~/Views/GetStarted/_GetStartedLayout.cshtml";
+    string prettyPhoneNumber = string.Format("({0}) {1}-{2}", Model.PhoneNumber.Substring(2, 3), Model.PhoneNumber.Substring(5, 3), Model.PhoneNumber.Substring(8, 4));
+}
+
+<div class="alert alert-success">
+    <p>
+        <strong>You got it!</strong>
+    </p>
+
+    <p>
+        A message will be set to @prettyPhoneNumber shortly!
+        <br />
+        If you don't hear from us, please text &ldquo;Hello&rdquo; to <b><i>+1 (423) 438-1844</i></b>
+    </p>
+</div>
