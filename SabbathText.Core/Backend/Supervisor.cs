@@ -46,6 +46,13 @@ namespace SabbathText.Core.Backend
         {
             while (!this.stopRequested)
             {
+                DateTime now = Clock.UtcNow;
+
+                if (now.Second == 0 && now.Minute % 5 == 0)
+                {
+                    Trace.TraceInformation("It is now {0}", now);
+                }
+
                 Tuple<CloudQueueMessage, Message> message = await this.MessageQueue.GetMessage();
                 
                 if (message == null)
