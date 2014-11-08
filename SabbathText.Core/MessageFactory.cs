@@ -32,7 +32,7 @@ namespace SabbathText.Core
                 MessageTemplate.GeneralGreetings,
                 null,
                 recipient,
-                "Greetings from SabbathText.com! Text \"subscribe\" to get started."
+                "Greetings from SabbathText.com! Text \"subscribe\" to get started. (Message & data rates may apply. Text \"STOP\" to mute at anytime)"
             );
         }
 
@@ -42,7 +42,7 @@ namespace SabbathText.Core
                 MessageTemplate.SubscribedMissingZipCode,
                 null,
                 recipient,
-                "Thank you for subscribing! Text us your ZIP code and we'll send you a Bible text to start each Sabbath. For example, \"Zip 12345\""
+                "Thank you for subscribing! For the sunset time, text us your ZIP code and we'll send you a Bible text to start each Sabbath. For example, \"Zip 12345\""
             );
         }
 
