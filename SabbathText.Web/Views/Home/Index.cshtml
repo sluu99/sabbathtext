@@ -36,9 +36,11 @@
                     We will send you a Bible text to start each Sabbath!
                 </p>
 
-                <p style="margin-bottom: 30px;">
+                <p>
                     Enter your phone number below and we will reach out to you, or text &ldquo;Hello&rdquo; to <span style="color: white; font-weight: bold;">(423) 438-1844</span>.
                 </p>
+
+                <p style="margin-top: 30px;"><i>Your phone number will <b>not</b> be shared with any other parties.</i></p>  
 
                 <form class="subscription-form form-inline" id="subscription-form" method="post" action="@Url.Action("Index", "GetStarted")">
                     <input type="text" class="subscription-phone" id="subscription-phone" name="phoneNumber" placeholder="Phone Number" required>
@@ -46,7 +48,9 @@
                     <div class="subscription-submit-container">
                         <button class="subscription-submit btn btn-large" id="subscription-submit">GET STARTED</button>
                     </div>
-                </form>                
+                </form>
+                
+                           
 
                 <p>                    
                    <img border="0" style="margin-top: 30px; margin-left: 30px;" src="~/Content/images/subscribe.png" />
