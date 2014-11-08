@@ -56,6 +56,13 @@ namespace SabbathText.Core
             return Create(MessageTemplate.SubscribedConfirmZipCode, null, recipient, body);
         }
         
+        public TemplatedMessage CreateCannotFindZipCode(string recipient, string zipCode)
+        {
+            string body = string.Format("Cannot find your location \"{0}\". Please double check the ZIP code and try again!", zipCode);
+
+            return Create(MessageTemplate.BadRequest, null, recipient, body);
+        }
+
         public TemplatedMessage CreateConfirmZipCodeUpdate(string recipient, string zipCode, string locationName, DateTime sabbath)
         {
             string body = string.Format(

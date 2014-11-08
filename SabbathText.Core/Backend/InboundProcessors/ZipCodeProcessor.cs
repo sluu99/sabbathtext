@@ -49,7 +49,7 @@ namespace SabbathText.Core.Backend.InboundProcessors
             }
             else
             {
-                return new MessageFactory().CreateBadRequest(message.Sender, string.Format("Cannot find your location \"{0}\".", zipCode));
+                return new MessageFactory().CreateCannotFindZipCode(account.PhoneNumber, zipCode);
             }
         }
     }
