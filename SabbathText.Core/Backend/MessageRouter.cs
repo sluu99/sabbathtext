@@ -1,6 +1,7 @@
 ﻿using SabbathText.Core.Entities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace SabbathText.Core.Backend
@@ -58,6 +59,7 @@ namespace SabbathText.Core.Backend
             }
 
             verb = verb.ToLowerInvariant();
+            Trace.TraceInformation("Verb: {0}", verb);
 
             IProcessor processor = null;
 
@@ -76,6 +78,8 @@ namespace SabbathText.Core.Backend
             {
                 return false;
             }
+
+            Trace.TraceInformation("Processor: {0}", processor.GetType().Name);
 
             Message response = await processor.ProcessMessage(message);
 

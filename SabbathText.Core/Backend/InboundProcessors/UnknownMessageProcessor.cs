@@ -17,9 +17,10 @@ namespace SabbathText.Core.Backend.InboundProcessors
         {
             if (account.Status == AccountStatus.Subscribed)
             {
-                if (IsZipCode(message.Body))
+                string body = message.Body.ExtractAlphaNumericSpace().Trim();
+                if (IsZipCode(body))
                 {
-                    return Task.FromResult(new MessageFactory().CreateDidYouTextZipCode(account.PhoneNumber, message.Body.Trim()));
+                    return Task.FromResult(new MessageFactory().CreateDidYouTextZipCode(account.PhoneNumber, body));
                 }
             }
 
