@@ -22,7 +22,7 @@ namespace SabbathText.Core.Backend.InboundProcessors
              * ZIPCODE 123456
              * 
              */
-            string body = message.Body.StripPunctuation().Trim();
+            string body = message.Body.ExtractAlphaNumericSpace().Trim();
 
             string[] parts = body.Split(' ');
 

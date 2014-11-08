@@ -44,7 +44,7 @@ namespace SabbathText.Core.Backend
                 throw new ApplicationException("Cannot route messages with empty body");
             }
 
-            string body = message.Body.StripPunctuation().Trim();
+            string body = message.Body.ExtractAlphaNumericSpace().Trim();
             string verb = string.Empty;
 
             int whiteSpaceIndex = body.IndexOf(' ');

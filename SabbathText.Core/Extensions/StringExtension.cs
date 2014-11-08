@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 public static class StringExtension
 {
-    static readonly Regex StripPunctuationRegex = new Regex(@"[^:,\.!\?]+");
+    static readonly Regex AlphaNumericSpaceRegex = new Regex(@"[a-zA-Z0-9\s]+");
 
     public static string Repeat(this string str, int n)
     {
@@ -41,14 +41,14 @@ public static class StringExtension
         }
     }
 
-    public static string StripPunctuation(this string str)
+    public static string ExtractAlphaNumericSpace(this string str)
     {
         if (string.IsNullOrEmpty(str))
         {
             return str;
         }
 
-        MatchCollection matches = StripPunctuationRegex.Matches(str);
+        MatchCollection matches = AlphaNumericSpaceRegex.Matches(str);
 
         StringBuilder sb = new StringBuilder();
 
