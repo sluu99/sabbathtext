@@ -32,7 +32,7 @@ namespace SabbathText.Core
                 MessageTemplate.GeneralGreetings,
                 null,
                 recipient,
-                "Greetings from SabbathText.com! Text \"subscribe\" to get started. (Message & data rates may apply. Text \"STOP\" to mute at anytime)"
+                "Greetings from SabbathText.com! Text \"subscribe\" to get started. (Messaging rates may apply. Text \"STOP\" to mute at anytime)"
             );
         }
 
