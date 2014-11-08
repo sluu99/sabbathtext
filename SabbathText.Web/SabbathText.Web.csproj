@@ -204,6 +204,7 @@
     <Content Include="Views\GetStarted\Invalid.cshtml" />
     <Content Include="Views\GetStarted\TextUs.cshtml" />
     <Content Include="Views\GetStarted\Success.cshtml" />
+    <Content Include="Views\Shared\GoogleAnalytics.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QueueStorage\QueueStorage.csproj">
