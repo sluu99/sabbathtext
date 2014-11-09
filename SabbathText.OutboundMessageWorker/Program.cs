@@ -40,7 +40,20 @@ namespace SabbathText.OutboundMessageWorker
                 message.ExternalId = await Program.sender.Send(message);
             }
 
-            await Program.dataProvider.RecordMessage(message.Recipient, message);
+            string accountId = message.Recipient;
+
+            Account account = await Program.dataProvider.GetAccountByPhoneNumber(message.Recipient);
+                        
+            if (account == null)
+            {
+                Trace.TraceWarning("Cannot find account for message {0}", message.MessageId);
+            }
+            else
+            {
+                accountId = account.AccountId;
+            }
+            
+            await Program.dataProvider.RecordMessage(accountId, message);
             return true;
         }
     }
