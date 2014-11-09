@@ -22,8 +22,8 @@ namespace SabbathText.Core.Backend.EventProcessors
                 };
             }
 
-            int count = 0;
-            int.TryParse(kv.Value, out count);
+            long count = 0;
+            long.TryParse(kv.Value, out count);
 
             count += 1;
             kv.Value = count.ToString();

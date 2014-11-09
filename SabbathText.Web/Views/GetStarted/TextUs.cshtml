@@ -1,7 +1,7 @@
 ﻿@model SabbathText.Web.Models.GetStartedModel
 
 @{
-    Layout = "~/Views/GetStarted/_GetStartedLayout.cshtml";
+    Layout = "~/Views/Shared/_BlankLayout.cshtml";
     string prettyPhoneNumber = string.Format("({0}) {1}-{2}", Model.PhoneNumber.Substring(2, 3), Model.PhoneNumber.Substring(5, 3), Model.PhoneNumber.Substring(8, 4));
 }
 

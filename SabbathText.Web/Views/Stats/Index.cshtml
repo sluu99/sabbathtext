@@ -1,0 +1,27 @@
+﻿@model SabbathText.Web.Models.StatsModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_BlankLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-4 text-center" style="margin-top: 30px;">
+        <div class="text-success" style="font-size: 600%;">@Model.SubscriberCount</div>
+        <div>Subscribers</div>
+    </div>
+    <div class="col-md-4 text-center" style="margin-top: 30px;">
+        <div style="font-size: 600%">@Model.AccountCount</div>
+        <div>Total Accounts</div>
+    </div>
+    <div class="col-md-4 text-center" style="margin-top: 30px;">
+        <div class="text-danger" style="font-size: 600%">@Model.PoisonMessageCount</div>
+        <div>Poison Messages</div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 text-center" style="margin-top: 30px; font-size: x-small;">
+        Statistics updated on @Model.StatsUpdatedOn @Model.StatsUpdatedOn.Kind
+    </div>
+</div>

@@ -157,11 +157,13 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\GetStartedController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Controllers\TwilioController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\GetStartedModel.cs" />
+    <Compile Include="Models\StatsModel.cs" />
     <Compile Include="Models\TwilioInboundSmsModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -195,16 +197,16 @@
     <Folder Include="App_Data\" />
     <Folder Include="fonts\" />
     <Folder Include="Scripts\" />
-    <Folder Include="Views\Twilio\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
-    <Content Include="Views\GetStarted\_GetStartedLayout.cshtml" />
+    <Content Include="Views\Shared\_BlankLayout.cshtml" />
     <Content Include="Views\GetStarted\Invalid.cshtml" />
     <Content Include="Views\GetStarted\TextUs.cshtml" />
     <Content Include="Views\GetStarted\Success.cshtml" />
     <Content Include="Views\Shared\GoogleAnalytics.cshtml" />
+    <Content Include="Views\Stats\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QueueStorage\QueueStorage.csproj">

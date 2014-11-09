@@ -4,6 +4,8 @@ using SabbathText.Core.Entities;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.WindowsAzure.Storage.Table.Queryable;
 
 namespace SabbathText.Core
 {
@@ -187,6 +189,15 @@ namespace SabbathText.Core
             }
         }
 
+        public Task<int> CountPoisonMessages()
+        {
+            return Task.Run(() =>
+            {
+                CloudTable table = this.client.GetTableReference(PoisonMessageTable);
+                return table.CreateQuery<PoisonMessage>().ToArray().Count();
+            });
+        }
+
         private void GetIdentityKeysFromPhoneNumber(string phoneNumber, out string partitionKey, out string rowKey)
         {
             string hash = string.Format("phone_{0}", phoneNumber).Sha256();
@@ -239,6 +250,6 @@ namespace SabbathText.Core
             }
 
             return null;
-        }        
+        }
     }
 }
