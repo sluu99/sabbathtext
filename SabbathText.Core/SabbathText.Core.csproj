@@ -79,6 +79,7 @@
     <Compile Include="Backend\AzureWebJobSupervisor.cs" />
     <Compile Include="Backend\ConsoleSupervisor.cs" />
     <Compile Include="Backend\AccountBasedProcessor.cs" />
+    <Compile Include="Backend\EventProcessors\AccountCreatedProcessor.cs" />
     <Compile Include="Backend\EventProcessors\AccountCycleProcessor.cs" />
     <Compile Include="Backend\EventProcessors\AccountSubscribedProcessor.cs" />
     <Compile Include="Backend\EventProcessors\GreetingsRequestedProcessor.cs" />

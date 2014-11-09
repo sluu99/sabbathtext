@@ -10,5 +10,6 @@ namespace SabbathText.Core.Entities
 
         GreetingsRequested = 2,
         AccountSubscribed = 3,
+        AccountCreated = 4,
     }
 }

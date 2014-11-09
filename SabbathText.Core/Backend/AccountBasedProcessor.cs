@@ -56,6 +56,10 @@ namespace SabbathText.Core.Backend
                 {
                     throw new ApplicationException("Unknown exception. Cannot create account");
                 }
+                else
+                {
+                    await this.EventQueue.AddMessage(EventMessage.Create(message.Sender, EventType.AccountCreated, string.Empty));
+                }
             }
 
             if (!this.skipRecordMessage)
