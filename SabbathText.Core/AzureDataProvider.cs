@@ -9,6 +9,7 @@ namespace SabbathText.Core
 {
     public class AzureDataProvider : IDataProvider
     {
+        public const string AccountByIdentityTable = "accountbyidentity";
         public const string AccountTable = "accounts";
         public const string MessageTable = "messages";
         public const string LocationByZipTable = "locationbyzip";
@@ -42,11 +43,22 @@ namespace SabbathText.Core
         }
 
         public async Task<Account> GetAccountByPhoneNumber(string phoneNumber)
-        {            
-            return await this.GetEntity<Account>(AccountTable, phoneNumber, phoneNumber);
+        {
+            string identityPartitionKey;
+            string identityRowKey;
+            this.GetIdentityKeysFromPhoneNumber(phoneNumber, out identityPartitionKey, out identityRowKey);
+
+            AccountIdentity identity = await this.GetEntity<AccountIdentity>(AccountByIdentityTable, identityPartitionKey, identityRowKey);
+
+            if (identity == null)
+            {
+                return null;
+            }
+
+            return await this.GetEntity<Account>(AccountTable, identity.AccountId, identity.AccountId);
         }
 
-        public Task CreateAccountWithPhoneNumber(string phoneNumber)
+        public async Task CreateAccountWithPhoneNumber(string phoneNumber)
         {
             if (string.IsNullOrWhiteSpace(phoneNumber))
             {
@@ -54,18 +66,34 @@ namespace SabbathText.Core
             }
 
             phoneNumber = phoneNumber.Trim();
+            string accountId = Guid.NewGuid().ToString();
 
+            // create the account first
             Account account = new Account
             {
-                PartitionKey = phoneNumber,
-                RowKey = phoneNumber,
-                AccountId = phoneNumber,
+                PartitionKey = accountId,
+                RowKey = accountId,
+                AccountId = accountId,
                 PhoneNumber = phoneNumber,
                 CreationTime = Clock.UtcNow,
                 Status = AccountStatus.BrandNew,
             };
 
-            return this.InsertEntity(AccountTable, account);
+            await this.InsertEntity(AccountTable, account);
+            
+            // create an identity referencing the account
+            string identityPartitionKey;
+            string identityRowKey;
+            this.GetIdentityKeysFromPhoneNumber(phoneNumber, out identityPartitionKey, out identityRowKey);
+
+            AccountIdentity identity = new AccountIdentity
+            {
+                PartitionKey = identityPartitionKey,
+                RowKey = identityRowKey,
+                AccountId = accountId,
+            };
+
+            await this.InsertEntity(AccountByIdentityTable, identity);
         }
 
         public Task RecordMessage(string accountId, Message message)
@@ -135,6 +163,13 @@ namespace SabbathText.Core
             };
 
             return this.InsertEntity(PoisonMessageTable, poison);
+        }
+
+        private void GetIdentityKeysFromPhoneNumber(string phoneNumber, out string partitionKey, out string rowKey)
+        {
+            string hash = string.Format("phone_{0}", phoneNumber).Sha256();
+            partitionKey = hash.Substring(0, 32);
+            rowKey = hash.Substring(32, 32);
         }
 
         private Task UpsertEntity<T>(string tableName, T entity)

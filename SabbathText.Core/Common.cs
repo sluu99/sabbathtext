@@ -26,7 +26,8 @@ namespace SabbathText.Core
         {
             string[] tableNames = 
             { 
-                AzureDataProvider.AccountTable, 
+                AzureDataProvider.AccountTable,
+                AzureDataProvider.AccountByIdentityTable,
                 AzureDataProvider.MessageTable,
                 AzureDataProvider.LocationByZipTable,
                 AzureDataProvider.PoisonMessageTable,
