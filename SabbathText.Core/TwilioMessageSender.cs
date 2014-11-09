@@ -17,12 +17,14 @@ namespace SabbathText.Core
             this.twilioPhoneNumber = Environment.GetEnvironmentVariable("ST_TWILIO_PHONE_NUMBER");
         }
        
-        public Task Send(Entities.Message message)
+        public Task<string> Send(Entities.Message message)
         {
             return Task.Run(() =>
             {
                 TwilioRestClient client = new TwilioRestClient(this.twilioAccount, this.twilioToken);
                 Message twilioMessage = client.SendMessage(this.twilioPhoneNumber, message.Recipient, message.Body);
+
+                return twilioMessage.Sid;
             });
         }
     }

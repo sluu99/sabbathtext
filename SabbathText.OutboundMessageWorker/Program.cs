@@ -37,7 +37,7 @@ namespace SabbathText.OutboundMessageWorker
         {
             if (!Program.missingTwilio)
             {
-                await Program.sender.Send(message);
+                message.ExternalId = await Program.sender.Send(message);
             }
 
             await Program.dataProvider.RecordMessage(message.Recipient, message);
