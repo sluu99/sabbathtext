@@ -13,5 +13,8 @@ namespace SabbathText.Core
         Task RecordPoisonMessage(string queueName, string message);
 
         Task<Location> GetLocationByZipCode(string zipCode);
+
+        Task<KeyValue> GetKeyValue(string key);
+        Task PutKeyValue(KeyValue keyValue);
     }
 }

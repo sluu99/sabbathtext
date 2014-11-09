@@ -13,7 +13,8 @@ namespace SabbathText.Core
         public const string AccountTable = "accounts";
         public const string MessageTable = "messages";
         public const string LocationByZipTable = "locationbyzip";
-        public const string PoisonMessageTable = "poisonmessages";        
+        public const string PoisonMessageTable = "poisonmessages";
+        public const string KeyValueTable = "keyvalues";
 
         CloudStorageAccount account = null;
         CloudTableClient client = null;
@@ -165,6 +166,19 @@ namespace SabbathText.Core
             return this.InsertEntity(PoisonMessageTable, poison);
         }
 
+        public Task<KeyValue> GetKeyValue(string key)
+        {
+            key = key.Trim().ToLowerInvariant();
+            return this.GetEntity<KeyValue>(KeyValueTable, key, key);
+        }
+
+        public Task PutKeyValue(KeyValue keyValue)
+        {
+            keyValue.PartitionKey = keyValue.Key.Trim().ToLowerInvariant();
+            keyValue.RowKey = keyValue.PartitionKey;
+            return this.UpsertEntity(KeyValueTable, keyValue);
+        }
+
         private void GetIdentityKeysFromPhoneNumber(string phoneNumber, out string partitionKey, out string rowKey)
         {
             string hash = string.Format("phone_{0}", phoneNumber).Sha256();
@@ -217,6 +231,6 @@ namespace SabbathText.Core
             }
 
             return null;
-        }
+        }        
     }
 }

@@ -23,7 +23,10 @@ namespace QueueStorage
             }
 
             this.client = this.account.CreateCloudQueueClient();
+            this.GetMessageVisibilityTimeout = TimeSpan.FromMinutes(5);
         }
+
+        public TimeSpan GetMessageVisibilityTimeout { get; set; }
         
         public Task CreateIfNotExists(string queueName)
         {
@@ -46,7 +49,7 @@ namespace QueueStorage
         public Task<CloudQueueMessage> GetMessage(string queueName)
         {
             CloudQueue queue = this.client.GetQueueReference(queueName);
-            return queue.GetMessageAsync();
+            return queue.GetMessageAsync(this.GetMessageVisibilityTimeout, null, null);
         }
 
         public Task DeleteMessage(string queueName, CloudQueueMessage message)
