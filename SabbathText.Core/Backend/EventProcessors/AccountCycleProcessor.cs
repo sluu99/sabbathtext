@@ -61,7 +61,7 @@ namespace SabbathText.Core.Backend.EventProcessors
 
                 // queue up a Sabbath event
                 await this.EventQueue.AddMessage(
-                    EventMessage.Create(account.AccountId, EventType.Sabbath, string.Empty),
+                    EventMessage.Create(account.PhoneNumber, EventType.Sabbath, string.Empty),
                     timeUntilSabbath
                 );
 
@@ -73,7 +73,7 @@ namespace SabbathText.Core.Backend.EventProcessors
         {
             account.CycleKey = Guid.NewGuid().ToString();
             
-            await this.EventQueue.AddMessage(EventMessage.Create(account.AccountId, EventType.AccountCycle, account.CycleKey), Account.CycleDuration);
+            await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, account.CycleKey), Account.CycleDuration);
 
             // update the cycle key last, so that if it fails ,the retry of the current message will have the matching cycle key
             await this.DataProvider.UpdateAccount(account);

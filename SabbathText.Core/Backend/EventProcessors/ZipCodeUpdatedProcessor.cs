@@ -19,7 +19,7 @@ namespace SabbathText.Core.Backend.EventProcessors
             }
 
             // account data changed, just let the AccountCycle run
-            await this.EventQueue.AddMessage(EventMessage.Create(account.AccountId, EventType.AccountCycle, string.Empty));
+            await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, string.Empty));
 
             return null;
         }

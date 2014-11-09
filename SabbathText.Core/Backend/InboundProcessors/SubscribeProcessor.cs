@@ -18,7 +18,7 @@ namespace SabbathText.Core.Backend.InboundProcessors
 
             await this.DataProvider.UpdateAccount(account);
 
-            await this.EventQueue.AddMessage(EventMessage.Create(account.AccountId, EventType.AccountCycle, account.CycleKey));
+            await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, account.CycleKey));
             
             if (string.IsNullOrWhiteSpace(account.ZipCode))
             {

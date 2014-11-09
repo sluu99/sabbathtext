@@ -52,7 +52,7 @@ namespace SabbathText.Web.Controllers
             account = await this.DataProvider.GetAccountByPhoneNumber(phoneNumber);
 
             // queue an event to send out a greeting to this account
-            await this.EventQueue.AddMessage(EventMessage.Create(account.AccountId, EventType.GreetingsRequested, string.Empty));
+            await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.GreetingsRequested, string.Empty));
                         
             return this.View("Success", model);
         }
