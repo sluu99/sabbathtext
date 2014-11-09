@@ -175,8 +175,6 @@
     <Content Include="Content\sunrise\css\bootstrap.min.css" />
     <Content Include="Content\sunrise\css\sunrise.css" />
     <Content Include="Content\sunrise\img\bg.jpg" />
-    <Content Include="Content\sunrise\img\hand-with-iphone.png" />
-    <Content Include="Content\sunrise\js\jquery.min.js" />
     <Content Include="Global.asax" />
     <Content Include="Properties\WebJobs.xml" />
     <Content Include="Properties\ligershark.webjobs.targets" />
