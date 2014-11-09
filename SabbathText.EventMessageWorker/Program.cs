@@ -26,6 +26,7 @@ namespace SabbathText.EventMessageWorker
                 .AddProcessor<SabbathProcessor>(EventType.Sabbath.ToString())
                 .AddProcessor<AccountCycleProcessor>(EventType.AccountCycle.ToString())
                 .AddProcessor<GreetingsRequestedProcessor>(EventType.GreetingsRequested.ToString())
+                .AddProcessor<AccountSubscribedProcessor>(EventType.AccountSubscribed.ToString())
             ;
         }
     }

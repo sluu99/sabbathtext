@@ -9,5 +9,6 @@ namespace SabbathText.Core.Entities
         AccountCycle = 1,        
 
         GreetingsRequested = 2,
+        AccountSubscribed = 3,
     }
 }

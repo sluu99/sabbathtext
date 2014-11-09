@@ -11,6 +11,7 @@ namespace SabbathText.Core.Backend.InboundProcessors
     {
         protected override async Task<TemplatedMessage> ProcessMessageWithAccount(Message message, Account account)
         {
+            string oldStatus = account.Status;
             account.Status = AccountStatus.Subscribed;
 
             // create a new cycle key to make sure the other cycle events won't try to reschedule themselves
@@ -18,7 +19,11 @@ namespace SabbathText.Core.Backend.InboundProcessors
 
             await this.DataProvider.UpdateAccount(account);
 
-            await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, account.CycleKey));
+            if (account.Status != oldStatus)
+            {
+                await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, account.CycleKey));
+                await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountSubscribed, account.CycleKey));
+            }            
             
             if (string.IsNullOrWhiteSpace(account.ZipCode))
             {

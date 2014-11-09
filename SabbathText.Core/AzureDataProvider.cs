@@ -176,7 +176,15 @@ namespace SabbathText.Core
         {
             keyValue.PartitionKey = keyValue.Key.Trim().ToLowerInvariant();
             keyValue.RowKey = keyValue.PartitionKey;
-            return this.UpsertEntity(KeyValueTable, keyValue);
+
+            if (keyValue.ETag == null)
+            {
+                return this.InsertEntity(KeyValueTable, keyValue);
+            }
+            else
+            {
+                return this.UpdateEntity(KeyValueTable, keyValue);
+            }
         }
 
         private void GetIdentityKeysFromPhoneNumber(string phoneNumber, out string partitionKey, out string rowKey)
