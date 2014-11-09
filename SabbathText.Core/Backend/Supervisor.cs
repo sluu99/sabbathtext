@@ -13,6 +13,7 @@ namespace SabbathText.Core.Backend
         private volatile bool stopRequested;        
         private int poisonMessageThreshold;
         private string queueName;
+        private int lastLogMinute;
 
         public Supervisor(string queueName)
         {
@@ -22,6 +23,7 @@ namespace SabbathText.Core.Backend
             this.PoisonMessageThreshold = 10;
             this.DataProvider = new AzureDataProvider();
             this.queueName = queueName;
+            this.lastLogMinute = -1;
         }
 
         public int[] DelayIntervals { get; set; }
@@ -48,9 +50,13 @@ namespace SabbathText.Core.Backend
             {
                 DateTime now = Clock.UtcNow;
 
-                if (now.Second == 0 && now.Minute % 5 == 0)
+                if (now.Minute % 5 == 0)
                 {
-                    Trace.TraceInformation("It is now {0}", now);
+                    if (this.lastLogMinute == -1 || now.Minute > this.lastLogMinute || (now.Minute == 0 && this.lastLogMinute == 55))
+                    {
+                        this.lastLogMinute = now.Minute;
+                        Trace.TraceInformation("I'm alive! It is now {0}", now);
+                    }                    
                 }
 
                 Tuple<CloudQueueMessage, Message> message = await this.MessageQueue.GetMessage();
