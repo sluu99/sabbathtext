@@ -85,12 +85,12 @@ namespace SabbathText.Core.Backend
 
                         if (success)
                         {
-                            Trace.TraceInformation("Message {0} processed", message.Item1.Id);
+                            Trace.TraceInformation("Message {0} processed", message.Item2.MessageId);
                             await this.MessageQueue.DeleteMessage(message.Item1);
                         }
                         else
                         {
-                            Trace.TraceWarning("Failed to process message {0}", message.Item1.Id);
+                            Trace.TraceWarning("Failed to process message {0}", message.Item2.MessageId);
                         }
                     }
                 }
