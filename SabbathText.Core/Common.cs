@@ -30,8 +30,9 @@ namespace SabbathText.Core
                 AzureDataProvider.AccountByIdentityTable,
                 AzureDataProvider.MessageTable,
                 AzureDataProvider.LocationByZipTable,
+                AzureDataProvider.LocationTimeInfoTable,
                 AzureDataProvider.PoisonMessageTable,
-                AzureDataProvider.KeyValueTable,
+                AzureDataProvider.KeyValueTable,                
             };
 
             AzureDataProvider dp = new AzureDataProvider();

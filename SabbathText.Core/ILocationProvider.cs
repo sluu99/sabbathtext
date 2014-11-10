@@ -9,5 +9,6 @@ namespace SabbathText.Core
     public interface ILocationProvider
     {
         Task<Entities.Location> GetLocationByZipCode(string zipCode);
+        Task<Entities.LocationTimeInfo> GetTimeInfoByZipCode(string zipCode, DateTime date);
     }
 }

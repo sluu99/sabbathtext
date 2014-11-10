@@ -1,98 +1,59 @@
-﻿using SabbathText.Core.Entities;
+﻿using NodaTime;
+using SabbathText.Core.Entities;
 using System;
+using System.Threading.Tasks;
 
 namespace SabbathText.Core
 {
     public class Sabbath
     {
-        public static readonly TimeSpan TimeUntilTestLocationSunSet = TimeSpan.FromMinutes(2);
-
-        /// <remarks>If this is called on the Sabbath day, it'll return up to 10 minutes of margin</remarks>
-        /// <returns></returns>
-        public static DateTime GetLocationNextSabbath(double latitude, double longitude, double timeZoneOffset)
+        public Sabbath()
         {
-            return GetLocationNextSabbath(latitude, longitude, timeZoneOffset, TimeSpan.FromMinutes(10));
+            this.DataProvider = new AzureDataProvider();
         }
 
-        public static DateTime GetLocationNextSabbath(double latitude, double longitude, double timeZoneOffset, TimeSpan sabbathDayMargin)
+        public IDataProvider DataProvider { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="location"></param>
+        /// <param name="sunsetNotWithin">The sunset cannot be within this time span (used only if today is Friday)</param>
+        /// <returns>The upcoming Sabbath time for a specific location. The time is in UTC</returns>
+        public async Task<DateTime> GetUpcomingSabbath(Location location, TimeSpan sunsetNotWithin)
         {
-            // test location
-            if (latitude == Location.TestLocation.Latitude && longitude == Location.TestLocation.Longitude)
+            DateTimeZone destinationTimeZone = DateTimeZoneProviders.Tzdb[location.TimeZoneName];
+            DateTime now = Clock.UtcNow;
+            DateTime destinationNow = Instant.FromDateTimeUtc(now).InZone(destinationTimeZone).ToDateTimeUnspecified();
+            
+            LocationTimeInfo timeInfo = null;
+
+            if (destinationNow.DayOfWeek == DayOfWeek.Friday)
             {
-                return Clock.UtcNow.AddHours(timeZoneOffset) + TimeUntilTestLocationSunSet;
-            }
+                timeInfo = await this.DataProvider.GetTimeInfoByZipCode(location.ZipCode, destinationNow.Date);
 
-            DateTime destinationTime = Clock.UtcNow.AddHours(timeZoneOffset);
-
-            int daysUntilFriday = DaysUntilFriday(destinationTime.Date);
-
-            DateTime utcSunsetTime = Clock.UtcNow;
-            DateTime destinationSunsetTime = Clock.UtcNow;
-
-            if (daysUntilFriday == 0)
-            {
-                // today is Friday, check if the Sun already set                
-                TryGetUtcSunSetTime(destinationTime.Date, latitude, longitude, out utcSunsetTime);
-                destinationSunsetTime = utcSunsetTime.AddHours(timeZoneOffset);
-                destinationSunsetTime = new DateTime(destinationTime.Year, destinationTime.Month, destinationTime.Day, destinationSunsetTime.Hour, destinationSunsetTime.Minute, destinationSunsetTime.Second);
-
-                // Sun has not set yet, Sabbath is today!
-                if ((destinationSunsetTime + sabbathDayMargin) > destinationTime)
+                if (timeInfo.Sunset + sunsetNotWithin < now) // the sun has not set yet
                 {
-                    return destinationSunsetTime + sabbathDayMargin;
-                }
-                else
-                {
-                    daysUntilFriday = 7; // wait until next week
+                    return timeInfo.Sunset;
                 }
             }
+            
+            DateTime destNextFriday = destinationNow.AddDays(DaysUntilNextFriday(destinationNow));
+            timeInfo = await this.DataProvider.GetTimeInfoByZipCode(location.ZipCode, destNextFriday.Date);
 
-            // go to next Friday
-            DateTime destinationNextFriday = destinationTime.AddDays(daysUntilFriday);
-
-            TryGetUtcSunSetTime(destinationNextFriday.Date, latitude, longitude, out utcSunsetTime);
-            destinationSunsetTime = utcSunsetTime.AddHours(timeZoneOffset);
-
-            return new DateTime(destinationNextFriday.Year, destinationNextFriday.Month, destinationNextFriday.Day, destinationSunsetTime.Hour, destinationSunsetTime.Minute, destinationSunsetTime.Second);
+            return timeInfo.Sunset;
         }
 
-        private static int DaysUntilFriday(DateTime date)
+        private static int DaysUntilNextFriday(DateTime date)
         {
             int offset = DayOfWeek.Friday - date.DayOfWeek;
 
-            if (offset < 0) // next week
+            if (offset <= 0) // next week
             {
                 offset += 7;
             }
 
             return offset;
-        }
-
-        private static bool TryGetUtcSunSetTime(DateTime date, double latitude, double longitude, out DateTime sunSetTimeUtc)
-        {
-            bool isSunrise = false;
-            bool isSunset = false;
-            DateTime sunRise = Clock.UtcNow;
-            DateTime sunSet = Clock.UtcNow;
-
-            date = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0, DateTimeKind.Local);
-
-            sunSetTimeUtc = Clock.UtcNow;
-
-            if (!SunTimes.Instance.CalculateSunRiseSetTimes(latitude, longitude, date, ref sunRise, ref sunSet, ref isSunrise, ref isSunset))
-            {
-                return false;
-            }
-
-            if (!isSunset)
-            {
-                return false;
-            }
-            
-            // sunSet now has the sunset time, in the local machine's time zone
-            sunSetTimeUtc = sunSet.ToUniversalTime();
-            
-            return true;
         }
     }
 }

@@ -17,6 +17,7 @@ namespace SabbathText.Core
         public const string LocationByZipTable = "locationbyzip";
         public const string PoisonMessageTable = "poisonmessages";
         public const string KeyValueTable = "keyvalues";
+        public const string LocationTimeInfoTable = "locationtimeinfo";
 
         CloudStorageAccount account = null;
         CloudTableClient client = null;
@@ -34,7 +35,7 @@ namespace SabbathText.Core
             }
 
             this.client = this.account.CreateCloudTableClient();
-            this.LocationProvider = new WwoLocationProvider();
+            this.LocationProvider = new ZipSunsetLocationProvider();
         }
 
         public ILocationProvider LocationProvider { get; set; }
@@ -196,6 +197,35 @@ namespace SabbathText.Core
                 CloudTable table = this.client.GetTableReference(PoisonMessageTable);
                 return table.CreateQuery<PoisonMessage>().ToArray().Count();
             });
+        }
+
+        public async Task<LocationTimeInfo> GetTimeInfoByZipCode(string zipCode, DateTime date)
+        {
+            if (string.IsNullOrWhiteSpace(zipCode))
+            {
+                throw new ArgumentException("zipCode cannot be null or white space");
+            }
+
+            zipCode = zipCode.Trim();
+            string rowKey = date.ToString("yyyy-MM-dd");
+
+            LocationTimeInfo timeInfo = await this.GetEntity<LocationTimeInfo>(LocationTimeInfoTable, zipCode, rowKey);
+
+            if (timeInfo != null)
+            {
+                return timeInfo;
+            }
+
+            timeInfo = await this.LocationProvider.GetTimeInfoByZipCode(zipCode, date);
+
+            if (timeInfo != null)
+            {
+                timeInfo.PartitionKey = zipCode;
+                timeInfo.RowKey = rowKey;
+                await this.InsertEntity(LocationTimeInfoTable, timeInfo);
+            }
+
+            return timeInfo;
         }
 
         private void GetIdentityKeysFromPhoneNumber(string phoneNumber, out string partitionKey, out string rowKey)

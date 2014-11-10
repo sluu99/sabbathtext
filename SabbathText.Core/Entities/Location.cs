@@ -8,9 +8,9 @@ namespace SabbathText.Core.Entities
         public static readonly Location TestLocation = new Location
         {
             ZipCode = "00000",
-            LocationName = "Test Site",
+            City = "Test Site",
             Country = "Republic of Bananas",
-            Region = "Mall-The",
+            State = "Mall-The",
             Longitude = -500,
             Latitude = -500,
             TimeZoneOffset = 0, 
@@ -25,12 +25,13 @@ namespace SabbathText.Core.Entities
         }
 
         public string ZipCode { get; set; }
-        public string LocationName { get; set; }
+        public string City { get; set; }
         public string Country { get; set; }
-        public string Region { get; set; }
+        public string State { get; set; }
         public double Longitude { get; set; }
         public double Latitude { get; set; }
         public double TimeZoneOffset { get; set; }
+        public string TimeZoneName { get; set; }
         public DateTime CreationTime { get; set; }
         public DateTime UpdateTime { get; set; }
     }

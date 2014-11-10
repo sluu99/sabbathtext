@@ -67,7 +67,7 @@ namespace SabbathText.Core
         {
             if (!string.IsNullOrWhiteSpace(regionName))
             {
-                locationName += "/" + regionName;
+                locationName += ", " + regionName;
             }
 
             string body = string.Format(

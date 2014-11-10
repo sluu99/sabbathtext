@@ -51,7 +51,8 @@ namespace SabbathText.Core.Backend.EventProcessors
                 throw new ApplicationException(string.Format("Cannot find location for ZIP code {0}", account.ZipCode));
             }
 
-            DateTime locationNextSabbath = Sabbath.GetLocationNextSabbath(location.Latitude, location.Longitude, location.TimeZoneOffset);
+            DateTime locationNextSabbath = await new Sabbath().GetUpcomingSabbath(location, TimeSpan.Zero);
+
             DateTime utcNextSabbath = locationNextSabbath.AddHours(-1 * location.TimeZoneOffset);
                         
             // will the next cycle potentially miss the upcoming Sabbath?
