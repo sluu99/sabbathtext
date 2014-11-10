@@ -63,10 +63,15 @@ namespace SabbathText.Core
             return Create(MessageTemplate.BadRequest, null, recipient, body);
         }
 
-        public TemplatedMessage CreateConfirmZipCodeUpdate(string recipient, string zipCode, string locationName, DateTime sabbath)
+        public TemplatedMessage CreateConfirmZipCodeUpdate(string recipient, string zipCode, string locationName, string regionName, DateTime sabbath)
         {
+            if (!string.IsNullOrWhiteSpace(regionName))
+            {
+                locationName += "/" + regionName;
+            }
+
             string body = string.Format(
-                "Your location is set to \"{0}.\" Sabbath starts around {1:h:mm tt} on {1:m}. Expect a message around that time!",
+                "Your location is set to {0}. Sabbath starts around {1:h:mm tt} on {1:m}. Expect a message around that time!",
                 locationName,
                 sabbath
             );

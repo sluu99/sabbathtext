@@ -49,7 +49,7 @@ namespace SabbathText.Core.Backend.InboundProcessors
 
                 await this.EventQueue.AddMessage(EventMessage.Create(message.Sender, EventType.ZipCodeUpdated, string.Empty));
 
-                return new MessageFactory().CreateConfirmZipCodeUpdate(message.Sender, location.ZipCode, location.LocationName, sabbath);
+                return new MessageFactory().CreateConfirmZipCodeUpdate(message.Sender, location.ZipCode, location.LocationName, location.Region, sabbath);
             }
             else
             {
