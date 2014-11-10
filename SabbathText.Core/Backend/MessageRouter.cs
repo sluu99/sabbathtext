@@ -2,22 +2,33 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SabbathText.Core.Backend
 {
     public class MessageRouter
     {
-        private Dictionary<string, Type> processors;
+        private Dictionary<Regex, Type> processors;
         private MessageQueue outboundQueue;
 
         public MessageRouter()
         {
-            this.processors = new Dictionary<string, Type>();
+            this.processors = new Dictionary<Regex, Type>();
             this.outboundQueue = new MessageQueue(MessageQueue.OutboundMessageQueue);
         }
+        
+        public MessageRouter AddProcessor<T>(Regex regex) where T : IProcessor
+        {
+            if (regex == null)
+            {
+                throw new ArgumentNullException("regex");
+            }
 
-        public IProcessor UnknownProcessor { get; set; }
+            this.processors.Add(regex, typeof(T));
+
+            return this;
+        }
 
         public MessageRouter AddProcessor<T>(string verb) where T : IProcessor
         {
@@ -26,11 +37,7 @@ namespace SabbathText.Core.Backend
                 throw new ArgumentException("verb", "verb cannot be null or white space");
             }
 
-            verb = verb.Trim().ToLowerInvariant();
-
-            this.processors.Add(verb, typeof(T));
-
-            return this;
+            return this.AddProcessor<T>(new Regex(string.Format("^{0}$", verb.Trim().ToLowerInvariant()), RegexOptions.IgnoreCase));
         }
 
         public async Task<bool> Route(Message message)
@@ -46,36 +53,26 @@ namespace SabbathText.Core.Backend
             }
 
             string body = message.Body.ExtractAlphaNumericSpace().Trim();
-            string verb = string.Empty;
 
-            int whiteSpaceIndex = body.IndexOf(' ');
-            if (whiteSpaceIndex == -1)
+            if (string.IsNullOrWhiteSpace(body))
             {
-                verb = body;
+                throw new ApplicationException("The message body does not contain any alpha numeric characters");
             }
-            else
-            {
-                verb = body.Substring(0, whiteSpaceIndex);
-            }
-
-            verb = verb.ToLowerInvariant();
-            Trace.TraceInformation("Verb: {0}", verb);
-
+            
             IProcessor processor = null;
 
-            if (this.processors.ContainsKey(verb))
+            foreach (KeyValuePair<Regex, Type> kv in this.processors)
             {
-                Type processorType = this.processors[verb];
-                processor = Activator.CreateInstance(processorType) as IProcessor;
+                if (kv.Key.IsMatch(body))
+                {
+                    processor = Activator.CreateInstance(kv.Value) as IProcessor;
+                    break;
+                }
             }
 
             if (processor == null)
             {
-                processor = this.UnknownProcessor;
-            }
-
-            if (processor == null)
-            {
+                Trace.TraceWarning("Cannot find processor for message {0}", message.MessageId);
                 return false;
             }
 

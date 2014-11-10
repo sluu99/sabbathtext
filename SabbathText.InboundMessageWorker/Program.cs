@@ -20,20 +20,14 @@ namespace SabbathText.InboundMessageWorker
 
         static void AddProcessors(MessageRouter router)
         {
-            router.UnknownProcessor = new UnknownMessageProcessor();
-
             router
                 .AddProcessor<HelloProcessor>("hello")
-                .AddProcessor<HelloProcessor>("hi")
-                
+                .AddProcessor<HelloProcessor>("hi")                
                 .AddProcessor<HelpProcessor>("help")
                 .AddProcessor<HelpProcessor>("who")
-                .AddProcessor<HelpProcessor>("?")
-
                 .AddProcessor<SubscribeProcessor>("subscribe")
-
-                .AddProcessor<ZipCodeProcessor>("zipcode")
-                .AddProcessor<ZipCodeProcessor>("zip")
+                .AddProcessor<ZipCodeProcessor>(ZipCodeProcessor.ZipCodeRegex)
+                .AddProcessor<UnknownMessageProcessor>(UnknownMessageProcessor.UnknownMessageRegex)
             ;
         }
     }

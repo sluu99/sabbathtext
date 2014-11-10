@@ -24,7 +24,7 @@ namespace SabbathText.EventMessageWorker
             router
                 .AddProcessor<ZipCodeUpdatedProcessor>(EventType.ZipCodeUpdated.ToString())
                 .AddProcessor<SabbathProcessor>(EventType.Sabbath.ToString())
-                .AddProcessor<AccountCycleProcessor>(EventType.AccountCycle.ToString())
+                .AddProcessor<AccountCycleProcessor>(AccountCycleProcessor.AccountCycleRegex)
                 .AddProcessor<GreetingsRequestedProcessor>(EventType.GreetingsRequested.ToString())
                 .AddProcessor<AccountSubscribedProcessor>(EventType.AccountSubscribed.ToString())
                 .AddProcessor<AccountCreatedProcessor>(EventType.AccountCreated.ToString())

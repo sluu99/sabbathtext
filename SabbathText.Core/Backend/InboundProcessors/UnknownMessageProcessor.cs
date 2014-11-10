@@ -3,12 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SabbathText.Core.Backend.InboundProcessors
 {
     public class UnknownMessageProcessor : AccountBasedProcessor
     {
+        public static readonly Regex UnknownMessageRegex = new Regex(".*");
+
         public UnknownMessageProcessor() : base(subscriberRequired: false, skipRecordMessage: true)
         {
         }

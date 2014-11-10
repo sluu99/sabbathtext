@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SabbathText.Core.Backend.EventProcessors
 {
     public class AccountCycleProcessor : AccountBasedProcessor
-    {        
+    {
+        public static readonly Regex AccountCycleRegex = new Regex(@"^AccountCycle(?:\s(?<CycleKey>.+))?$", RegexOptions.IgnoreCase);
+
         public AccountCycleProcessor() : base(subscriberRequired: true, skipRecordMessage: true)
         {
         }

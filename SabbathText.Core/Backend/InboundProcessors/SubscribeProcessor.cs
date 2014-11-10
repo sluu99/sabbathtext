@@ -22,7 +22,7 @@ namespace SabbathText.Core.Backend.InboundProcessors
             if (account.Status != oldStatus)
             {
                 await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, account.CycleKey));
-                await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountSubscribed, account.CycleKey));
+                await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountSubscribed, string.Empty));
             }            
             
             if (string.IsNullOrWhiteSpace(account.ZipCode))

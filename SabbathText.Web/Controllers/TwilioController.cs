@@ -19,7 +19,7 @@ namespace SabbathText.Web.Controllers
         public string TwilioInboundKeyPrimary { get; set; }
         public string TwilioInboundKeySecondary { get; set; }
         
-        [HttpPost]
+        [HttpPost, ValidateInput(false)]
         public async Task<ActionResult> Sms(string key, TwilioInboundSmsModel model)
         {
             if (string.IsNullOrWhiteSpace(key) ||

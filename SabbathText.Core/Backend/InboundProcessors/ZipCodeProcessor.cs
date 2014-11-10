@@ -3,12 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SabbathText.Core.Backend.InboundProcessors
 {
     public class ZipCodeProcessor : AccountBasedProcessor
     {
+        public static readonly Regex ZipCodeRegex = new Regex(@"^Zip(?:Code)?\s*(?<ZipCode>\d*)$", RegexOptions.IgnoreCase);
+
         public ZipCodeProcessor() : base(subscriberRequired: true)
         {
         }
@@ -18,21 +21,22 @@ namespace SabbathText.Core.Backend.InboundProcessors
             /*
              * The accepted formats for the body are
              * 
-             * ZIP 123456
-             * ZIPCODE 123456
+             * Zip 12345
+             * ZipCode 12345
+             * Zip12345
+             * ZipCode12345
              * 
              */
             string body = message.Body.ExtractAlphaNumericSpace().Trim();
 
-            string[] parts = body.Split(' ');
+            Match match = ZipCodeRegex.Match(body);
+            string zipCode = match.Groups["ZipCode"].Value;
 
-            if (parts.Length < 2 || string.IsNullOrWhiteSpace(parts[1]))
+            if (string.IsNullOrWhiteSpace(zipCode))
             {
                 return new MessageFactory().CreateBadRequest(message.Sender, "Please provide a ZIP code!");
             }
-
-            string zipCode = parts[1].Trim();
-
+            
             Location location = await this.DataProvider.GetLocationByZipCode(zipCode);
 
             if (location != null)
