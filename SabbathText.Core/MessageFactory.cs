@@ -94,9 +94,9 @@ namespace SabbathText.Core
                 }
 
                 body = string.Format(
-                    "Your location is set to {0}. Sabbath starts around {1}. Expect a message around that time!",
+                    "Your location is set to {0}. Sabbath starts {1}. Expect a message around that time!",
                     locationName,
-                    sabbath
+                    sabbathTime
                 );
             }
             return Create(MessageTemplate.ConfirmZipCodeUpdate, null, recipient, body);
