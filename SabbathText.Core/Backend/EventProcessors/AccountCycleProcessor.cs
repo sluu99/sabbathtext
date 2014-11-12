@@ -37,8 +37,7 @@ namespace SabbathText.Core.Backend.EventProcessors
 
             if (!string.IsNullOrWhiteSpace(parameters) && string.Equals(parameters, account.CycleKey))
             {
-                DateTime upcomingSabbath = await sabbath.GetUpcomingSabbath(location);
-                await Reschedule(account, location, upcomingSabbath);
+                await Reschedule(account, location);
             }
 
             if (!string.IsNullOrWhiteSpace(account.ZipCode))
@@ -65,17 +64,27 @@ namespace SabbathText.Core.Backend.EventProcessors
             return null;
         }
         
-        private async Task Reschedule(Account account, Location location, DateTime upcomingSabbath)
+        private async Task Reschedule(Account account, Location location)
         {
             account.CycleKey = Guid.NewGuid().ToString();
 
             TimeSpan timeUntilNextDuration = Account.CycleDuration;
 
-            // check if Sabbath comes before the next duration
-            DateTime now = Clock.UtcNow;
-            if (upcomingSabbath < now + Account.CycleDuration)
+            if (location != null)
             {
-                timeUntilNextDuration = upcomingSabbath - now;
+                Sabbath sabbath = new Sabbath
+                {
+                    DataProvider = this.DataProvider,
+                };
+
+                DateTime upcomingSabbath = await sabbath.GetUpcomingSabbath(location);
+
+                // check if Sabbath comes before the next duration
+                DateTime now = Clock.UtcNow;
+                if (upcomingSabbath < now + Account.CycleDuration)
+                {
+                    timeUntilNextDuration = upcomingSabbath - now;
+                }
             }
 
             await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, account.CycleKey), timeUntilNextDuration);
