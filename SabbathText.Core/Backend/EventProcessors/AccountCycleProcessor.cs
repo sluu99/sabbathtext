@@ -50,7 +50,8 @@ namespace SabbathText.Core.Backend.EventProcessors
 
                     // we should still send a message for the last Sabbath
                     // this will also handle the case where the queue is backed up and the Cycle event wakes up after Sabbath already started
-                    if (now > lastSabbath + Sabbath.SabbathMessageTimeSpan)
+                    DateTime sabbathMessageEndTime = lastSabbath + Sabbath.SabbathMessageTimeSpan;
+                    if (now < sabbathMessageEndTime)
                     {
                         account.LastSabbathMessageTime = Clock.UtcNow;
 
@@ -82,7 +83,7 @@ namespace SabbathText.Core.Backend.EventProcessors
             // update the cycle key last, so that if it fails ,the retry of the current message will have the matching cycle key
             await this.DataProvider.UpdateAccount(account);
 
-            Trace.TraceInformation("Next cycle scheduled on {0}", Clock.UtcNow + Account.CycleDuration);
+            Trace.TraceInformation("Next cycle scheduled on {0}", Clock.UtcNow + timeUntilNextDuration);
         }
     }
 }

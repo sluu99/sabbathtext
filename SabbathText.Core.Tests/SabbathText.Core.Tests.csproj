@@ -96,6 +96,7 @@
   <ItemGroup>
     <Compile Include="Backend\EventProcessors\AccountCycleProcessorTests.cs" />
     <Compile Include="Backend\InboundProcessors\ZipCodeProcessorTests.cs" />
+    <Compile Include="FakeClockScope.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
