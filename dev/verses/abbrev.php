@@ -4,7 +4,7 @@ class Abbrev {
     /**
      * @var array Supported abbreviations. Order is irrelevant
      */
-    public static $book_to_abbrevs = [
+    public static $bookToAbbrevs = [
         "Amos"            => ["Amos", "Am"],
         "1 Chronicles"    => ["1 Chron.", "1 Chr"],
         "2 Chronicles"    => ["2 Chron.", "2 Chr"],
@@ -78,43 +78,43 @@ class Abbrev {
      * (method that gives preference to "John" instead of "Jn" whenever we have enough space to display it)
      * @param string $reference A bible reference eg "Jn 3:16". Valid book abbreviations are listed in the books
      * @param string $verse A bible verse eg "For God so loved the world ..."
-     * @param string $fmt_string A sprintf() format string that represents the text message to be sent
-     * @param string $fmt_out A sprintf() format string that is used in the return value of the function
+     * @param string $textFormat A sprintf() format string that represents the text message to be sent
+     * @param string $outputFormat A sprintf() format string that is used in the return value of the function
      * @param int $limit The character limit for the output
      * @return string The verse and the longest reference formatted with $fmt_out
      */
-    public static function findLongestReference($reference, $verse, $fmt_string = "Happy Sabbath!\r\n\"%s\" -- %s", $fmt_out = '{ "%s", "%s" },', $limit = 160) {
-        $reverse_array = [];
-        foreach (self::$book_to_abbrevs as $b => $abbrevs) {
+    public static function findLongestReference($reference, $verse, $textFormat = "Happy Sabbath!\r\n\"%s\" -- %s", $outputFormat = '{ "%s", "%s" },', $limit = 160) {
+        $reversedArray = [];
+        foreach (self::$bookToAbbrevs as $b => $abbrevs) {
             foreach ($abbrevs as $abbrev) {
                 // Ignore dots for index
-                $reverse_array[implode(explode(".", $abbrev))] = $b;
-                $reverse_array[$abbrev] = $b;
+                $reversedArray[implode(explode(".", $abbrev))] = $b;
+                $reversedArray[$abbrev] = $b;
             }
         }
-        $reference_parts = explode(" ", $reference);
-        $reference_parts_reversed = array_reverse($reference_parts);
+        $referenceParts = explode(" ", $reference);
+        $referencePartsReversed = array_reverse($referenceParts);
 
         // Drop off the chapter:verse off the array
-        $chapter_versenum = array_shift($reference_parts_reversed);
-        $book = rtrim(join(" ", array_reverse($reference_parts_reversed)));
-        $long_bookname = $reverse_array[$book];
+        $chapterAndVerseNumber = array_shift($referencePartsReversed);
+        $book = rtrim(join(" ", array_reverse($referencePartsReversed)));
+        $fullBookName = $reversedArray[$book];
 
         // Find the longest reference first
-        usort(self::$book_to_abbrevs[$long_bookname], function ($a, $b) {
+        usort(self::$bookToAbbrevs[$fullBookName], function ($a, $b) {
             return strlen($a) <= strlen($b);
         });
 
         // Append the full name of the book
-        if (reset(self::$book_to_abbrevs[$long_bookname]) != $long_bookname) {
-            array_unshift(self::$book_to_abbrevs[$long_bookname], $long_bookname);
+        if (reset(self::$bookToAbbrevs[$fullBookName]) != $fullBookName) {
+            array_unshift(self::$bookToAbbrevs[$fullBookName], $fullBookName);
         }
 
-        foreach (self::$book_to_abbrevs[$long_bookname] as $abbrev) {
-            $ref_with_number = $abbrev . " " . $chapter_versenum;
-            $text_msg = sprintf($fmt_string, $verse, $ref_with_number);
-            if (strlen($text_msg) <= $limit) {
-                return sprintf($fmt_out, $verse, $ref_with_number) . PHP_EOL;
+        foreach (self::$bookToAbbrevs[$fullBookName] as $abbrev) {
+            $fullReference = $abbrev . " " . $chapterAndVerseNumber;
+            $outputString = sprintf($textFormat, $verse, $fullReference);
+            if (strlen($outputString) <= $limit) {
+                return sprintf($outputFormat, $verse, $fullReference) . PHP_EOL;
             }
         }
 
