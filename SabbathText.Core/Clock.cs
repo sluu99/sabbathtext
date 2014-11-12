@@ -49,21 +49,11 @@ public class Clock
 
     public static void RollClock(TimeSpan offset)
     {
-        if (!fakeClock)
-        {
-            throw new ApplicationException("Cannot modify offset when using system clock");
-        }
-
         fakeClockOffset += offset;
     }
 
     public static void ResetClock()
     {
-        if (!fakeClock)
-        {
-            throw new ApplicationException("Cannot modify offset when using system clock");
-        }
-
         fakeClockOffset = TimeSpan.Zero;
     }
 }

@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.OutboundMessage
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.EventMessageWorker", "SabbathText.EventMessageWorker\SabbathText.EventMessageWorker.csproj", "{CFBCD0E5-8DBF-4057-AB1D-08FBC9771103}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.Core.Tests", "SabbathText.Core.Tests\SabbathText.Core.Tests.csproj", "{AFD586CF-C2EA-41DD-80DA-06E66B091EBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{CFBCD0E5-8DBF-4057-AB1D-08FBC9771103}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFBCD0E5-8DBF-4057-AB1D-08FBC9771103}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFBCD0E5-8DBF-4057-AB1D-08FBC9771103}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFD586CF-C2EA-41DD-80DA-06E66B091EBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFD586CF-C2EA-41DD-80DA-06E66B091EBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFD586CF-C2EA-41DD-80DA-06E66B091EBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFD586CF-C2EA-41DD-80DA-06E66B091EBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
