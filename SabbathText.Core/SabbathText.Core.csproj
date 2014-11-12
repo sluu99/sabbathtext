@@ -102,6 +102,7 @@
     <Compile Include="Entities\EventMessage.cs" />
     <Compile Include="Entities\EventType.cs" />
     <Compile Include="Entities\PoisonMessage.cs" />
+    <Compile Include="Extensions\LocationExtensions.cs" />
     <Compile Include="Extensions\XmlExtensions.cs" />
     <Compile Include="PhoneUtility.cs" />
     <Compile Include="SunTimes.cs" />

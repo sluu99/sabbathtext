@@ -12,7 +12,6 @@ namespace SabbathText.Core.Backend.InboundProcessors
     public class ZipCodeProcessor : AccountBasedProcessor
     {
         public static readonly Regex ZipCodeRegex = new Regex(@"^Zip(?:Code)?\s*(?<ZipCode>\d*)$", RegexOptions.IgnoreCase);
-        static readonly TimeSpan SunsetNotWithin = TimeSpan.FromMinutes(5);
 
         public ZipCodeProcessor() : base(subscriberRequired: true)
         {
@@ -47,16 +46,31 @@ namespace SabbathText.Core.Backend.InboundProcessors
 
                 await this.DataProvider.UpdateAccount(account);
 
-                // if Sabbath starts within 5 minutes (SunsetNotWithin), we do not want to use that
-                // since the queue might have some delay and we might not actually deliver the Sabbath message on time
-                DateTime sabbath = await new Sabbath().GetUpcomingSabbath(location, SunsetNotWithin);
+                DateTime now = Clock.UtcNow;
+                DateTime sabbathTime;
 
+                Sabbath sabbath = new Sabbath()
+                {
+                    DataProvider = this.DataProvider,
+                };
+
+                DateTime lastSabbath = await sabbath.GetLastSabbath(location);
+                
+                // the current time has not passed the Sabbath message time
+                if (now < lastSabbath + Sabbath.SabbathMessageTimeSpan)
+                {
+                    sabbathTime = lastSabbath;
+                }
+                else // we have passed the message sending time for the previous Sabbath
+                {
+                    sabbathTime = await sabbath.GetUpcomingSabbath(location);
+                }
+                
                 await this.EventQueue.AddMessage(EventMessage.Create(message.Sender, EventType.ZipCodeUpdated, string.Empty));
 
-                DateTimeZone timeZone = DateTimeZoneProviders.Tzdb[location.TimeZoneName];                
-                DateTime destinationSabbath = Instant.FromDateTimeUtc(sabbath).InZone(timeZone).ToDateTimeUnspecified();
+                DateTime destinationSabbathTime = location.GetLocalTime(sabbathTime);
 
-                return new MessageFactory().CreateConfirmZipCodeUpdate(message.Sender, location.ZipCode, location.City, location.State, destinationSabbath);
+                return new MessageFactory().CreateConfirmZipCodeUpdate(message.Sender, location.ZipCode, location.City, location.State, destinationSabbathTime, sabbathTime - now);
             }
             else
             {

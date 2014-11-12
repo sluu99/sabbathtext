@@ -11,9 +11,11 @@ namespace SabbathText.Core.Backend.EventProcessors
 {
     public class AccountCycleProcessor : AccountBasedProcessor
     {
+        
         public static readonly Regex AccountCycleRegex = new Regex(@"^AccountCycle(?:\s(?<CycleKey>.+))?$", RegexOptions.IgnoreCase);
 
-        public AccountCycleProcessor() : base(subscriberRequired: true, skipRecordMessage: true)
+        public AccountCycleProcessor()
+            : base(subscriberRequired: true, skipRecordMessage: true)
         {
         }
 
@@ -23,61 +25,59 @@ namespace SabbathText.Core.Backend.EventProcessors
             {
                 return null;
             }
-
+            
+            DateTime now = Clock.UtcNow;
+            Location location = await this.DataProvider.GetLocationByZipCode(account.ZipCode);
+            Sabbath sabbath = new Sabbath
+            {
+                DataProvider = this.DataProvider,
+            };
+            
             string parameters = message.Body.GetParameters();
 
             if (!string.IsNullOrWhiteSpace(parameters) && string.Equals(parameters, account.CycleKey))
             {
-                await Reschedule(account);
+                DateTime upcomingSabbath = await sabbath.GetUpcomingSabbath(location);
+                await Reschedule(account, location, upcomingSabbath);
             }
 
-            await CheckForSabbath(account);
-            
+            if (!string.IsNullOrWhiteSpace(account.ZipCode))
+            {
+                // more than X days ago since we sent a Sabbath message (this could also mean that we never sent a Sabbath message)
+                if (now - account.LastSabbathMessageTime > Sabbath.SabbathMessageGap)
+                {                    
+                    DateTime lastSabbath = await sabbath.GetLastSabbath(location);
 
+                    // we should still send a message for the last Sabbath
+                    // this will also handle the case where the queue is backed up and the Cycle event wakes up after Sabbath already started
+                    if (now > lastSabbath + Sabbath.SabbathMessageTimeSpan)
+                    {
+                        account.LastSabbathMessageTime = Clock.UtcNow;
+
+                        await this.DataProvider.UpdateAccount(account);
+
+                        return new MessageFactory().CreateHappySabbath(account.PhoneNumber);
+                    }
+                }
+            }
+            
             return null;
         }
-
-        private async Task CheckForSabbath(Account account)
-        {
-            if (string.IsNullOrWhiteSpace(account.ZipCode))
-            {
-                return;
-            }
-
-            Location location = await this.DataProvider.GetLocationByZipCode(account.ZipCode);
-
-            if (location == null)
-            {
-                throw new ApplicationException(string.Format("Cannot find location for ZIP code {0}", account.ZipCode));
-            }
-
-            DateTime locationNextSabbath = await new Sabbath().GetUpcomingSabbath(location, TimeSpan.Zero);
-
-            DateTime utcNextSabbath = locationNextSabbath.AddHours(-1 * location.TimeZoneOffset);
-                        
-            // will the next cycle potentially miss the upcoming Sabbath?
-            // assuming that the next cycle could potentially wake up at 1.5 cycles away
-            DateTime nextCycle = Clock.UtcNow.AddSeconds(Account.CycleDuration.TotalSeconds * 1.5);
-
-            if (nextCycle >= utcNextSabbath)
-            {
-                TimeSpan timeUntilSabbath = utcNextSabbath - Clock.UtcNow;
-
-                // queue up a Sabbath event
-                await this.EventQueue.AddMessage(
-                    EventMessage.Create(account.PhoneNumber, EventType.Sabbath, string.Empty),
-                    timeUntilSabbath
-                );
-
-                Trace.TraceInformation("Sabbath event for account {0} will be visible in {1}", account.AccountId.Mask(4), timeUntilSabbath);
-            }
-        }
-
-        private async Task Reschedule(Account account)
+        
+        private async Task Reschedule(Account account, Location location, DateTime upcomingSabbath)
         {
             account.CycleKey = Guid.NewGuid().ToString();
-            
-            await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, account.CycleKey), Account.CycleDuration);
+
+            TimeSpan timeUntilNextDuration = Account.CycleDuration;
+
+            // check if Sabbath comes before the next duration
+            DateTime now = Clock.UtcNow;
+            if (upcomingSabbath < now + Account.CycleDuration)
+            {
+                timeUntilNextDuration = upcomingSabbath - now;
+            }
+
+            await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, account.CycleKey), timeUntilNextDuration);
 
             // update the cycle key last, so that if it fails ,the retry of the current message will have the matching cycle key
             await this.DataProvider.UpdateAccount(account);

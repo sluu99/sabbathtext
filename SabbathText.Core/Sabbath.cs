@@ -7,6 +7,16 @@ namespace SabbathText.Core
 {
     public class Sabbath
     {
+        /// <summary>
+        /// The system will still send out a Sabbath message if Sabbath has not lasted this long
+        /// </summary>
+        public static readonly TimeSpan SabbathMessageTimeSpan = TimeSpan.FromHours(20);
+
+        /// <summary>
+        /// Two Sabbath messages must be at least this far away
+        /// </summary>
+        public static readonly TimeSpan SabbathMessageGap = TimeSpan.FromDays(5);
+
         public Sabbath()
         {
             this.DataProvider = new AzureDataProvider();
@@ -18,13 +28,11 @@ namespace SabbathText.Core
         /// 
         /// </summary>
         /// <param name="location"></param>
-        /// <param name="sunsetNotWithin">The sunset cannot be within this time span (used only if today is Friday)</param>
         /// <returns>The upcoming Sabbath time for a specific location. The time is in UTC</returns>
-        public async Task<DateTime> GetUpcomingSabbath(Location location, TimeSpan sunsetNotWithin)
+        public async Task<DateTime> GetUpcomingSabbath(Location location)
         {
-            DateTimeZone destinationTimeZone = DateTimeZoneProviders.Tzdb[location.TimeZoneName];
             DateTime now = Clock.UtcNow;
-            DateTime destinationNow = Instant.FromDateTimeUtc(now).InZone(destinationTimeZone).ToDateTimeUnspecified();
+            DateTime destinationNow = location.GetLocalTime(now);
             
             LocationTimeInfo timeInfo = null;
 
@@ -32,7 +40,7 @@ namespace SabbathText.Core
             {
                 timeInfo = await this.DataProvider.GetTimeInfoByZipCode(location.ZipCode, destinationNow.Date);
 
-                if (timeInfo.Sunset + sunsetNotWithin < now) // the sun has not set yet
+                if (timeInfo.Sunset > now) // the sun has not set yet
                 {
                     return timeInfo.Sunset;
                 }
@@ -42,6 +50,43 @@ namespace SabbathText.Core
             timeInfo = await this.DataProvider.GetTimeInfoByZipCode(location.ZipCode, destNextFriday.Date);
 
             return timeInfo.Sunset;
+        }
+
+        
+        public async Task<DateTime> GetLastSabbath(Location location)
+        {
+            DateTime now = Clock.UtcNow;
+            DateTime destinationNow = location.GetLocalTime(now);
+
+            LocationTimeInfo timeInfo = null;
+
+            if (destinationNow.DayOfWeek == DayOfWeek.Friday)
+            {
+                // check if Sabath has already started
+                timeInfo = await this.DataProvider.GetTimeInfoByZipCode(location.ZipCode, destinationNow.Date);
+
+                if (timeInfo.Sunset < now) // sunset already
+                {
+                    return timeInfo.Sunset;
+                }
+            }
+
+            DateTime destLastFriday = destinationNow.AddDays(-1 * DaysSinceLastFriday(destinationNow));
+            timeInfo = await this.DataProvider.GetTimeInfoByZipCode(location.ZipCode, destLastFriday.Date);
+
+            return timeInfo.Sunset;
+        }
+
+        private int DaysSinceLastFriday(DateTime date)
+        {
+            int offset = date.DayOfWeek - DayOfWeek.Friday;
+
+            if (offset <= 0)
+            {
+                offset += 7;
+            }
+
+            return offset;
         }
 
         private static int DaysUntilNextFriday(DateTime date)
