@@ -1,6 +1,9 @@
 # Sabbath Text
 Sabbath Text is a service that sends out "Happy Sabbath" messages to its subscribers when Sabbath starts (at sunset on Friday).
 
+http://www.SabbathText.com
+
+
 # License
 
 The MIT License (MIT)
