@@ -118,7 +118,7 @@ namespace SabbathText.Core
             string randomVerse = verseNumbers[Rand.Next(0, verseNumbers.Length)];
             string verseContent = BibleVerses[randomVerse];
 
-            string body = string.Format("Happy Sabbath!\r\n\"{0}\" -- {1}", randomVerse, verseContent);
+            string body = string.Format("Happy Sabbath!\r\n\"{0}\" -- {1}", verseContent, randomVerse);
 
             return Create(
                 MessageTemplate.HappySabbath,
