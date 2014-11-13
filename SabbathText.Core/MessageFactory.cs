@@ -158,7 +158,7 @@ namespace SabbathText.Core
 
         static readonly Dictionary<string, string> BibleVerses = new Dictionary<string, string>
         {
-            { "1 Peter 5:7", "casting all your anxiety on Him, because He cares for you." },
+            { "1 Peter 5:7", "Cast all your anxiety on Him, because He cares for you." },
             { "2 Corinthians 5:17", "Therefore if anyone is in Christ, he is a new creature; the old things passed away; behold, new things have come." },
             { "2 Timothy 1:7", "For God has not given us a spirit of timidity, but of power and love and discipline." },
             { "Exodus 20:8", "Remember the Sabbath day, to keep it holy." },
@@ -168,7 +168,7 @@ namespace SabbathText.Core
             { "Matthew 11:28", "Come to Me, all who are weary and heavy-laden, and I will give you rest." },
             { "Phil 4:6", "Do not be anxious about anything, but in everything, by prayer and petition, with thanksgiving, present your requests to God." },
             { "Philippians 4:7", "And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus." },
-            { "Psalm 37:4", "Delight yourself in the LORD ; And He will give you the desires of your heart." },
+            { "Psalm 37:4", "Delight yourself in the LORD; And He will give you the desires of your heart." },
             { "Psalm 118:24", "This is the day the Lord has made; We will rejoice and be glad in it." },
         };
     }
