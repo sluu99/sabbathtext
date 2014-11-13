@@ -158,7 +158,11 @@ namespace SabbathText.Core
 
         static readonly Dictionary<string, string> BibleVerses = new Dictionary<string, string>
         {
-            { "1 Peter 5:7", "Cast all your anxiety on Him, because He cares for you." },
+            { "1 Corinthians 10:31", "Whether, then, you eat or drink or whatever you do, do all to the glory of God." },
+            { "1 Chronicles 16:11", "Seek the Lord and His strength; Seek His face continually." },
+            { "1 John 4:19", "We love, because He first loved us." },
+            { "1 Peter 5:7", "Cast all your anxiety on Him, because He cares for you." },            
+            { "1 Thessalonians 5:16-18", "Rejoice always; pray without ceasing; in everything give thanks; for this is God’s will for you in Christ Jesus." },                        
             { "2 Corinthians 5:17", "Therefore if anyone is in Christ, he is a new creature; the old things passed away; behold, new things have come." },
             { "2 Timothy 1:7", "For God has not given us a spirit of timidity, but of power and love and discipline." },
             { "Exodus 20:8", "Remember the Sabbath day, to keep it holy." },
@@ -168,8 +172,13 @@ namespace SabbathText.Core
             { "Matthew 11:28", "Come to Me, all who are weary and heavy-laden, and I will give you rest." },
             { "Phil 4:6", "Do not be anxious about anything, but in everything, by prayer and petition, with thanksgiving, present your requests to God." },
             { "Philippians 4:7", "And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus." },
+            { "Philippians 4:13", "I can do all things through Him who strengthens me." },
+            { "Proverbs 18:10", "The name of the Lord is a strong tower; The righteous runs into it and is safe." },
             { "Psalm 37:4", "Delight yourself in the LORD; And He will give you the desires of your heart." },
+            { "Psalm 56:3", "When I am afraid, I will put my trust in You." },
             { "Psalm 118:24", "This is the day the Lord has made; We will rejoice and be glad in it." },
+            { "Romans 12:12", "Be joyful in hope, patient in affliction, faithful in prayer." },
+            { "Romans 12:13", "Share with the Lord’s people who are in need. Practice hospitality." },
         };
     }
 }
