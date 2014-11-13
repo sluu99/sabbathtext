@@ -49,6 +49,7 @@ namespace SabbathText.Web.Controllers
 
             // create the account
             await this.DataProvider.CreateAccountWithPhoneNumber(phoneNumber);
+            await this.EventQueue.AddMessage(EventMessage.Create(phoneNumber, EventType.AccountCreated, string.Empty));
             account = await this.DataProvider.GetAccountByPhoneNumber(phoneNumber);
 
             // queue an event to send out a greeting to this account
