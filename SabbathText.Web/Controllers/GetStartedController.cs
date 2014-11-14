@@ -1,13 +1,7 @@
 ﻿using SabbathText.Core;
 using SabbathText.Core.Entities;
 using SabbathText.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace SabbathText.Web.Controllers
@@ -23,7 +17,7 @@ namespace SabbathText.Web.Controllers
             this.EventQueue = new MessageQueue(MessageQueue.EventMessageQueue);
         }
 
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<ActionResult> Index(GetStartedModel model)
         {
             if (!ModelState.IsValid)

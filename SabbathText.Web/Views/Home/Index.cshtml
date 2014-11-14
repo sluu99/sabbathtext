@@ -43,6 +43,7 @@
                 <p style="margin-top: 30px;"><i>Your phone number will <b>not</b> be shared with any other parties.</i></p>  
 
                 <form class="subscription-form form-inline" id="subscription-form" method="post" action="@Url.Action("Index", "GetStarted")">
+                    @Html.AntiForgeryToken()
                     <input type="text" class="subscription-phone" id="subscription-phone" name="phoneNumber" placeholder="Enter your phone number" required>
 
                     <div class="subscription-submit-container">
