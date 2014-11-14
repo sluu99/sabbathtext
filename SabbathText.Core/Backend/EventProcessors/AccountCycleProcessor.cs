@@ -56,7 +56,7 @@ namespace SabbathText.Core.Backend.EventProcessors
 
                         await this.DataProvider.UpdateAccount(account);
 
-                        Trace.TraceInformation("Sending the user a Sabbath message.");
+                        Trace.TraceInformation("Sending a Sabbath message to account {0}.", account.AccountId);
 
                         return new MessageFactory().CreateHappySabbath(account.PhoneNumber);
                     }
