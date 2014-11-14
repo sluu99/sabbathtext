@@ -68,8 +68,6 @@ namespace SabbathText.Core.Backend.EventProcessors
         
         private async Task Reschedule(Account account, Location location)
         {
-            account.CycleKey = Guid.NewGuid().ToString();
-
             TimeSpan timeUntilNextDuration = Account.CycleDuration;
 
             if (location != null)
@@ -89,12 +87,9 @@ namespace SabbathText.Core.Backend.EventProcessors
                 }
             }
 
-            await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, account.CycleKey), timeUntilNextDuration);
+            await this.ResetAccountCycle(account, timeUntilNextDuration);
 
-            // update the cycle key last, so that if it fails ,the retry of the current message will have the matching cycle key
-            await this.DataProvider.UpdateAccount(account);
-
-            Trace.TraceInformation("Next cycle scheduled on {0}", Clock.UtcNow + timeUntilNextDuration);
+            Trace.TraceInformation("Next cycle scheduled on {0} for account {1}", Clock.UtcNow + timeUntilNextDuration, account.AccountId);
         }
     }
 }

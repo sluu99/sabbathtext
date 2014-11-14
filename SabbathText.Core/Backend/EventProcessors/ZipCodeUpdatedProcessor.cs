@@ -1,6 +1,5 @@
 ﻿using SabbathText.Core.Entities;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace SabbathText.Core.Backend.EventProcessors
@@ -18,8 +17,8 @@ namespace SabbathText.Core.Backend.EventProcessors
                 throw new ApplicationException("Cannot process ZipCodeUpdated event with invalid account ZIP code");
             }
 
-            // account data changed, just let the AccountCycle run
-            await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, string.Empty));
+            // the Sabbath time could potentially change. Resetting the account cycle
+            await this.ResetAccountCycle(account, TimeSpan.Zero);
 
             return null;
         }

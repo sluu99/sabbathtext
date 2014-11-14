@@ -1,8 +1,5 @@
 ﻿using SabbathText.Core.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SabbathText.Core.Backend
@@ -30,6 +27,17 @@ namespace SabbathText.Core.Backend
 
         public IDataProvider DataProvider { get; set; }
         public MessageQueue EventQueue { get; set; }
+
+        /// <summary>
+        /// Start a new account cycle. This will changes the account cycle key so that other cycles will not reschedule themselves.
+        /// </summary>
+        protected async Task ResetAccountCycle(Account account, TimeSpan timeUntilNextCycle)
+        {
+            account.CycleKey = Guid.NewGuid().ToString();
+
+            await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, account.CycleKey), timeUntilNextCycle);
+            await this.DataProvider.UpdateAccount(account);
+        }
 
         protected abstract Task<TemplatedMessage> ProcessMessageWithAccount(Message message, Account account);
 

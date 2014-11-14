@@ -1,8 +1,5 @@
 ﻿using SabbathText.Core.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SabbathText.Core.Backend.InboundProcessors
@@ -14,14 +11,10 @@ namespace SabbathText.Core.Backend.InboundProcessors
             string oldStatus = account.Status;
             account.Status = AccountStatus.Subscribed;
 
-            // create a new cycle key to make sure the other cycle events won't try to reschedule themselves
-            account.CycleKey = Guid.NewGuid().ToString(); 
-
-            await this.DataProvider.UpdateAccount(account);
+            await this.ResetAccountCycle(account, TimeSpan.Zero);            
 
             if (account.Status != oldStatus)
-            {
-                await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, account.CycleKey));
+            {                
                 await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountSubscribed, string.Empty));
             }            
             
