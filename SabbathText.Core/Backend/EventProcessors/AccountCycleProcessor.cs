@@ -15,7 +15,7 @@ namespace SabbathText.Core.Backend.EventProcessors
         public static readonly Regex AccountCycleRegex = new Regex(@"^AccountCycle(?:\s(?<CycleKey>.+))?$", RegexOptions.IgnoreCase);
 
         public AccountCycleProcessor()
-            : base(subscriberRequired: true, skipRecordMessage: true)
+            : base(subscriberRequired: false, skipRecordMessage: true)
         {
         }
 
