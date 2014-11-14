@@ -68,7 +68,8 @@ namespace SabbathText.Core.Backend.EventProcessors
         
         private async Task Reschedule(Account account, Location location)
         {
-            TimeSpan timeUntilNextDuration = Account.CycleDuration;
+            TimeSpan timeUntilNextCycle = Account.CycleDuration;
+            DateTime now = Clock.UtcNow;
 
             if (location != null)
             {
@@ -79,17 +80,16 @@ namespace SabbathText.Core.Backend.EventProcessors
 
                 DateTime upcomingSabbath = await sabbath.GetUpcomingSabbath(location);
 
-                // check if Sabbath comes before the next duration
-                DateTime now = Clock.UtcNow;
+                // check if Sabbath comes before the next duration                
                 if (upcomingSabbath < now + Account.CycleDuration)
                 {
-                    timeUntilNextDuration = upcomingSabbath - now;
+                    timeUntilNextCycle = upcomingSabbath - now;
                 }
             }
 
-            await this.ResetAccountCycle(account, timeUntilNextDuration);
+            await this.ResetAccountCycle(account, timeUntilNextCycle);
 
-            Trace.TraceInformation("Next cycle scheduled on {0} for account {1}", Clock.UtcNow + timeUntilNextDuration, account.AccountId);
+            Trace.TraceInformation("Next cycle scheduled on {0} for account {1}", now + timeUntilNextCycle, account.AccountId);
         }
     }
 }
