@@ -15,17 +15,12 @@ namespace SabbathText.Core.Backend.EventProcessors
         public static readonly Regex AccountCycleRegex = new Regex(@"^AccountCycle(?:\s(?<CycleKey>.+))?$", RegexOptions.IgnoreCase);
 
         public AccountCycleProcessor()
-            : base(subscriberRequired: false, skipRecordMessage: true)
+            : base(subscriberRequired: true, skipRecordMessage: true)
         {
         }
 
         protected override async Task<Entities.TemplatedMessage> ProcessMessageWithAccount(Entities.Message message, Entities.Account account)
-        {
-            if (account.Status != AccountStatus.Subscribed)
-            {
-                return null;
-            }
-            
+        {            
             DateTime now = Clock.UtcNow;
             Location location = await this.DataProvider.GetLocationByZipCode(account.ZipCode);
             Sabbath sabbath = new Sabbath
