@@ -82,9 +82,7 @@ namespace SabbathText.Core.Backend.EventProcessors
                 }
             }
 
-            await this.ResetAccountCycle(account, timeUntilNextCycle);
-
-            Trace.TraceInformation("Next cycle scheduled on {0} for account {1}", now + timeUntilNextCycle, account.AccountId);
+            await this.ResetAccountCycle(account, timeUntilNextCycle);            
         }
     }
 }

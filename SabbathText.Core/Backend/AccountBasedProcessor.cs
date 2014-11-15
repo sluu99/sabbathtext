@@ -1,5 +1,6 @@
 ﻿using SabbathText.Core.Entities;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace SabbathText.Core.Backend
@@ -33,11 +34,18 @@ namespace SabbathText.Core.Backend
         /// </summary>
         protected async Task ResetAccountCycle(Account account, TimeSpan timeUntilNextCycle)
         {
+            
             account.CycleKey = Guid.NewGuid().ToString();
             account.NextCycleTime = Clock.UtcNow + timeUntilNextCycle;
 
+            Trace.TraceInformation("Resetting cycle for account {0}", account.AccountId);
+            Trace.TraceInformation("Time until next cycle: {0}", timeUntilNextCycle);
+            Trace.TraceInformation("Next cycle time: {0}", account.NextCycleTime);
+
             await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, account.CycleKey), timeUntilNextCycle);
             await this.DataProvider.UpdateAccount(account);
+
+            
         }
 
         protected abstract Task<TemplatedMessage> ProcessMessageWithAccount(Message message, Account account);
