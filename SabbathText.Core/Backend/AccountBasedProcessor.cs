@@ -34,6 +34,7 @@ namespace SabbathText.Core.Backend
         protected async Task ResetAccountCycle(Account account, TimeSpan timeUntilNextCycle)
         {
             account.CycleKey = Guid.NewGuid().ToString();
+            account.NextCycleTime = Clock.UtcNow + timeUntilNextCycle;
 
             await this.EventQueue.AddMessage(EventMessage.Create(account.PhoneNumber, EventType.AccountCycle, account.CycleKey), timeUntilNextCycle);
             await this.DataProvider.UpdateAccount(account);
