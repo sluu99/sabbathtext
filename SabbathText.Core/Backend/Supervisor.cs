@@ -10,14 +10,14 @@ namespace SabbathText.Core.Backend
     public class Supervisor
     {
         private int delayIndex;
-        private volatile bool stopRequested;        
+        private volatile bool stopRequested;
         private int poisonMessageThreshold;
         private string queueName;
         private int lastLogMinute;
 
         public Supervisor(string queueName)
         {
-            this.DelayIntervals = new int[]{ 500, 1000, 1000, 3000 };
+            this.DelayIntervals = new int[] { 500, 1000, 1000, 3000 };
             this.delayIndex = 0;
             this.MessageQueue = new MessageQueue(queueName);
             this.PoisonMessageThreshold = 10;
@@ -43,7 +43,7 @@ namespace SabbathText.Core.Backend
                 this.poisonMessageThreshold = value;
             }
         }
-        
+
         public async Task Start(Func<Message, Task<bool>> process)
         {
             while (!this.stopRequested)
@@ -56,11 +56,11 @@ namespace SabbathText.Core.Backend
                     {
                         this.lastLogMinute = now.Minute;
                         Trace.TraceInformation("I'm alive! It is now {0}", now);
-                    }                    
+                    }
                 }
 
                 Tuple<CloudQueueMessage, Message> message = await this.MessageQueue.GetMessage();
-                
+
                 if (message == null)
                 {
                     this.Chillax();
@@ -70,7 +70,7 @@ namespace SabbathText.Core.Backend
                 {
                     this.delayIndex = 0;
                 }
-                
+
                 try
                 {
                     if (message.Item1.DequeueCount > this.PoisonMessageThreshold)
@@ -93,6 +93,10 @@ namespace SabbathText.Core.Backend
                             Trace.TraceWarning("Failed to process message {0}", message.Item2.MessageId);
                         }
                     }
+                }
+                catch (NotImplementedException)
+                {
+                    Trace.TraceWarning("No processor can handle message ID {0}", message.Item1.Id);
                 }
                 catch (Exception ex)
                 {
