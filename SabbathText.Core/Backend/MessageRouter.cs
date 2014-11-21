@@ -1,4 +1,6 @@
-﻿using SabbathText.Core.Entities;
+﻿using SabbathText.Core.Backend.EventProcessors;
+using SabbathText.Core.Backend.InboundProcessors;
+using SabbathText.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -86,6 +88,37 @@ namespace SabbathText.Core.Backend
             }
 
             return true;
+        }
+
+        public static MessageRouter NewInboundRouter()
+        {
+            MessageRouter router = new MessageRouter();
+            router
+                .AddProcessor<HelloProcessor>("hello")
+                .AddProcessor<HelloProcessor>("hi")
+                .AddProcessor<HelpProcessor>("help")
+                .AddProcessor<HelpProcessor>("who")
+                .AddProcessor<SubscribeProcessor>("subscribe")
+                .AddProcessor<ZipCodeProcessor>(ZipCodeProcessor.ZipCodeRegex)
+                .AddProcessor<UnknownMessageProcessor>(UnknownMessageProcessor.UnknownMessageRegex)
+            ;
+
+            return router;
+        }
+
+        public static MessageRouter NewEventRouter()
+        {
+            MessageRouter router = new MessageRouter();
+            router
+                .AddProcessor<ZipCodeUpdatedProcessor>(EventType.ZipCodeUpdated.ToString())
+                .AddProcessor<SabbathProcessor>(EventType.Sabbath.ToString())
+                .AddProcessor<AccountCycleProcessor>(AccountCycleProcessor.AccountCycleRegex)
+                .AddProcessor<GreetingsRequestedProcessor>(EventType.GreetingsRequested.ToString())
+                .AddProcessor<AccountSubscribedProcessor>(EventType.AccountSubscribed.ToString())
+                .AddProcessor<AccountCreatedProcessor>(EventType.AccountCreated.ToString())
+            ;
+
+            return router;
         }
     }
 }

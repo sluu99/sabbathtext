@@ -11,24 +11,10 @@ namespace SabbathText.InboundMessageWorker
             SabbathText.Core.Common.Setup();
             SabbathText.Core.Common.SetupStorage();
 
-            MessageRouter router = new MessageRouter();
-            Program.AddProcessors(router);
+            MessageRouter router = MessageRouter.NewInboundRouter();            
 
             Supervisor supervisor = new AzureWebJobSupervisor(MessageQueue.InboundMessageQueue);
             supervisor.Start(router.Route).Wait();
-        }
-
-        static void AddProcessors(MessageRouter router)
-        {
-            router
-                .AddProcessor<HelloProcessor>("hello")
-                .AddProcessor<HelloProcessor>("hi")                
-                .AddProcessor<HelpProcessor>("help")
-                .AddProcessor<HelpProcessor>("who")
-                .AddProcessor<SubscribeProcessor>("subscribe")
-                .AddProcessor<ZipCodeProcessor>(ZipCodeProcessor.ZipCodeRegex)
-                .AddProcessor<UnknownMessageProcessor>(UnknownMessageProcessor.UnknownMessageRegex)
-            ;
         }
     }
 }

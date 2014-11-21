@@ -12,23 +12,10 @@ namespace SabbathText.EventMessageWorker
             SabbathText.Core.Common.Setup();
             SabbathText.Core.Common.SetupStorage();
 
-            MessageRouter router = new MessageRouter();
-            Program.AddProcessors(router);
+            MessageRouter router = MessageRouter.NewEventRouter();            
 
             Supervisor supervisor = new AzureWebJobSupervisor(MessageQueue.EventMessageQueue);
             supervisor.Start(router.Route).Wait();
-        }
-
-        static void AddProcessors(MessageRouter router)
-        {
-            router
-                .AddProcessor<ZipCodeUpdatedProcessor>(EventType.ZipCodeUpdated.ToString())
-                .AddProcessor<SabbathProcessor>(EventType.Sabbath.ToString())
-                .AddProcessor<AccountCycleProcessor>(AccountCycleProcessor.AccountCycleRegex)
-                .AddProcessor<GreetingsRequestedProcessor>(EventType.GreetingsRequested.ToString())
-                .AddProcessor<AccountSubscribedProcessor>(EventType.AccountSubscribed.ToString())
-                .AddProcessor<AccountCreatedProcessor>(EventType.AccountCreated.ToString())
-            ;
         }
     }
 }
