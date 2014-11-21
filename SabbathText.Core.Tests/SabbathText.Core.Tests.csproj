@@ -99,6 +99,7 @@
     <Compile Include="FakeClockScope.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QueueStorage\QueueStorage.csproj">

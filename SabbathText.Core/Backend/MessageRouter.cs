@@ -42,7 +42,7 @@ namespace SabbathText.Core.Backend
             return this.AddProcessor<T>(new Regex(string.Format("^{0}$", verb.Trim().ToLowerInvariant()), RegexOptions.IgnoreCase));
         }
 
-        public async Task<bool> Route(Message message)
+        public IProcessor GetProcessor(Message message)
         {
             if (message == null)
             {
@@ -60,7 +60,7 @@ namespace SabbathText.Core.Backend
             {
                 throw new ApplicationException("The message body does not contain any alpha numeric characters");
             }
-            
+
             IProcessor processor = null;
 
             foreach (KeyValuePair<Regex, Type> kv in this.processors)
@@ -71,6 +71,13 @@ namespace SabbathText.Core.Backend
                     break;
                 }
             }
+
+            return processor;
+        }
+
+        public async Task<bool> Route(Message message)
+        {
+            IProcessor processor = this.GetProcessor(message);
 
             if (processor == null)
             {

@@ -4,6 +4,7 @@ using SabbathText.Core.Entities;
 using Moq;
 using SabbathText.Core.Backend.InboundProcessors;
 using System.Threading.Tasks;
+using SabbathText.Core.Backend;
 
 namespace SabbathText.Core.Tests.Backend.InboundProcessors
 {
@@ -13,23 +14,8 @@ namespace SabbathText.Core.Tests.Backend.InboundProcessors
         [TestMethod]
         public void TestUpdateZipOneHourAfterSabbathStarted()
         {
-            Message updateZipMessage = new Message
-            {
-                Body = "Zip 00000",
-                CreationTime = Clock.UtcNow,
-                MessageId = Guid.NewGuid().ToString(),
-                Sender = "+14230010001",                
-            };
-
-            Account acct = new Account()
-            {
-                AccountId = Guid.NewGuid().ToString(),
-                CreationTime = Clock.UtcNow,
-                PhoneNumber = "+14230010001",
-                Status = AccountStatus.Subscribed,
-                ZipCode = "00000",
-            };
-
+            Account acct = TestHelper.GenerateAccount();
+                        
             Location location = new Location()
             {
                 ZipCode = "00000",
@@ -50,11 +36,11 @@ namespace SabbathText.Core.Tests.Backend.InboundProcessors
             dataProviderMock.Setup(x => x.GetLocationByZipCode(location.ZipCode)).Returns(Task.FromResult(location));
             dataProviderMock.Setup(x => x.GetTimeInfoByZipCode(location.ZipCode, It.IsAny<DateTime>())).Returns(Task.FromResult(timeInfo));
 
-            ZipCodeProcessor processor = new ZipCodeProcessor
-            {
-                DataProvider = dataProviderMock.Object,
-            };
+            Message updateZipMessage = TestHelper.CreateInboundMessage(acct.PhoneNumber, "Zip " + location.ZipCode);
 
+            ZipCodeProcessor processor = MessageRouter.NewInboundRouter().GetProcessor(updateZipMessage) as ZipCodeProcessor;
+            processor.DataProvider = dataProviderMock.Object;
+            
             TemplatedMessage response = processor.ProcessMessage(updateZipMessage).Result;
             Assert.AreEqual(MessageTemplate.ConfirmZipCodeUpdate, response.Template);
         }

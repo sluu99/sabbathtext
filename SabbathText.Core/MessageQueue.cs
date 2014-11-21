@@ -16,10 +16,14 @@ namespace SabbathText.Core
 
         private string queueName;
 
-        public MessageQueue(string queueName)
+        public MessageQueue(string queueName, IQueue queue)
         {
-            this.Queue = new AzureQueue();
+            this.Queue = queue;
             this.queueName = queueName;
+        }
+
+        public MessageQueue(string queueName) : this(queueName, new AzureQueue())
+        {
         }
 
         public IQueue Queue { get; set; }
