@@ -175,8 +175,10 @@ namespace SabbathText.Core
             { "Philippians 4:13", "I can do all things through Him who strengthens me." },
             { "Proverbs 18:10", "The name of the Lord is a strong tower; The righteous runs into it and is safe." },
             { "Psalm 37:4", "Delight yourself in the LORD; And He will give you the desires of your heart." },
+            { "Psalm 46:1", "God is our refuge and strength, an ever-present help in trouble." },
             { "Psalm 56:3", "When I am afraid, I will put my trust in You." },
             { "Psalm 118:24", "This is the day the Lord has made; We will rejoice and be glad in it." },
+            { "Romans 8:1", "Therefore there is now no condemnation for those who are in Christ Jesus." },
             { "Romans 12:12", "Be joyful in hope, patient in affliction, faithful in prayer." },
             { "Romans 12:13", "Share with the Lord’s people who are in need. Practice hospitality." },
         };
