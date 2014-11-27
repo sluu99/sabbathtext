@@ -23,14 +23,13 @@ namespace SabbathText.Core.Backend.EventProcessors
         protected override async Task<Entities.TemplatedMessage> ProcessMessageWithAccount(Entities.Message message, Entities.Account account)
         {   
             Location location = await this.DataProvider.GetLocationByZipCode(account.ZipCode);            
-            string parameters = message.Body.GetParameters();
 
             TimeSpan timeUntilNextCycle = Account.CycleDuration;
             
             Tuple<CustomMessageSchedule, TimeSpan> customScheduleResult = await this.GetActionableCustomSchedule(account, location);
             if (customScheduleResult.Item1 != null)
             {
-                Trace.TraceInformation("Sending out the customer message {0} for account {1}", customScheduleResult.Item1.ScheduleId, account.AccountId);
+                Trace.TraceInformation("Sending out the custom message {0} for account {1}", customScheduleResult.Item1.ScheduleId, account.AccountId);
 
                 await this.ResetAccountCycle(account, ShortResetCycleDelay);
                 await this.DataProvider.CreateAccountCustomMessage(account.AccountId, customScheduleResult.Item1.ScheduleId);
@@ -61,7 +60,11 @@ namespace SabbathText.Core.Backend.EventProcessors
                 timeUntilNextCycle = sabbathTextResult.Item2;
             }
 
-            await this.ResetAccountCycle(account, timeUntilNextCycle);
+            string parameters = message.Body.GetParameters();
+            if (!string.IsNullOrWhiteSpace(parameters) && string.Equals(parameters, account.CycleKey))
+            {
+                await this.ResetAccountCycle(account, timeUntilNextCycle);
+            }
 
             return null;
         }
@@ -164,30 +167,6 @@ namespace SabbathText.Core.Backend.EventProcessors
             }
 
             return new Tuple<CustomMessageSchedule, TimeSpan>(null, Account.CycleDuration);
-        }
-
-        private async Task Reschedule(Account account, Location location)
-        {
-            TimeSpan timeUntilNextCycle = Account.CycleDuration;
-            DateTime now = Clock.UtcNow;
-
-            if (location != null)
-            {
-                Sabbath sabbath = new Sabbath
-                {
-                    DataProvider = this.DataProvider,
-                };
-
-                DateTime upcomingSabbath = await sabbath.GetUpcomingSabbath(location);
-
-                // check if Sabbath comes before the next duration                
-                if (upcomingSabbath < now + Account.CycleDuration)
-                {
-                    timeUntilNextCycle = upcomingSabbath - now;
-                }
-            }
-
-            await this.ResetAccountCycle(account, timeUntilNextCycle);            
         }
     }
 }
