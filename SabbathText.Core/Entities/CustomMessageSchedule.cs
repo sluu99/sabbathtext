@@ -9,7 +9,7 @@ namespace SabbathText.Core.Entities
         public string Body { get; set; }
         public DateTime ScheduleDate { get; set; }
         public long SecondsOffset { get; set; }
-        public TimeOffsetType OffsetFrom { get; set; }
+        public string OffsetFrom { get; set; }
         public long GracePeriod { get; set; }
     }
 }

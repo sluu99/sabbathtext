@@ -118,13 +118,20 @@ namespace SabbathText.Core
             for (int year = minDate.Year; year <= maxDate.Year; year++)
             {
                 CloudTable table = this.client.GetTableReference(CustomMessageScheduleTable);
-                IQueryable<CustomMessageSchedule> query = 
-                    from schedule in table.CreateQuery<CustomMessageSchedule>()
-                    where
-                        schedule.PartitionKey == year.ToString() &&
-                        minDate.Date <= schedule.ScheduleDate && schedule.ScheduleDate <= maxDate.Date // the partition should be small enough to do a scan                        
-                    select schedule;
-                TableQuery<CustomMessageSchedule> tableQuery = query.AsTableQuery();
+                                
+                string filter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, year.ToString());
+                filter = TableQuery.CombineFilters(
+                    filter, 
+                    TableOperators.And,
+                    TableQuery.GenerateFilterConditionForDate("ScheduleDate", QueryComparisons.GreaterThanOrEqual, new DateTimeOffset(minDate.Date, TimeSpan.Zero))
+                );
+                filter = TableQuery.CombineFilters(
+                    filter,
+                    TableOperators.And,
+                    TableQuery.GenerateFilterConditionForDate("ScheduleDate", QueryComparisons.LessThanOrEqual, new DateTimeOffset(maxDate.Date, TimeSpan.Zero))
+                );
+
+                TableQuery<CustomMessageSchedule> tableQuery = new TableQuery<CustomMessageSchedule>().Where(filter);
 
                 TableContinuationToken token = null;
 

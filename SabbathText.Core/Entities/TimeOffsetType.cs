@@ -1,9 +1,10 @@
 ﻿
 namespace SabbathText.Core.Entities
 {
-    public enum TimeOffsetType
+    public static class TimeOffsetType
     {
-        Sunrise = 0,
-        Sunset = 1,
+        public const string
+            Sunrise = "Sunrise",
+            Sunset = "Sunset";
     }
 }
