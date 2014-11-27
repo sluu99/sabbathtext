@@ -143,6 +143,11 @@ namespace SabbathText.Core
             return Create(MessageTemplate.DidYouTextZipCode, null, recipient, body);
         }
 
+        public TemplatedMessage CreateCustomMessage(string recipient, string body)
+        {
+            return Create(MessageTemplate.CustomMessage, null, recipient, body);
+        }
+
         public static TemplatedMessage Create(MessageTemplate template, string sender, string recipient, string body)
         {
             return new TemplatedMessage

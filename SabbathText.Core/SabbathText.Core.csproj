@@ -95,13 +95,16 @@
     <Compile Include="Backend\InboundProcessors\ZipCodeProcessor.cs" />
     <Compile Include="Backend\IProcessor.cs" />
     <Compile Include="Backend\MessageRouter.cs" />
+    <Compile Include="Entities\AccountCustomMessage.cs" />
     <Compile Include="Entities\AccountIdentity.cs" />
+    <Compile Include="Entities\CustomMessageSchedule.cs" />
     <Compile Include="Entities\KeyValue.cs" />
     <Compile Include="Entities\LocationTimeInfo.cs" />
     <Compile Include="Entities\ResourceLock.cs" />
     <Compile Include="Entities\EventMessage.cs" />
     <Compile Include="Entities\EventType.cs" />
     <Compile Include="Entities\PoisonMessage.cs" />
+    <Compile Include="Entities\TimeOffsetType.cs" />
     <Compile Include="Extensions\LocationExtensions.cs" />
     <Compile Include="Extensions\XmlExtensions.cs" />
     <Compile Include="PhoneUtility.cs" />

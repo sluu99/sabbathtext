@@ -16,5 +16,7 @@ namespace SabbathText.Core.Entities
         ConfirmZipCodeUpdate = 8,
 
         DidYouTextZipCode = 9,
+
+        CustomMessage = 10,
     }
 }

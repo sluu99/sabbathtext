@@ -57,7 +57,7 @@ namespace SabbathText.Core.Backend.InboundProcessors
                 DateTime lastSabbath = await sabbath.GetLastSabbath(location);
                 
                 // the current time has not passed the Sabbath message time
-                if (now < lastSabbath + Sabbath.SabbathMessageTimeSpan)
+                if (now < lastSabbath + Sabbath.SabbathMessageGracePeriod)
                 {
                     sabbathTime = lastSabbath;
                 }

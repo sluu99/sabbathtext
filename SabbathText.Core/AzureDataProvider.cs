@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.WindowsAzure.Storage.Table.Queryable;
+using System.Collections.Generic;
 
 namespace SabbathText.Core
 {
@@ -18,6 +19,8 @@ namespace SabbathText.Core
         public const string PoisonMessageTable = "poisonmessages";
         public const string KeyValueTable = "keyvalues";
         public const string LocationTimeInfoTable = "locationtimeinfo";
+        public const string CustomMessageScheduleTable = "custommessageschedules";
+        public const string AccountCustomMessageTable = "accountcustommessages";
 
         CloudStorageAccount account = null;
         CloudTableClient client = null;
@@ -98,6 +101,44 @@ namespace SabbathText.Core
             };
 
             await this.InsertEntity(AccountByIdentityTable, identity);
+        }
+
+        public async Task<IEnumerable<CustomMessageSchedule>> GetCustomMessageSchedules(DateTime fromDate, TimeSpan dateMargin)
+        {
+            if (dateMargin < TimeSpan.Zero)
+            {
+                throw new ArgumentException("dateMargin must be a positive value");
+            }
+
+            DateTime minDate = fromDate.Date - dateMargin;
+            DateTime maxDate = fromDate.Date + dateMargin;
+
+            List<CustomMessageSchedule> schedules = new List<CustomMessageSchedule>();
+            
+            for (int year = minDate.Year; year <= maxDate.Year; year++)
+            {
+                CloudTable table = this.client.GetTableReference(CustomMessageScheduleTable);
+                IQueryable<CustomMessageSchedule> query = 
+                    from schedule in table.CreateQuery<CustomMessageSchedule>()
+                    where
+                        schedule.PartitionKey == year.ToString() &&
+                        minDate.Date <= schedule.ScheduleDate && schedule.ScheduleDate <= maxDate.Date // the partition should be small enough to do a scan                        
+                    select schedule;
+                TableQuery<CustomMessageSchedule> tableQuery = query.AsTableQuery();
+
+                TableContinuationToken token = null;
+
+                do
+                {
+                    TableQuerySegment<CustomMessageSchedule> seg = await table.ExecuteQuerySegmentedAsync(tableQuery, token);
+                    token = seg.ContinuationToken;
+
+                    schedules.AddRange(seg);
+
+                } while (token != null);
+            }
+
+            return schedules;
         }
 
         public Task RecordMessage(string accountId, Message message)
@@ -228,11 +269,50 @@ namespace SabbathText.Core
             return timeInfo;
         }
 
+        public Task CreateAccountCustomMessage(string accountId, string scheduleId)
+        {
+            AccountCustomMessage entity = new AccountCustomMessage
+            {
+                PartitionKey = accountId,
+                RowKey = scheduleId,
+                AccountId = accountId,
+                ScheduleId = scheduleId,
+            };
+
+            return this.InsertEntity(AccountCustomMessageTable, entity);
+        }
+
+        public Task<IEnumerable<AccountCustomMessage>> GetAccountCustomMessages(string accountId)
+        {
+            return this.GetPartitionEntities<AccountCustomMessage>(AccountCustomMessageTable, accountId);
+        }
+        
         private void GetIdentityKeysFromPhoneNumber(string phoneNumber, out string partitionKey, out string rowKey)
         {
             string hash = string.Format("phone_{0}", phoneNumber).Sha256();
             partitionKey = hash.Substring(0, 32);
             rowKey = hash.Substring(32, 32);
+        }
+
+        private async Task<IEnumerable<T>> GetPartitionEntities<T>(string tableName, string partitionKey)
+            where T : class, ITableEntity, new()
+        {
+            CloudTable table = this.client.GetTableReference(tableName);
+            TableQuery<T> query = table.CreateQuery<T>().Where(x => x.PartitionKey.CompareTo(partitionKey) == 0).AsTableQuery();
+
+            List<T> entities = new List<T>();
+            TableContinuationToken token = null;
+
+            do
+            {
+                TableQuerySegment<T> segment = await table.ExecuteQuerySegmentedAsync(query, token);
+                token = segment.ContinuationToken;
+
+                entities.AddRange(segment);
+
+            } while (token != null);
+
+            return entities;
         }
 
         private Task UpsertEntity<T>(string tableName, T entity)
