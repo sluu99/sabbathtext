@@ -11,7 +11,8 @@ namespace SabbathText.Core
 
         private string locale;
 
-        public MessageFactory() : this("en-US")
+        public MessageFactory()
+            : this("en-US")
         {
         }
 
@@ -59,7 +60,7 @@ namespace SabbathText.Core
 
             return Create(MessageTemplate.SubscribedConfirmZipCode, null, recipient, body);
         }
-        
+
         public TemplatedMessage CreateCannotFindZipCode(string recipient, string zipCode)
         {
             string body = string.Format("Cannot find your location \"{0}\". Please double check the ZIP code and try again!", zipCode);
@@ -175,6 +176,7 @@ namespace SabbathText.Core
             { "Colossians 3:12", "Put on then, as God's chosen ones, holy and beloved, compassionate hearts, kindness, humility, meekness, and patience" },
             { "Hebrews 11:1", "Now faith is confidence in what we hope for and assurance about what we do not see." },
             { "James 1:2-3", "Consider it all joy, my brethren, when you encounter various trials, knowing that the testing of your faith produces endurance." },
+            { "Luke 6:36", "Be merciful, just as your Father is merciful." },
             { "Matthew 6:34", "So do not worry about tomorrow; for tomorrow will care for itself. Each day has enough trouble of its own." },
             { "Matthew 11:28", "Come to Me, all who are weary and heavy-laden, and I will give you rest." },            
             { "Phil 4:6", "Do not be anxious about anything, but in everything, by prayer and petition, with thanksgiving, present your requests to God." },
