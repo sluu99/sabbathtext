@@ -113,13 +113,22 @@ namespace SabbathText.Core
             );
         }
 
-        public TemplatedMessage CreateHappySabbath(string recipient)
+        public TemplatedMessage CreateHappySabbath(string recipient, IEnumerable<string> versesToExclude, out string selectedVerse)
         {
-            string[] verseNumbers = BibleVerses.Keys.ToArray();
-            string randomVerse = verseNumbers[Rand.Next(0, verseNumbers.Length)];
-            string verseContent = BibleVerses[randomVerse];
+            List<string> verseNumbers = BibleVerses.Keys.ToList();
+            foreach (string verse in versesToExclude)
+            {
+                int index = verseNumbers.IndexOf(verse);
+                if (index != -1)
+                {
+                    verseNumbers.RemoveAt(index);
+                }
+            }
+            
+            selectedVerse = verseNumbers[Rand.Next(0, verseNumbers.Count)];
+            string verseContent = BibleVerses[selectedVerse];
 
-            string body = string.Format("Happy Sabbath!\r\n\"{0}\" -- {1}", verseContent, randomVerse);
+            string body = string.Format("Happy Sabbath!\r\n\"{0}\" -- {1}", verseContent, selectedVerse);
 
             return Create(
                 MessageTemplate.HappySabbath,
