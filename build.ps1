@@ -15,7 +15,7 @@ $testAssemblies = @(
     "$root\SabbathText.Core.Tests\bin\Release\SabbathText.Core.Tests.dll"
 )
 
-$command = "all"
+$command = "build"
 
 if ($args.Count -gt 0) {
     $command = $args[0]
