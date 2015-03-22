@@ -10,7 +10,7 @@ namespace SabbathText.Core
         /// <summary>
         /// The system will still send out a Sabbath message if Sabbath has not lasted this long
         /// </summary>
-        public static readonly TimeSpan SabbathMessageGracePeriod = TimeSpan.FromHours(20);
+        public static readonly TimeSpan SabbathMessageGracePeriod = TimeSpan.FromHours(23);
 
         /// <summary>
         /// Two Sabbath messages must be at least this far away
