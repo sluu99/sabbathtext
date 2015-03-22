@@ -22,5 +22,9 @@ namespace SabbathText.Core.Entities
         public DateTime LastSabbathMessageTime { get; set; }
         public DateTime NextCycleTime { get; set; }
         public string CycleKey { get; set; }
+        /// <summary>
+        /// Recently sent verses, delimited by semi-colons
+        /// </summary>
+        public string RecentlySentVerses { get; set; }
     }
 }

@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 namespace SabbathText.Core.Backend.EventProcessors
 {
     public class AccountCycleProcessor : AccountBasedProcessor
-    {
-        
+    {        
         public static readonly Regex AccountCycleRegex = new Regex(@"^AccountCycle(?:\s(?<CycleKey>.+))?$", RegexOptions.IgnoreCase);
         public static readonly TimeSpan ShortResetCycleDelay = TimeSpan.FromSeconds(15);
+        public const int NumberOfRecentVersesToExclude = 10;
 
         public AccountCycleProcessor()
             : base(subscriberRequired: true, skipRecordMessage: true)
@@ -48,11 +48,32 @@ namespace SabbathText.Core.Backend.EventProcessors
                 Trace.TraceInformation("Sending Sabbath text to account {0}", account.AccountId);
 
                 await this.ResetAccountCycle(account, ShortResetCycleDelay);
+
+                // get the recently sent verses
+                List<string> recentlySentVerses = new List<string>();
+                if (!string.IsNullOrWhiteSpace(account.RecentlySentVerses))
+                {
+                    recentlySentVerses.AddRange(account.RecentlySentVerses.Trim().Split(';'));
+                }
+
+                string selectedVerse;
+                TemplatedMessage sabbathMessage = new MessageFactory().CreateHappySabbath(
+                    account.PhoneNumber, 
+                    recentlySentVerses /* verses to exclude */,
+                    out selectedVerse);
+
+                while (recentlySentVerses.Count >= NumberOfRecentVersesToExclude)
+                {
+                    recentlySentVerses.RemoveAt(0);
+                }
                 
+                recentlySentVerses.Add(selectedVerse);
+
+                account.RecentlySentVerses = string.Join(";", recentlySentVerses);
                 account.LastSabbathMessageTime = Clock.UtcNow;
                 await this.DataProvider.UpdateAccount(account);
 
-                return new MessageFactory().CreateHappySabbath(account.PhoneNumber);
+                return sabbathMessage;
             }
 
             if (sabbathTextResult.Item2 < timeUntilNextCycle)
