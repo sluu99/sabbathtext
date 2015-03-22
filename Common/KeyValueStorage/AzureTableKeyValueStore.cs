@@ -164,7 +164,8 @@
                 }
 
                 if (se.RequestInformation.HttpStatusCode == 412 /* precondition failed */ &&
-                    "UpdateConditionNotSatisfied".Equals(se.RequestInformation.ExtendedErrorInformation.ErrorCode, StringComparison.InvariantCulture))
+                    ("UpdateConditionNotSatisfied".Equals(se.RequestInformation.ExtendedErrorInformation.ErrorCode, StringComparison.InvariantCulture) ||
+                     "ConditionNotMet".Equals(se.RequestInformation.ExtendedErrorInformation.ErrorCode, StringComparison.InvariantCulture)))
                 {
                     throw new ETagMismatchException();
                 }
@@ -214,7 +215,8 @@
                 }
 
                 if (se.RequestInformation.HttpStatusCode == 412 /* precondition failed */ &&
-                    "UpdateConditionNotSatisfied".Equals(se.RequestInformation.ExtendedErrorInformation.ErrorCode, StringComparison.InvariantCulture))
+                    ("UpdateConditionNotSatisfied".Equals(se.RequestInformation.ExtendedErrorInformation.ErrorCode, StringComparison.InvariantCulture) ||
+                     "ConditionNotMet".Equals(se.RequestInformation.ExtendedErrorInformation.ErrorCode, StringComparison.InvariantCulture)))
                 {
                     throw new ETagMismatchException();
                 }
