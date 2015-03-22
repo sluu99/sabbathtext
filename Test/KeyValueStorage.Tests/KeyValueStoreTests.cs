@@ -21,7 +21,16 @@
         [TestInitialize]
         public void Init()
         {
-            this.ResetStore();
+            this.InitStore();
+        }
+
+        /// <summary>
+        /// This method will be called after every test run
+        /// </summary>
+        [TestCleanup]
+        public void CleanUp()
+        {
+            this.CleanUpStore();
         }
 
         /// <summary>
@@ -36,11 +45,12 @@
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
-                RowKey = "dogs/buddy",
+                RowKey = "dogs:buddy",
                 Weight = 98.4f,
             };
 
             this.Store.Insert(dog).Wait();
+            Assert.IsNotNull(dog.ETag, "ETag should be populated after insertion");
         }
 
         /// <summary>
@@ -56,7 +66,7 @@
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
-                RowKey = "dogs/buddy",
+                RowKey = "dogs:buddy",
                 Weight = 98.4f,
             };
 
@@ -68,11 +78,23 @@
                 Breed = DogBreed.GermanShepherd,
                 Name = "Elf",
                 PartitionKey = "B",
-                RowKey = "dogs/buddy",
+                RowKey = "dogs:buddy",
                 Weight = 60f,
             };
 
-            this.Store.Insert(elf).Wait();
+            try
+            {
+                this.Store.Insert(elf).Wait();
+            }
+            catch (AggregateException ae)
+            {
+                if (ae.InnerException != null)
+                {
+                    throw ae.InnerException;
+                }
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -87,13 +109,13 @@
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
-                RowKey = "dogs/buddy",
+                RowKey = "dogs:buddy",
                 Weight = 98.4f,
             };
 
             this.Store.Insert(dog).Wait();
 
-            Dog buddy = this.Store.Get("B", "dogs/buddy").Result;
+            Dog buddy = this.Store.Get("B", "dogs:buddy").Result;
 
             Assert.IsNotNull(buddy, "Get should not return null");
             Assert.AreEqual(dog.Birthday, buddy.Birthday);
@@ -127,18 +149,18 @@
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
-                RowKey = "dogs/buddy",
+                RowKey = "dogs:buddy",
                 Weight = 98.4f,
             };
 
             this.Store.Insert(dog).Wait();
 
-            Dog buddy = this.Store.Get("B", "dogs/buddy").Result;
+            Dog buddy = this.Store.Get("B", "dogs:buddy").Result;
 
             buddy.Weight += 5f;
             this.Store.Update(buddy).Wait();
 
-            Dog newBuddyWithNewWeight = this.Store.Get("B", "dogs/buddy").Result;
+            Dog newBuddyWithNewWeight = this.Store.Get("B", "dogs:buddy").Result;
 
             Assert.IsTrue(newBuddyWithNewWeight.Weight > dog.Weight, "Weight is expected to increase");
         }
@@ -156,18 +178,67 @@
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
-                RowKey = "dogs/buddy",
+                RowKey = "dogs:buddy",
                 Weight = 98.4f,
             };
 
             this.Store.Insert(dog).Wait();
 
-            Dog buddy = this.Store.Get("B", "dogs/buddy").Result;
+            Dog buddy = this.Store.Get("B", "dogs:buddy").Result;
             buddy.Weight += 5f;
             this.Store.Update(buddy).Wait();
 
             dog.Weight += 3f;
-            this.Store.Update(dog).Wait();
+
+            try
+            {
+                this.Store.Update(dog).Wait();
+            }
+            catch (AggregateException ae)
+            {
+                if (ae.InnerException != null)
+                {
+                    throw ae.InnerException;
+                }
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Tests update when the object does not exist
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(EntityNotFoundException), "An EntityNotFoundException is expected in this test")]
+        public void UpdateShouldThrowEntityNotFoundException()
+        {
+            Dog dog = new Dog
+            {
+                Birthday = DateTime.UtcNow.AddYears(-2),
+                Breed = DogBreed.Labrador,
+                Name = "Buddy",
+                PartitionKey = "B",
+                RowKey = "dogs:buddy",
+                Weight = 98.4f,
+                ETag = "*",
+                Timestamp = DateTime.UtcNow,
+            };
+
+            dog.Weight += 3f;
+
+            try
+            {
+                this.Store.Update(dog).Wait();
+            }
+            catch (AggregateException ae)
+            {
+                if (ae.InnerException != null)
+                {
+                    throw ae.InnerException;
+                }
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -182,7 +253,7 @@
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
-                RowKey = "dogs/buddy",
+                RowKey = "dogs:buddy",
                 Weight = 98.4f,
             };
 
@@ -206,7 +277,7 @@
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
-                RowKey = "dogs/buddy",
+                RowKey = "dogs:buddy",
                 Weight = 98.4f,
             };
 
@@ -215,15 +286,70 @@
             Dog buddy = this.Store.Get(dog.PartitionKey, dog.RowKey).Result;
             
             this.Store.Update(dog).Wait(); // some other process modified the entity
-            this.Store.Delete(buddy).Wait();
+
+            try
+            {
+                this.Store.Delete(buddy).Wait();
+            }
+            catch (AggregateException ae)
+            {
+                if (ae.InnerException != null)
+                {
+                    throw ae.InnerException;
+                }
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Tests that Delete throws EntityNotFoundException if the entity does not exist
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(EntityNotFoundException), "EntityNotFoundException is expected if the entity does not exist")]
+        public void DeleteShouldThrowEntityNotFoundException()
+        {
+            Dog dog = new Dog
+            {
+                Birthday = DateTime.UtcNow.AddYears(-2),
+                Breed = DogBreed.Labrador,
+                Name = "Buddy",
+                PartitionKey = "B",
+                RowKey = "dogs:buddy",
+                Weight = 98.4f,
+                ETag = "*",
+                Timestamp = DateTime.UtcNow,
+            };
+            
+            try
+            {
+                this.Store.Delete(dog).Wait();
+            }
+            catch (AggregateException ae)
+            {
+                if (ae.InnerException != null)
+                {
+                    throw ae.InnerException;
+                }
+
+                throw;
+            }
         }
 
         /// <summary>
         /// Reset the store used for testing
         /// </summary>
-        protected virtual void ResetStore()
+        protected virtual void InitStore()
         {
             this.Store = new KeyValueStore<Dog>();
+            this.Store.Init();
+        }
+
+        /// <summary>
+        /// Clean up the store used for testing
+        /// </summary>
+        protected virtual void CleanUpStore()
+        {
         }
     }
 }

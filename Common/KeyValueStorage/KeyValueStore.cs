@@ -1,12 +1,13 @@
 ﻿namespace KeyValueStorage
 {
     using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
     /// <summary>
     /// This class provides an in-memory key value store implementation
@@ -31,11 +32,14 @@
         private object padLock;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KeyValueStore&lt;T&gt;" /> class
+        /// Gets an entity
         /// </summary>
-        public KeyValueStore()
+        /// <param name="partitionKey">The partition key</param>
+        /// <param name="rowKey">The row key</param>
+        /// <returns>The entity, or null if not found</returns>
+        public Task<T> Get(string partitionKey, string rowKey)
         {
-            this.Init();
+            return this.Get(partitionKey, rowKey, CancellationToken.None);
         }
 
         /// <summary>
@@ -43,8 +47,9 @@
         /// </summary>
         /// <param name="partitionKey">The partition key</param>
         /// <param name="rowKey">The row key</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The entity, or null if not found</returns>
-        public virtual Task<T> Get(string partitionKey, string rowKey)
+        public virtual Task<T> Get(string partitionKey, string rowKey, CancellationToken cancellationToken)
         {
             string key = this.HashEntityKeys(partitionKey, rowKey);
 
@@ -70,7 +75,19 @@
         /// <param name="entity">The entity for insertion</param>
         /// <returns>The insertion Task</returns>
         /// <exception cref="DuplicateKeyException">Thrown when the partition key and row key already exist</exception>
-        public virtual Task Insert(T entity)
+        public Task Insert(T entity)
+        {
+            return this.Insert(entity, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Inserts an entity to the key value store
+        /// </summary>
+        /// <param name="entity">The entity for insertion</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>The insertion Task</returns>
+        /// <exception cref="DuplicateKeyException">Thrown when the partition key and row key already exist</exception>
+        public virtual Task Insert(T entity, CancellationToken cancellationToken)
         {
             if (entity == null)
             {
@@ -105,7 +122,18 @@
         /// </summary>
         /// <param name="entity">The entity</param>
         /// <returns>The update task</returns>
-        public virtual Task Update(T entity)
+        public Task Update(T entity)
+        {
+            return this.Update(entity, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Updates an entity
+        /// </summary>
+        /// <param name="entity">The entity</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>The update task</returns>
+        public virtual Task Update(T entity, CancellationToken cancellationToken)
         {
             if (entity == null)
             {
@@ -147,7 +175,18 @@
         /// </summary>
         /// <param name="entity">The entity</param>
         /// <returns>The delete task</returns>
-        public virtual Task Delete(T entity)
+        public Task Delete(T entity)
+        {
+            return this.Delete(entity, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Deletes an entity
+        /// </summary>
+        /// <param name="entity">The entity</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>The delete task</returns>
+        public virtual Task Delete(T entity, CancellationToken cancellationToken)
         {
             if (entity == null)
             {
@@ -184,11 +223,29 @@
         /// <summary>
         /// Initializes the internal storage
         /// </summary>
-        protected virtual void Init()
+        public virtual void Init()
         {
             this.entities = new Dictionary<string, string>();
             this.sha256 = SHA256CryptoServiceProvider.Create();
             this.padLock = new object();
+        }
+
+        /// <summary>
+        /// Throws ArgumentNullExceptions when either key is null or empty
+        /// </summary>
+        /// <param name="partitionKey">The partition key</param>
+        /// <param name="rowKey">The row key</param>
+        protected void ThrowIfNullKeys(string partitionKey, string rowKey)
+        {
+            if (string.IsNullOrEmpty(partitionKey))
+            {
+                throw new ArgumentNullException("partitionKey");
+            }
+
+            if (string.IsNullOrEmpty(rowKey))
+            {
+                throw new ArgumentNullException("rowKey");
+            }
         }
 
         /// <summary>
@@ -200,15 +257,7 @@
         /// <returns>Hashed version of the keys</returns>
         private string HashEntityKeys(string partitionKey, string rowKey)
         {
-            if (string.IsNullOrEmpty(partitionKey))
-            {
-                throw new ArgumentNullException("partitionKey");
-            }
-
-            if (string.IsNullOrEmpty(rowKey))
-            {
-                throw new ArgumentNullException("rowKey");
-            }
+            this.ThrowIfNullKeys(partitionKey, rowKey);
 
             byte[] buffer = UTF8Encoding.UTF8.GetBytes(partitionKey);
             byte[] hash = this.sha256.ComputeHash(buffer);

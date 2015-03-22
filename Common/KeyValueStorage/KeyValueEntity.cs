@@ -22,15 +22,15 @@
         public string RowKey { get; set; }
         
         /// <summary>
-        /// Gets the e-tag
+        /// Gets or sets the e-tag
         /// </summary>
         [JsonProperty]
-        public string ETag { get; internal set; }
+        public string ETag { get; set; }
         
         /// <summary>
-        /// Gets the timestamp
+        /// Gets or sets the timestamp
         /// </summary>
         [JsonProperty]
-        public DateTime Timestamp { get; internal set; }
+        public DateTime Timestamp { get; set; }
     }
 }
