@@ -221,6 +221,42 @@ using Newtonsoft.Json;
         }
 
         /// <summary>
+        /// Inserts or gets an entity from the store
+        /// </summary>
+        /// <param name="entity">The entity</param>
+        /// <returns>The entity itself</returns>
+        public virtual Task<T> InsertOrGet(T entity)
+        {
+            return this.InsertOrGet(entity, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Inserts or gets an entity from the store
+        /// </summary>
+        /// <param name="entity">The entity</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>The entity itself</returns>
+        public virtual async Task<T> InsertOrGet(T entity, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await this.Insert(entity, cancellationToken);
+                return entity;
+            }
+            catch (DuplicateKeyException)
+            {
+            }
+
+            entity = await this.Get(entity.PartitionKey, entity.RowKey, cancellationToken);
+            if (entity == null)
+            {
+                throw new EntityNotFoundException();
+            }
+
+            return entity;
+        }
+
+        /// <summary>
         /// Initializes the internal storage
         /// </summary>
         public virtual void Init()
