@@ -1,1 +1,1 @@
-powershell -NoProfile -ExecutionPolicy unrestricted .\build.ps1 all
+powershell -NoProfile -ExecutionPolicy unrestricted .\build.ps1 %1

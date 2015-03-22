@@ -102,6 +102,10 @@
     <Compile Include="TestHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\QueueStorage\QueueStorage.csproj">
+      <Project>{c6cc3315-77e5-48f0-beae-e4ae8c584983}</Project>
+      <Name>QueueStorage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SabbathText.Core\SabbathText.Core.csproj">
       <Project>{b45ea451-a493-4e23-a7a6-a496838edc00}</Project>
       <Name>SabbathText.Core</Name>

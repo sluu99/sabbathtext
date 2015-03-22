@@ -13,8 +13,8 @@ namespace SabbathText.Core.Tests
         [AssemblyInitialize]
         public static void AssemblyInit(TestContext context)
         {
-            Common.SetupStorage();
-            Common.Setup();
+            // Common.SetupStorage();
+            // Common.Setup();
         }
     }
 }
