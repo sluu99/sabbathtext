@@ -18,7 +18,7 @@
         /// <summary>
         /// The internal storage
         /// </summary>
-        private Dictionary<string, string> entites;
+        private Dictionary<string, string> entities;
 
         /// <summary>
         /// The SHA265 hashing provider
@@ -48,19 +48,19 @@
         {
             string key = this.HashEntityKeys(partitionKey, rowKey);
 
-            if (!this.entites.ContainsKey(key))
+            if (!this.entities.ContainsKey(key))
             {
                 return Task.FromResult<T>(null);
             }
 
             lock (this.padLock)
             {
-                if (!this.entites.ContainsKey(key))
+                if (!this.entities.ContainsKey(key))
                 {
                     return Task.FromResult<T>(null);
                 }
 
-                return Task.FromResult(JsonConvert.DeserializeObject<T>(this.entites[key]));
+                return Task.FromResult(JsonConvert.DeserializeObject<T>(this.entities[key]));
             }
         }
 
@@ -79,14 +79,14 @@
 
             string key = this.HashEntityKeys(entity.PartitionKey, entity.RowKey);
 
-            if (this.entites.ContainsKey(key))
+            if (this.entities.ContainsKey(key))
             {
                 throw new DuplicateKeyException();
             }
 
             lock (this.padLock)
             {
-                if (this.entites.ContainsKey(key))
+                if (this.entities.ContainsKey(key))
                 {
                     throw new DuplicateKeyException();
                 }
@@ -94,7 +94,7 @@
                 entity.ETag = Guid.NewGuid().ToString();
                 entity.Timestamp = DateTime.UtcNow;
 
-                this.entites.Add(key, JsonConvert.SerializeObject(entity));
+                this.entities.Add(key, JsonConvert.SerializeObject(entity));
             }
 
             return Task.FromResult<object>(null);
@@ -114,19 +114,19 @@
 
             string key = this.HashEntityKeys(entity.PartitionKey, entity.RowKey);
 
-            if (!this.entites.ContainsKey(key))
+            if (!this.entities.ContainsKey(key))
             {
                 throw new EntityNotFoundException(string.Format(CultureInfo.InvariantCulture, "Entity {0}/{1} does not exist", entity.PartitionKey, entity.RowKey));
             }
 
             lock (this.padLock)
             {
-                if (!this.entites.ContainsKey(key))
+                if (!this.entities.ContainsKey(key))
                 {
                     throw new EntityNotFoundException(string.Format(CultureInfo.InvariantCulture, "Entity {0}/{1} does not exist", entity.PartitionKey, entity.RowKey));
                 }
 
-                T existingEntity = JsonConvert.DeserializeObject<T>(this.entites[key]);
+                T existingEntity = JsonConvert.DeserializeObject<T>(this.entities[key]);
 
                 if (existingEntity.ETag != entity.ETag)
                 {
@@ -136,7 +136,7 @@
                 entity.ETag = Guid.NewGuid().ToString();
                 entity.Timestamp = DateTime.UtcNow;
 
-                this.entites[key] = JsonConvert.SerializeObject(entity);
+                this.entities[key] = JsonConvert.SerializeObject(entity);
             }
 
             return Task.FromResult<object>(null);
@@ -156,26 +156,26 @@
 
             string key = this.HashEntityKeys(entity.PartitionKey, entity.RowKey);
 
-            if (!this.entites.ContainsKey(key))
+            if (!this.entities.ContainsKey(key))
             {
                 throw new EntityNotFoundException(string.Format(CultureInfo.InvariantCulture, "Entity {0}/{1} does not exist", entity.PartitionKey, entity.RowKey));
             }
 
             lock (this.padLock)
             {
-                if (!this.entites.ContainsKey(key))
+                if (!this.entities.ContainsKey(key))
                 {
                     throw new EntityNotFoundException(string.Format(CultureInfo.InvariantCulture, "Entity {0}/{1} does not exist", entity.PartitionKey, entity.RowKey));
                 }
 
-                T existingEntity = JsonConvert.DeserializeObject<T>(this.entites[key]);
+                T existingEntity = JsonConvert.DeserializeObject<T>(this.entities[key]);
 
                 if (existingEntity.ETag != entity.ETag)
                 {
                     throw new ETagMismatchException();
                 }
 
-                this.entites.Remove(key);
+                this.entities.Remove(key);
             }
 
             return Task.FromResult<object>(null);
@@ -186,7 +186,7 @@
         /// </summary>
         protected virtual void Init()
         {
-            this.entites = new Dictionary<string, string>();
+            this.entities = new Dictionary<string, string>();
             this.sha256 = SHA256CryptoServiceProvider.Create();
             this.padLock = new object();
         }
