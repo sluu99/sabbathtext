@@ -13,9 +13,9 @@
         public string PartitionKey { get; set; }
 
         /// <summary>
-        /// Gets or sets the entity key
+        /// Gets or sets the row key
         /// </summary>
-        public string EntityKey { get; set; }
+        public string RowKey { get; set; }
         
         /// <summary>
         /// Gets the e-tag
