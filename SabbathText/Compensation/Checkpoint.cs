@@ -47,6 +47,11 @@
         public CheckpointStatus Status { get; set; }
 
         /// <summary>
+        /// Gets or sets the operation type
+        /// </summary>
+        public string OperationType { get; set; }
+
+        /// <summary>
         /// Gets or sets the checkpoint data
         /// </summary>
         public string CheckpointData { get; set; }

@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyValueStorage.Tests", "Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText", "SabbathText\SabbathText.csproj", "{AB2BF8A3-020E-4CF6-B47A-E2A2C91DE503}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.Tests", "Test\SabbathText.Tests\SabbathText.Tests.csproj", "{72433979-778D-4C95-8BDF-D2B4E6F8A9FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{AB2BF8A3-020E-4CF6-B47A-E2A2C91DE503}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB2BF8A3-020E-4CF6-B47A-E2A2C91DE503}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB2BF8A3-020E-4CF6-B47A-E2A2C91DE503}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72433979-778D-4C95-8BDF-D2B4E6F8A9FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72433979-778D-4C95-8BDF-D2B4E6F8A9FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72433979-778D-4C95-8BDF-D2B4E6F8A9FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72433979-778D-4C95-8BDF-D2B4E6F8A9FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,5 +92,6 @@ Global
 		{C6CC3315-77E5-48F0-BEAE-E4AE8C584983} = {063D6847-37C0-4F25-995C-4C720BAE6321}
 		{BAEAC47D-EA85-4A29-9651-A48AE1CC31E6} = {063D6847-37C0-4F25-995C-4C720BAE6321}
 		{F69B5600-70AF-4795-8265-BFBC1502E56B} = {AC4385D0-5F38-4939-8975-84700286B796}
+		{72433979-778D-4C95-8BDF-D2B4E6F8A9FE} = {AC4385D0-5F38-4939-8975-84700286B796}
 	EndGlobalSection
 EndGlobal

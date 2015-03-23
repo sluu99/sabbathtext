@@ -19,14 +19,11 @@
         }
 
         /// <summary>
-        /// Gets a value indicating whether the current environment is using in-memory key value store 
+        /// Gets the default operation timeout
         /// </summary>
-        public virtual bool UseInMemoryKeyValueStore
+        public virtual TimeSpan OperationTimeout
         {
-            get
-            {
-                return false;
-            }
+            get { return TimeSpan.FromSeconds(3); }
         }
     }
 }

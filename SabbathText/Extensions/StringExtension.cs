@@ -93,4 +93,72 @@ public static class StringExtension
     {
         return string.Format(CultureInfo.InvariantCulture, str, parameters);
     }
+
+    /// <summary>
+    /// Extracts a US phone number from a string
+    /// </summary>
+    /// <param name="phoneNumber">The phone number</param>
+    /// <returns>A string in the form of a US phone number</returns>
+    public static string ExtractUSPhoneNumber(this string phoneNumber)
+    {
+        string digits = ExtractDigits(phoneNumber);
+
+        if (!IsValidUSPhoneNumber(digits))
+        {
+            return null;
+        }
+
+        return NormalizePhoneNumber(digits);
+    }
+
+    private static string NormalizePhoneNumber(string phoneNumber)
+    {
+        if (phoneNumber.Length == 11)
+        {
+            return "+" + phoneNumber;
+        }
+
+        return "+1" + phoneNumber;
+    }
+
+    private static bool IsValidUSPhoneNumber(string str)
+    {
+        if (string.IsNullOrEmpty(str))
+        {
+            return false;
+        }
+
+        str = str.Trim();
+
+        if (!(str.Length == 10 || str.Length == 11))
+        {
+            return false;
+        }
+
+        if (str.Length == 11 && str[0] != '1')
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static string ExtractDigits(string str)
+    {
+        if (string.IsNullOrEmpty(str))
+        {
+            return string.Empty;
+        }
+
+        MatchCollection matches = Regex.Matches(str, @"\d+");
+
+        StringBuilder sb = new StringBuilder();
+
+        foreach (Match match in matches)
+        {
+            sb.Append(match.Value);
+        }
+
+        return sb.ToString();
+    }
 }

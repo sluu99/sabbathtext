@@ -2,6 +2,7 @@
 {
     using System;
     using System.Globalization;
+    using System.Net;
     using System.Threading.Tasks;
     using KeyValueStorage;
     using Newtonsoft.Json;
@@ -19,14 +20,25 @@
         private Checkpoint checkpoint;
 
         /// <summary>
+        /// The operation type
+        /// </summary>
+        private string operationType;
+
+        /// <summary>
         /// Creates a new instance of the operation
         /// </summary>
         /// <param name="context">The operation context</param>
-        public BaseOperation(OperationContext context)
+        /// <param name="operationType">Name of the operation (including version)</param>
+        public BaseOperation(OperationContext context, string operationType)
         {
             if (context == null)
             {
                 throw new ArgumentException("context");
+            }
+
+            if (string.IsNullOrWhiteSpace(operationType))
+            {
+                throw new ArgumentException("The operation type is required", "operationType");
             }
 
             if (string.IsNullOrWhiteSpace(context.TrackingId))
@@ -34,6 +46,7 @@
                 context.TrackingId = Guid.NewGuid().ToString();
             }
 
+            this.operationType = operationType;
             this.Context = context;
         }
 
@@ -58,6 +71,7 @@
                     PartitionKey = partitionKey,
                     RowKey = this.Context.TrackingId,
                     TrackingId = this.Context.TrackingId,
+                    OperationType = this.operationType,
                     Status = status,
                     CheckpointData = checkpointData == null ? null : JsonConvert.SerializeObject(checkpointData),
                 };
@@ -97,7 +111,7 @@
         /// <param name="status">The operation status</param>
         /// <param name="responseData">The operation data</param>
         /// <returns>The final operation response</returns>
-        protected async Task<OperationResponse<T>> Complete(string partitionKey, OperationStatusCode status, T responseData)
+        protected async Task<OperationResponse<T>> Complete(string partitionKey, HttpStatusCode status, T responseData)
         {
             await this.CreateOrUpdateCheckpoint(partitionKey, CheckpointStatus.Completed, checkpointData: null);
             
@@ -115,7 +129,7 @@
         /// <param name="status">The operation status</param>
         /// <param name="errorMessage">The error message</param>
         /// <returns>The final operation response</returns>
-        protected async Task<OperationResponse<T>> CompleteWithError(string partitionKey, OperationStatusCode status, string errorMessage)
+        protected async Task<OperationResponse<T>> CompleteWithError(string partitionKey, HttpStatusCode status, string errorMessage)
         {
             await this.CreateOrUpdateCheckpoint(partitionKey, CheckpointStatus.Completed, checkpointData: null);
 

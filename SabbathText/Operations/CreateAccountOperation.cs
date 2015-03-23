@@ -1,6 +1,7 @@
 ﻿namespace SabbathText.Operations
 {
     using System;
+    using System.Net;
     using System.Threading.Tasks;
     using KeyValueStorage;
     using SabbathText.Compensation;
@@ -18,7 +19,7 @@
         /// </summary>
         /// <param name="context">The operation context</param>
         public CreateAccountOperation(OperationContext context)
-            : base(context)
+            : base(context, "CreateAccountOperation.V1")
         {
         }
 
@@ -36,11 +37,13 @@
         /// <returns>The account</returns>
         public Task<OperationResponse<Account>> CreateWithPhoneNumber(string phoneNumber)
         {
+            phoneNumber = phoneNumber.ExtractUSPhoneNumber();
+
             if (string.IsNullOrWhiteSpace(phoneNumber))
             {
                 return Task.FromResult(new OperationResponse<Account>
                 {
-                    StatusCode = OperationStatusCode.BadRequest,
+                    StatusCode = HttpStatusCode.BadRequest,
                     ErrorMessage = "Invalid phone number {0}".InvariantFormat(phoneNumber),
                 });
             }
@@ -74,13 +77,13 @@
                 AccountId = this.checkpointData.AccountId,
             };
 
-            identity = await this.Context.IdentityStore.InsertOrGet(identity);
+            identity = await this.Context.IdentityStore.InsertOrGet(identity, this.Context.CancellationToken);
 
             if (identity.AccountId != this.checkpointData.AccountId)
             {
                 return await this.CompleteWithError(
                     this.checkpointData.AccountId, /* partition key */
-                    OperationStatusCode.Conflict,
+                    HttpStatusCode.Conflict,
                     "A different operation already creates an identity with this phone number");
             }
 
@@ -106,17 +109,17 @@
                 PhoneNumber = this.checkpointData.PhoneNumber,
             };
 
-            account = await this.Context.AccountStore.InsertOrGet(account);
+            account = await this.Context.AccountStore.InsertOrGet(account, this.Context.CancellationToken);
 
             if (this.checkpointData.PhoneNumber != account.PhoneNumber)
             {
                 return await this.CompleteWithError(
                     this.checkpointData.AccountId,
-                    OperationStatusCode.Conflict,
+                    HttpStatusCode.Conflict,
                     "A diffent operation created the account with a different phone number");
             }
 
-            return await this.Complete(this.checkpointData.AccountId, OperationStatusCode.Created, account);
+            return await this.Complete(this.checkpointData.AccountId, HttpStatusCode.Created, account);
         }
 
         private class CreateAccountCheckpointData

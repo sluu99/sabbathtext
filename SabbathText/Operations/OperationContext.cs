@@ -21,11 +21,6 @@
         public CancellationToken CancellationToken { get; set; }
 
         /// <summary>
-        /// Gets or sets the account Id for this operation
-        /// </summary>
-        public string AccountId { get; set; }
-
-        /// <summary>
         /// Gets or sets the entity store
         /// </summary>
         public KeyValueStore<Identity> IdentityStore { get; set; }
