@@ -14,6 +14,7 @@ $solution = "$root\SabbathText.sln"
 $testAssemblies = @(
     # "$root\SabbathText.Core.Tests\bin\Release\SabbathText.Core.Tests.dll",
     "$root\Test\KeyValueStorage.Tests\bin\Release\KeyValueStorage.Tests.dll",
+    "$root\Test\QueueStorage.Tests\bin\Release\QueueStorage.Tests.dll",
     "$root\Test\SabbathText.Tests\bin\Release\SabbathText.Tests.dll"
 )
 

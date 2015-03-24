@@ -15,16 +15,6 @@
         where T : KeyValueEntity
     {
         /// <summary>
-        /// The Azure storage connection string
-        /// </summary>
-        private string connectionString;
-
-        /// <summary>
-        /// The Azure table name
-        /// </summary>
-        private string tableName;
-
-        /// <summary>
         /// The Azure table client
         /// </summary>
         private CloudTable cloudTable;
@@ -46,8 +36,10 @@
                 throw new ArgumentException("Table name is required", "tableName");
             }
 
-            this.tableName = tableName;
-            this.connectionString = connectionString;
+            CloudStorageAccount account = CloudStorageAccount.Parse(connectionString);
+            CloudTableClient tableClient = account.CreateCloudTableClient();
+            this.cloudTable = tableClient.GetTableReference(tableName);
+            this.cloudTable.CreateIfNotExists();
         }
 
         /// <summary>
