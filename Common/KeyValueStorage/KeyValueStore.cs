@@ -27,11 +27,6 @@
         private SHA256 sha256;
 
         /// <summary>
-        /// The lock object used for concurrent operations
-        /// </summary>
-        private object padLock;
-
-        /// <summary>
         /// Gets an entity
         /// </summary>
         /// <param name="partitionKey">The partition key</param>
@@ -58,7 +53,7 @@
                 return Task.FromResult<T>(null);
             }
 
-            lock (this.padLock)
+            lock (this.entities)
             {
                 if (!this.entities.ContainsKey(key))
                 {
@@ -101,7 +96,7 @@
                 throw new DuplicateKeyException();
             }
 
-            lock (this.padLock)
+            lock (this.entities)
             {
                 if (this.entities.ContainsKey(key))
                 {
@@ -147,7 +142,7 @@
                 throw new EntityNotFoundException(string.Format(CultureInfo.InvariantCulture, "Entity {0}/{1} does not exist", entity.PartitionKey, entity.RowKey));
             }
 
-            lock (this.padLock)
+            lock (this.entities)
             {
                 if (!this.entities.ContainsKey(key))
                 {
@@ -200,7 +195,7 @@
                 throw new EntityNotFoundException(string.Format(CultureInfo.InvariantCulture, "Entity {0}/{1} does not exist", entity.PartitionKey, entity.RowKey));
             }
 
-            lock (this.padLock)
+            lock (this.entities)
             {
                 if (!this.entities.ContainsKey(key))
                 {
@@ -263,7 +258,6 @@
         {
             this.entities = new Dictionary<string, string>();
             this.sha256 = SHA256CryptoServiceProvider.Create();
-            this.padLock = new object();
         }
 
         /// <summary>
