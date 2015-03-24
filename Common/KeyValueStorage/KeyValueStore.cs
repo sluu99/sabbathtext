@@ -259,7 +259,7 @@
         /// <summary>
         /// Initializes the internal storage
         /// </summary>
-        public virtual void Init()
+        public void InitMemory()
         {
             this.entities = new Dictionary<string, string>();
             this.sha256 = SHA256CryptoServiceProvider.Create();

@@ -28,8 +28,10 @@
         protected override void InitStore()
         {
             this.tableName = "test" + Guid.NewGuid().ToString("N").Substring(8);
-            this.Store = new AzureTableKeyValueStore<Dog>(ConnectionString, this.tableName);
-            this.Store.Init();
+            
+            AzureTableKeyValueStore<Dog> azureTableStore = new AzureTableKeyValueStore<Dog>();
+            azureTableStore.InitAzureTable(ConnectionString, this.tableName);
+            this.Store = azureTableStore;
         }
 
         /// <summary>

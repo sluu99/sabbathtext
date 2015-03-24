@@ -342,7 +342,7 @@
         protected virtual void InitStore()
         {
             this.Store = new KeyValueStore<Dog>();
-            this.Store.Init();
+            this.Store.InitMemory();
         }
 
         /// <summary>

@@ -36,9 +36,9 @@
         /// </summary>
         static TestGlobals()
         {
-            CheckpointStore.Init();
-            IdentityStore.Init();
-            AccountStore.Init();
+            CheckpointStore.InitMemory();
+            IdentityStore.InitMemory();
+            AccountStore.InitMemory();
         }
     }
 }

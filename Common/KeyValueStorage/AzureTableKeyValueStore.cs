@@ -34,7 +34,7 @@
         /// </summary>
         /// <param name="connectionString">The connection string</param>
         /// <param name="tableName">The table name</param>
-        public AzureTableKeyValueStore(string connectionString, string tableName)
+        public void InitAzureTable(string connectionString, string tableName)
         {
             if (string.IsNullOrWhiteSpace(connectionString))
             {
@@ -223,17 +223,6 @@
 
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Initializes the Azure table
-        /// </summary>
-        public override void Init()
-        {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(this.connectionString);
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-            this.cloudTable = tableClient.GetTableReference(this.tableName);
-            this.cloudTable.CreateIfNotExists();
         }
     }
 }
