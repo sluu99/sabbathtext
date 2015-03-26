@@ -23,5 +23,21 @@
                 return base.OperationTimeout;
             }
         }
+
+        /// <summary>
+        /// Gets or sets the checkpoint invisibility timeout
+        /// </summary>
+        public override TimeSpan CheckpointInvisibilityTimeout
+        {
+            get
+            {
+                if (Debugger.IsAttached)
+                {
+                    return TimeSpan.FromDays(1);
+                }
+
+                return base.CheckpointInvisibilityTimeout;
+            }
+        }
     }
 }
