@@ -11,7 +11,7 @@
     /// Key value store backed by azure table    
     /// </summary>
     /// <typeparam name="T">The key value entity type</typeparam>
-    public class AzureTableKeyValueStore<T> : InMemoryKeyValueStore<T>
+    public class KeyValueStore<T> : InMemoryKeyValueStore<T>
         where T : KeyValueEntity
     {
         /// <summary>

@@ -29,7 +29,7 @@
         {
             this.tableName = "test" + Guid.NewGuid().ToString("N").Substring(0, 8);
             
-            AzureTableKeyValueStore<Dog> azureTableStore = new AzureTableKeyValueStore<Dog>();
+            KeyValueStore<Dog> azureTableStore = new KeyValueStore<Dog>();
             azureTableStore.InitAzureTable(ConnectionString, this.tableName);
             this.Store = azureTableStore;
         }
