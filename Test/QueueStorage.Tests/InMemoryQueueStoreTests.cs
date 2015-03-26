@@ -9,12 +9,12 @@
     /// This class tests the QueueStore class
     /// </summary>
     [TestClass]
-    public class QueueStoreTests
+    public class InMemoryQueueStoreTests
     {
         /// <summary>
         /// Gets or sets the queue store used for testing
         /// </summary>
-        protected QueueStore Store { get; set; }
+        protected InMemoryQueueStore Store { get; set; }
 
         /// <summary>
         /// This method will be called before every test run
@@ -214,7 +214,7 @@
         /// </summary>
         protected virtual void InitStore()
         {
-            this.Store = new QueueStore();
+            this.Store = new InMemoryQueueStore();
             this.Store.InitMemory();
         }
 

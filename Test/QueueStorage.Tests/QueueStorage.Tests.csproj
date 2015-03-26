@@ -79,7 +79,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="QueueStoreTests.cs" />
+    <Compile Include="InMemoryQueueStoreTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AzureQueueStoreTests.cs" />
   </ItemGroup>

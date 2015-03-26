@@ -9,7 +9,7 @@
     /// <summary>
     /// This class provides an in-memory implementation of the queue store
     /// </summary>
-    public class QueueStore
+    public class InMemoryQueueStore
     {
         /// <summary>
         /// The internal storage

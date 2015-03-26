@@ -9,7 +9,7 @@
     /// <summary>
     /// A queue implementation backed by Azure queue
     /// </summary>
-    public class AzureQueueStore : QueueStore
+    public class AzureQueueStore : InMemoryQueueStore
     {
         private CloudQueue cloudQueue;
 

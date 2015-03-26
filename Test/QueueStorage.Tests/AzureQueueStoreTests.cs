@@ -8,7 +8,7 @@
     /// Tests Azure implementation of the queue store
     /// </summary>
     [TestClass]
-    public class AzureQueueStoreTests : QueueStoreTests
+    public class AzureQueueStoreTests : InMemoryQueueStoreTests
     {
         /// <summary>
         /// The connection string
