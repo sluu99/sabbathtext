@@ -13,7 +13,7 @@
     /// This class provides an in-memory key value store implementation
     /// </summary>
     /// <typeparam name="T">The key value entity type</typeparam>
-    public class InMemoryKeyValueStore<T>
+    public class InMemoryKeyValueStore<T> : KeyValueStore<T>
         where T : KeyValueEntity
     {
         /// <summary>
@@ -31,20 +31,9 @@
         /// </summary>
         /// <param name="partitionKey">The partition key</param>
         /// <param name="rowKey">The row key</param>
-        /// <returns>The entity, or null if not found</returns>
-        public Task<T> Get(string partitionKey, string rowKey)
-        {
-            return this.Get(partitionKey, rowKey, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Gets an entity
-        /// </summary>
-        /// <param name="partitionKey">The partition key</param>
-        /// <param name="rowKey">The row key</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The entity, or null if not found</returns>
-        public virtual Task<T> Get(string partitionKey, string rowKey, CancellationToken cancellationToken)
+        public override Task<T> Get(string partitionKey, string rowKey, CancellationToken cancellationToken)
         {
             string key = this.HashEntityKeys(partitionKey, rowKey);
 
@@ -68,21 +57,10 @@
         /// Inserts an entity to the key value store
         /// </summary>
         /// <param name="entity">The entity for insertion</param>
-        /// <returns>The insertion Task</returns>
-        /// <exception cref="DuplicateKeyException">Thrown when the partition key and row key already exist</exception>
-        public Task Insert(T entity)
-        {
-            return this.Insert(entity, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Inserts an entity to the key value store
-        /// </summary>
-        /// <param name="entity">The entity for insertion</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The insertion Task</returns>
         /// <exception cref="DuplicateKeyException">Thrown when the partition key and row key already exist</exception>
-        public virtual Task Insert(T entity, CancellationToken cancellationToken)
+        public override Task Insert(T entity, CancellationToken cancellationToken)
         {
             if (entity == null)
             {
@@ -116,19 +94,9 @@
         /// Updates an entity
         /// </summary>
         /// <param name="entity">The entity</param>
-        /// <returns>The update task</returns>
-        public Task Update(T entity)
-        {
-            return this.Update(entity, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Updates an entity
-        /// </summary>
-        /// <param name="entity">The entity</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The update task</returns>
-        public virtual Task Update(T entity, CancellationToken cancellationToken)
+        public override Task Update(T entity, CancellationToken cancellationToken)
         {
             if (entity == null)
             {
@@ -169,19 +137,9 @@
         /// Deletes an entity
         /// </summary>
         /// <param name="entity">The entity</param>
-        /// <returns>The delete task</returns>
-        public Task Delete(T entity)
-        {
-            return this.Delete(entity, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Deletes an entity
-        /// </summary>
-        /// <param name="entity">The entity</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The delete task</returns>
-        public virtual Task Delete(T entity, CancellationToken cancellationToken)
+        public override Task Delete(T entity, CancellationToken cancellationToken)
         {
             if (entity == null)
             {
@@ -216,66 +174,12 @@
         }
 
         /// <summary>
-        /// Inserts or gets an entity from the store
-        /// </summary>
-        /// <param name="entity">The entity</param>
-        /// <returns>The entity itself</returns>
-        public virtual Task<T> InsertOrGet(T entity)
-        {
-            return this.InsertOrGet(entity, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Inserts or gets an entity from the store
-        /// </summary>
-        /// <param name="entity">The entity</param>
-        /// <param name="cancellationToken">The cancellation token</param>
-        /// <returns>The entity itself</returns>
-        public virtual async Task<T> InsertOrGet(T entity, CancellationToken cancellationToken)
-        {
-            try
-            {
-                await this.Insert(entity, cancellationToken);
-                return entity;
-            }
-            catch (DuplicateKeyException)
-            {
-            }
-
-            entity = await this.Get(entity.PartitionKey, entity.RowKey, cancellationToken);
-            if (entity == null)
-            {
-                throw new EntityNotFoundException();
-            }
-
-            return entity;
-        }
-
-        /// <summary>
         /// Initializes the internal storage
         /// </summary>
         public void InitMemory()
         {
             this.entities = new Dictionary<string, string>();
             this.sha256 = SHA256CryptoServiceProvider.Create();
-        }
-
-        /// <summary>
-        /// Throws ArgumentNullExceptions when either key is null or empty
-        /// </summary>
-        /// <param name="partitionKey">The partition key</param>
-        /// <param name="rowKey">The row key</param>
-        protected void ThrowIfNullKeys(string partitionKey, string rowKey)
-        {
-            if (string.IsNullOrEmpty(partitionKey))
-            {
-                throw new ArgumentNullException("partitionKey");
-            }
-
-            if (string.IsNullOrEmpty(rowKey))
-            {
-                throw new ArgumentNullException("rowKey");
-            }
         }
 
         /// <summary>

@@ -79,7 +79,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AzureTableKeyValueStoreTests.cs" />
+    <Compile Include="InMemoryKeyValueStoreTests.cs" />
     <Compile Include="Fixtures\Dog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KeyValueStoreTests.cs" />

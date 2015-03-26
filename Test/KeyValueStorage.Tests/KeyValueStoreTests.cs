@@ -3,6 +3,8 @@
     using System;
     using KeyValueStorage.Tests.Fixtures;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.WindowsAzure.Storage;
+    using Microsoft.WindowsAzure.Storage.Table;
 
     /// <summary>
     /// This class tests the KeyValueStore
@@ -11,9 +13,19 @@
     public class KeyValueStoreTests
     {
         /// <summary>
+        /// The connection string
+        /// </summary>
+        private const string ConnectionString = "UseDevelopmentStorage=true";
+
+        /// <summary>
+        /// The table name
+        /// </summary>
+        private string tableName = "test";
+
+        /// <summary>
         /// Gets or sets the store used for testing
         /// </summary>
-        protected InMemoryKeyValueStore<Dog> Store { get; set; }
+        protected KeyValueStore<Dog> Store { get; set; }
 
         /// <summary>
         /// This method will be called before every test run
@@ -335,21 +347,28 @@
                 throw;
             }
         }
-
+        
         /// <summary>
-        /// Reset the store used for testing
+        /// Reset the Azure table store
         /// </summary>
         protected virtual void InitStore()
         {
-            this.Store = new InMemoryKeyValueStore<Dog>();
-            this.Store.InitMemory();
+            this.tableName = "test" + Guid.NewGuid().ToString("N").Substring(0, 8);
+
+            KeyValueStore<Dog> azureTableStore = new KeyValueStore<Dog>();
+            azureTableStore.InitAzureTable(ConnectionString, this.tableName);
+            this.Store = azureTableStore;
         }
 
         /// <summary>
-        /// Clean up the store used for testing
+        /// Clean up the table after test run
         /// </summary>
         protected virtual void CleanUpStore()
         {
+            CloudStorageAccount account = CloudStorageAccount.Parse(ConnectionString);
+            CloudTableClient client = account.CreateCloudTableClient();
+            CloudTable table = client.GetTableReference(this.tableName);
+            table.DeleteIfExists();
         }
     }
 }

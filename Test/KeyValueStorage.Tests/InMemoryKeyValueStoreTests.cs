@@ -1,25 +1,26 @@
-﻿namespace QueueStorage.Tests
+﻿namespace KeyValueStorage.Tests
 {
+    using KeyValueStorage.Tests.Fixtures;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Tests Azure implementation of the queue store
+    /// Tests the Azure table key value store
     /// </summary>
     [TestClass]
-    public class InMemoryQueueStoreTests : QueueStoreTests
+    public class InMemoryKeyValueStoreTests : KeyValueStoreTests
     {
         /// <summary>
-        /// Initializes the queue store for testing
+        /// Reset the Azure table store
         /// </summary>
         protected override void InitStore()
         {
-            InMemoryQueueStore store = new InMemoryQueueStore();
+            InMemoryKeyValueStore<Dog> store = new InMemoryKeyValueStore<Dog>();
             store.InitMemory();
             this.Store = store;
         }
 
         /// <summary>
-        /// Clean up the queue after test run
+        /// Clean up the table after test run
         /// </summary>
         protected override void CleanUpStore()
         {
