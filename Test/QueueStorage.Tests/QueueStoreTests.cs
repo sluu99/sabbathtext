@@ -81,6 +81,55 @@
                 this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(5), cancellationToken: CancellationToken.None).Result,
                 "GetMessage is expected to return the message");
         }
+
+        /// <summary>
+        /// Tests that GetMessage respects the visibility timeout
+        /// </summary>
+        [TestMethod]
+        public void GetMessage_ShouldNotReturnExpiredMessages()
+        {
+            this.Store.AddMessage(
+                "hello",
+                visibilityDelay: TimeSpan.Zero,
+                messageLifeSpan: TimeSpan.FromSeconds(5),
+                cancellationToken: CancellationToken.None).Wait();
+
+            Assert.IsNotNull(
+                this.Store.GetMessage(visibilityTimeout: TimeSpan.Zero, cancellationToken: CancellationToken.None).Result,
+                "GetMessage should not return anything for another five seconds");
+
+            // wait for the message to expire
+            Thread.Sleep(TimeSpan.FromSeconds(5));
+
+            Assert.IsNull(
+                this.Store.GetMessage(visibilityTimeout: TimeSpan.Zero, cancellationToken: CancellationToken.None).Result,
+                "GetMessage is expected to return the message");
+        }
+
+        /// <summary>
+        /// Tests delete message
+        /// </summary>
+        [TestMethod]
+        public void DeleteMessage_ShouldNotReturnAnything()
+        {
+            this.Store.AddMessage(
+                "hello",
+                visibilityDelay: TimeSpan.Zero,
+                messageLifeSpan: TimeSpan.FromDays(7),
+                cancellationToken: CancellationToken.None).Wait();
+
+            // call get message twice to make sure both returns
+            QueueMessage msg1 = this.Store.GetMessage(visibilityTimeout: TimeSpan.Zero, cancellationToken: CancellationToken.None).Result;
+            QueueMessage msg2 = this.Store.GetMessage(visibilityTimeout: TimeSpan.Zero, cancellationToken: CancellationToken.None).Result;
+
+            Assert.IsNotNull(msg2, "GetMessage did not return anything despite having zero visibility timeout");
+            Assert.AreEqual(msg1.MessageId, msg2.MessageId, "GetMessage did not resturn the same message");
+
+            this.Store.DeleteMessage(msg1, CancellationToken.None).Wait();
+            Assert.IsNull(
+                this.Store.GetMessage(visibilityTimeout: TimeSpan.Zero, cancellationToken: CancellationToken.None).Result,
+                "Nothing is expected to return after deletion");
+        }
         
         /// <summary>
         /// Initializes the queue store used for testing
