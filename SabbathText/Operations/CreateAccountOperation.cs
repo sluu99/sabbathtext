@@ -50,7 +50,6 @@
 
             this.checkpointData = new CreateAccountCheckpointData
             {
-                Checkpoint = CreateAccountCheckpoint.Started,
                 PhoneNumber = phoneNumber,
             };
 
@@ -62,7 +61,13 @@
             this.checkpointData.Checkpoint = CreateAccountCheckpoint.CreatingIdentity;
             this.checkpointData.AccountId = Guid.NewGuid().ToString();
 
-            await this.CreateOrUpdateCheckpoint(this.checkpointData.AccountId, CheckpointStatus.InProgress, this.checkpointData);
+            OperationResponse<Account> response =
+                await this.CreateOrUpdateCheckpoint(this.checkpointData.AccountId, CheckpointStatus.InProgress, this.checkpointData);
+            if (response != null)
+            {
+                return response;
+            }
+
             return await this.EnterCreateIdentity();
         }
 
@@ -84,7 +89,8 @@
                 return await this.EnterCompletedWithErrorState(
                     this.checkpointData.AccountId, /* partition key */
                     HttpStatusCode.Conflict,
-                    "A different operation already creates an identity with this phone number");
+                    "A different operation already creates an identity with this phone number",
+                    this.checkpointData);
             }
 
             return await this.TransitionToCreateAccount();
@@ -93,7 +99,14 @@
         private async Task<OperationResponse<Account>> TransitionToCreateAccount()
         {
             this.checkpointData.Checkpoint = CreateAccountCheckpoint.CreatingAccount;
-            await this.CreateOrUpdateCheckpoint(this.checkpointData.AccountId, CheckpointStatus.InProgress, this.checkpointData);
+            
+            OperationResponse<Account> response =
+                await this.CreateOrUpdateCheckpoint(this.checkpointData.AccountId, CheckpointStatus.InProgress, this.checkpointData);
+            if (response != null)
+            {
+                return response;
+            }
+
             return await this.EnterCreateAccount();
         }
 
@@ -114,15 +127,16 @@
             if (this.checkpointData.PhoneNumber != account.PhoneNumber)
             {
                 return await this.EnterCompletedWithErrorState(
-                    this.checkpointData.AccountId,
+                    this.checkpointData.AccountId, /* partition key */
                     HttpStatusCode.Conflict,
-                    "A diffent operation created the account with a different phone number");
+                    "A diffent operation created the account with a different phone number",
+                    this.checkpointData);
             }
 
-            return await this.EnterCompletedState(this.checkpointData.AccountId, HttpStatusCode.Created, account);
+            return await this.EnterCompletedState(this.checkpointData.AccountId, HttpStatusCode.Created, account, this.checkpointData);
         }
 
-        private class CreateAccountCheckpointData
+        private class CreateAccountCheckpointData : CheckpointData<Account>
         {
             /// <summary>
             /// Gets or sets the checkpoint

@@ -62,7 +62,10 @@
         /// <param name="status">The checkpoint status</param>
         /// <param name="checkpointData">The checkpoint data</param>
         /// <returns>The async task</returns>
-        protected async Task CreateOrUpdateCheckpoint(string partitionKey, CheckpointStatus status, object checkpointData)
+        protected async Task<OperationResponse<T>> CreateOrUpdateCheckpoint(
+            string partitionKey,
+            CheckpointStatus status,
+            CheckpointData<T> checkpointData)
         {
             if (this.checkpoint == null)
             {
@@ -77,11 +80,23 @@
                 };
 
                 this.checkpoint = await this.Context.Compensation.InsertOrGetCheckpoint(this.checkpoint, this.Context.CancellationToken);
+
+                if (this.checkpoint.CheckpointData != null)
+                {
+                    CheckpointData<T> existingCheckpointData = JsonConvert.DeserializeObject<CheckpointData<T>>(this.checkpoint.CheckpointData);
+                    
+                    if (existingCheckpointData.Response != null)
+                    {
+                        return existingCheckpointData.Response;
+                    }
+                }
             }
 
             this.checkpoint.Status = status;
             this.checkpoint.CheckpointData = JsonConvert.SerializeObject(checkpointData);
             await this.Context.Compensation.UpdateCheckpoint(this.checkpoint, this.Context.CancellationToken);
+
+            return null;
         }
 
         /// <summary>
@@ -90,16 +105,19 @@
         /// <param name="partitionKey">Partition key for the checkpoint</param>
         /// <param name="status">The operation status</param>
         /// <param name="responseData">The operation data</param>
+        /// <param name="checkpointData">The checkpoint data</param>
         /// <returns>The final operation response</returns>
-        protected async Task<OperationResponse<T>> EnterCompletedState(string partitionKey, HttpStatusCode status, T responseData)
+        protected async Task<OperationResponse<T>> EnterCompletedState(string partitionKey, HttpStatusCode status, T responseData, CheckpointData<T> checkpointData)
         {
-            await this.CreateOrUpdateCheckpoint(partitionKey, CheckpointStatus.Completed, checkpointData: null);
-
-            return new OperationResponse<T>
+            checkpointData.Response = new OperationResponse<T>
             {
                 StatusCode = status,
                 Data = responseData,
             };
+            
+            await this.CreateOrUpdateCheckpoint(partitionKey, CheckpointStatus.Completed, checkpointData);
+
+            return checkpointData.Response;
         }
 
         /// <summary>
@@ -108,16 +126,20 @@
         /// <param name="partitionKey">Partition key for the checkpoint</param>
         /// <param name="status">The operation status</param>
         /// <param name="errorMessage">The error message</param>
+        /// <param name="checkpointData">The checkpoint data</param>
         /// <returns>The final operation response</returns>
-        protected async Task<OperationResponse<T>> EnterCompletedWithErrorState(string partitionKey, HttpStatusCode status, string errorMessage)
+        protected async Task<OperationResponse<T>> EnterCompletedWithErrorState(string partitionKey, HttpStatusCode status, string errorMessage, CheckpointData<T> checkpointData)
         {
-            await this.CreateOrUpdateCheckpoint(partitionKey, CheckpointStatus.Completed, checkpointData: null);
-
-            return new OperationResponse<T>
+            checkpointData.Response = new OperationResponse<T>
             {
                 StatusCode = status,
                 ErrorMessage = errorMessage,
             };
+
+
+            await this.CreateOrUpdateCheckpoint(partitionKey, CheckpointStatus.Completed, checkpointData);
+
+            return checkpointData.Response;
         }
     }
 }

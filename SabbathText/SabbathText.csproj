@@ -77,6 +77,7 @@
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Operations\BaseOperation.cs" />
     <Compile Include="Operations\CreateAccountOperation.cs" />
+    <Compile Include="Operations\CheckpointData.cs" />
     <Compile Include="Operations\OperationContext.cs" />
     <Compile Include="Operations\OperationResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

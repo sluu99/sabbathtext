@@ -32,7 +32,7 @@
     }
 
     /// <summary>
-    /// Represents a check
+    /// Represents a checkpoint
     /// </summary>
     public class Checkpoint : KeyValueEntity
     {
