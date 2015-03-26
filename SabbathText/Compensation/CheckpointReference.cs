@@ -1,5 +1,8 @@
 ﻿namespace SabbathText.Compensation
 {
+    /// <summary>
+    /// This class represents a reference to a specific checkpoint
+    /// </summary>
     public class CheckpointReference
     {
         /// <summary>

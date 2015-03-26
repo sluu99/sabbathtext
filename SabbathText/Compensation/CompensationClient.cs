@@ -18,6 +18,12 @@
         private KeyValueStore<Checkpoint> checkpointStore;
         private QueueStore checkpointQueue;
 
+        /// <summary>
+        /// Creates a new instance of the compensation client
+        /// </summary>
+        /// <param name="settings">The environment settings</param>
+        /// <param name="checkpointStore">The checkpoint store</param>
+        /// <param name="checkpointQueue">The checkpoint queue</param>
         public CompensationClient(EnvironmentSettings settings, KeyValueStore<Checkpoint> checkpointStore, QueueStore checkpointQueue)
         {
             this.checkpointInvisibilityTimeout = settings.CheckpointInvisibilityTimeout;
@@ -30,19 +36,19 @@
         /// </summary>
         /// <param name="checkpoint">The checkpoint</param>
         /// <param name="cancellationToken">The cancellation token</param>
-        /// <returns>The checkpoint</returns>
+        /// <returns>The checkpoint itself</returns>
         public async Task<Checkpoint> InsertOrGetCheckpoint(Checkpoint checkpoint, CancellationToken cancellationToken)
         {
             checkpoint = await this.checkpointStore.InsertOrGet(checkpoint, cancellationToken);
 
-            CheckpointReference cpRef = new CheckpointReference
+            CheckpointReference checkpointRef = new CheckpointReference
             {
                 PartitionKey = checkpoint.PartitionKey,
                 RowKey = checkpoint.RowKey,
             };
 
             await this.checkpointQueue.AddMessage(
-                JsonConvert.SerializeObject(cpRef),
+                JsonConvert.SerializeObject(checkpointRef),
                 this.checkpointInvisibilityTimeout,
                 this.checkpointLifespan,
                 cancellationToken);

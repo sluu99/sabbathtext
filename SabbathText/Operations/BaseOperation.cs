@@ -81,7 +81,7 @@
 
             this.checkpoint.Status = status;
             this.checkpoint.CheckpointData = JsonConvert.SerializeObject(checkpointData);
-            await this.Context.Compensation.UpdateCheckpoint(checkpoint, this.Context.CancellationToken);
+            await this.Context.Compensation.UpdateCheckpoint(this.checkpoint, this.Context.CancellationToken);
         }
 
         /// <summary>
