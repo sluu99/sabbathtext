@@ -13,7 +13,7 @@
         /// <summary>
         /// Gets or sets the store used for testing
         /// </summary>
-        protected KeyValueStore<Dog> Store { get; set; }
+        protected InMemoryKeyValueStore<Dog> Store { get; set; }
 
         /// <summary>
         /// This method will be called before every test run
@@ -341,7 +341,7 @@
         /// </summary>
         protected virtual void InitStore()
         {
-            this.Store = new KeyValueStore<Dog>();
+            this.Store = new InMemoryKeyValueStore<Dog>();
             this.Store.InitMemory();
         }
 

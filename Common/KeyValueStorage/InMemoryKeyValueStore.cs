@@ -13,7 +13,7 @@
     /// This class provides an in-memory key value store implementation
     /// </summary>
     /// <typeparam name="T">The key value entity type</typeparam>
-    public class KeyValueStore<T>
+    public class InMemoryKeyValueStore<T>
         where T : KeyValueEntity
     {
         /// <summary>

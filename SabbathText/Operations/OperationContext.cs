@@ -23,16 +23,16 @@
         /// <summary>
         /// Gets or sets the entity store
         /// </summary>
-        public KeyValueStore<Identity> IdentityStore { get; set; }
+        public InMemoryKeyValueStore<Identity> IdentityStore { get; set; }
 
         /// <summary>
         /// Gets or sets the account store
         /// </summary>
-        public KeyValueStore<Account> AccountStore { get; set; }
+        public InMemoryKeyValueStore<Account> AccountStore { get; set; }
 
         /// <summary>
         /// Gets or sets the checkpoint store
         /// </summary>
-        public KeyValueStore<Checkpoint> CheckpointStore { get; set; }
+        public InMemoryKeyValueStore<Checkpoint> CheckpointStore { get; set; }
     }
 }
