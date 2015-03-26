@@ -81,7 +81,7 @@
 
             if (identity.AccountId != this.checkpointData.AccountId)
             {
-                return await this.CompleteWithError(
+                return await this.EnterCompletedWithErrorState(
                     this.checkpointData.AccountId, /* partition key */
                     HttpStatusCode.Conflict,
                     "A different operation already creates an identity with this phone number");
@@ -113,13 +113,13 @@
 
             if (this.checkpointData.PhoneNumber != account.PhoneNumber)
             {
-                return await this.CompleteWithError(
+                return await this.EnterCompletedWithErrorState(
                     this.checkpointData.AccountId,
                     HttpStatusCode.Conflict,
                     "A diffent operation created the account with a different phone number");
             }
 
-            return await this.Complete(this.checkpointData.AccountId, HttpStatusCode.Created, account);
+            return await this.EnterCompletedState(this.checkpointData.AccountId, HttpStatusCode.Created, account);
         }
 
         private class CreateAccountCheckpointData

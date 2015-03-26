@@ -70,6 +70,8 @@
   <ItemGroup>
     <Compile Include="Clock.cs" />
     <Compile Include="Compensation\Checkpoint.cs" />
+    <Compile Include="Compensation\CheckpointReference.cs" />
+    <Compile Include="Compensation\CompensationClient.cs" />
     <Compile Include="Entities\Account.cs" />
     <Compile Include="Entities\Identity.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
@@ -84,6 +86,10 @@
     <ProjectReference Include="..\common\KeyValueStorage\KeyValueStorage.csproj">
       <Project>{baeac47d-ea85-4a29-9651-a48ae1cc31e6}</Project>
       <Name>KeyValueStorage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\QueueStorage\QueueStorage.csproj">
+      <Project>{c6cc3315-77e5-48f0-beae-e4ae8c584983}</Project>
+      <Name>QueueStorage</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

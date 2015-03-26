@@ -26,9 +26,10 @@
             {
                 AccountStore = TestGlobals.AccountStore,
                 CancellationToken = new CancellationTokenSource(TestGlobals.Settings.OperationTimeout).Token,
-                CheckpointStore = TestGlobals.CheckpointStore,
                 IdentityStore = TestGlobals.IdentityStore,
                 TrackingId = Guid.NewGuid().ToString(),
+                Compensation = new Compensation.CompensationClient(
+                    TestGlobals.Settings, TestGlobals.CheckpointStore, TestGlobals.CheckpointQueue),
             };
 
             this.operation = new CreateAccountOperation(this.context);

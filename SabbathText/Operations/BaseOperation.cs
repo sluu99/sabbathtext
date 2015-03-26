@@ -76,32 +76,12 @@
                     CheckpointData = checkpointData == null ? null : JsonConvert.SerializeObject(checkpointData),
                 };
 
-                try
-                {
-                    await this.Context.CheckpointStore.Insert(this.checkpoint, this.Context.CancellationToken);
-                    return;
-                }
-                catch (DuplicateKeyException)
-                {
-                    // this happens when the operation is resumed
-                    this.checkpoint = null;
-                }
-            }
-
-            if (this.checkpoint == null)
-            {
-                // the check point should already exist in the DB
-                this.checkpoint = await this.Context.CheckpointStore.Get(partitionKey, this.Context.TrackingId, this.Context.CancellationToken);
-                if (this.checkpoint == null)
-                {
-                    throw new ApplicationException(
-                        string.Format(CultureInfo.InvariantCulture, "Cannot create nor find the checkpoint {0}/{1}", partitionKey, this.Context.TrackingId));
-                }
+                this.checkpoint = await this.Context.Compensation.InsertOrGetCheckpoint(this.checkpoint, this.Context.CancellationToken);
             }
 
             this.checkpoint.Status = status;
             this.checkpoint.CheckpointData = JsonConvert.SerializeObject(checkpointData);
-            await this.Context.CheckpointStore.Update(this.checkpoint, this.Context.CancellationToken);
+            await this.Context.Compensation.UpdateCheckpoint(checkpoint, this.Context.CancellationToken);
         }
 
         /// <summary>
@@ -111,10 +91,10 @@
         /// <param name="status">The operation status</param>
         /// <param name="responseData">The operation data</param>
         /// <returns>The final operation response</returns>
-        protected async Task<OperationResponse<T>> Complete(string partitionKey, HttpStatusCode status, T responseData)
+        protected async Task<OperationResponse<T>> EnterCompletedState(string partitionKey, HttpStatusCode status, T responseData)
         {
             await this.CreateOrUpdateCheckpoint(partitionKey, CheckpointStatus.Completed, checkpointData: null);
-            
+
             return new OperationResponse<T>
             {
                 StatusCode = status,
@@ -129,7 +109,7 @@
         /// <param name="status">The operation status</param>
         /// <param name="errorMessage">The error message</param>
         /// <returns>The final operation response</returns>
-        protected async Task<OperationResponse<T>> CompleteWithError(string partitionKey, HttpStatusCode status, string errorMessage)
+        protected async Task<OperationResponse<T>> EnterCompletedWithErrorState(string partitionKey, HttpStatusCode status, string errorMessage)
         {
             await this.CreateOrUpdateCheckpoint(partitionKey, CheckpointStatus.Completed, checkpointData: null);
 

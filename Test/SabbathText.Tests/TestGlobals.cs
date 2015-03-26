@@ -1,9 +1,10 @@
 ﻿namespace SabbathText.Tests
 {
     using System.Diagnostics.CodeAnalysis;
-    using KeyValueStorage;
-    using SabbathText.Compensation;
-    using SabbathText.Entities;
+using KeyValueStorage;
+using QueueStorage;
+using SabbathText.Compensation;
+using SabbathText.Entities;
 
     /// <summary>
     /// Test global variables
@@ -32,6 +33,11 @@
         public static InMemoryKeyValueStore<Account> AccountStore = new InMemoryKeyValueStore<Account>();
 
         /// <summary>
+        /// The checkpoint queue
+        /// </summary>
+        public static InMemoryQueueStore CheckpointQueue = new InMemoryQueueStore();
+
+        /// <summary>
         /// The static constructor
         /// </summary>
         static TestGlobals()
@@ -39,6 +45,7 @@
             CheckpointStore.InitMemory();
             IdentityStore.InitMemory();
             AccountStore.InitMemory();
+            CheckpointQueue.InitMemory();
         }
     }
 }

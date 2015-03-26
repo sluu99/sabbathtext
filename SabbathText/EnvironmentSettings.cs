@@ -23,7 +23,16 @@
         /// </summary>
         public virtual TimeSpan OperationTimeout
         {
-            get { return TimeSpan.FromSeconds(3); }
+            get { return TimeSpan.FromSeconds(30); }
+        }
+
+        /// <summary>
+        /// Gets or sets the timeout before the compensation agent picks up the checkpoint.
+        /// This should be higher than the operation timeout
+        /// </summary>
+        public virtual TimeSpan CheckpointInvisibilityTimeout
+        {
+            get { return TimeSpan.FromSeconds(60); }
         }
     }
 }

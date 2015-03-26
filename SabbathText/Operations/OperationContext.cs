@@ -2,6 +2,7 @@
 {
     using System.Threading;
     using KeyValueStorage;
+    using QueueStorage;
     using SabbathText.Compensation;
     using SabbathText.Entities;
 
@@ -31,8 +32,8 @@
         public InMemoryKeyValueStore<Account> AccountStore { get; set; }
 
         /// <summary>
-        /// Gets or sets the checkpoint store
+        /// Gets or sets the compensation client
         /// </summary>
-        public InMemoryKeyValueStore<Checkpoint> CheckpointStore { get; set; }
+        public CompensationClient Compensation { get; set; }
     }
 }
