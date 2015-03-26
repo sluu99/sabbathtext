@@ -42,6 +42,7 @@
                 ExpirationTime = DateTime.UtcNow + messageLifeSpan,
                 InsertionTime = DateTime.UtcNow,
                 NextVisibleTime = DateTime.UtcNow + visibilityDelay,
+                ImplementationData = Guid.NewGuid().ToString(), // etag
             };
 
             lock (this.queue)
@@ -60,6 +61,11 @@
         /// <returns>A queue message, or null of there's none available</returns>
         public virtual Task<QueueMessage> GetMessage(TimeSpan visibilityTimeout, CancellationToken cancellationToken)
         {
+            if (visibilityTimeout < TimeSpan.FromSeconds(1))
+            {
+                throw new ArgumentException("Visibility timeout must be at least 1 second", "visibilityTimeout");
+            }
+
             lock (this.queue)
             {
                 LinkedListNode<QueueMessage> node = this.queue.First;
@@ -77,6 +83,7 @@
                         // found a visible message
                         node.Value.DequeueCount++;
                         node.Value.NextVisibleTime += visibilityTimeout;
+                        node.Value.ImplementationData = Guid.NewGuid().ToString(); // etag
 
                         // this is a quick and dirty way to clone an object
                         return Task.FromResult(
@@ -89,6 +96,58 @@
             }
 
             return Task.FromResult<QueueMessage>(null);
+        }
+
+        /// <summary>
+        /// Deletes a message from the queue
+        /// </summary>
+        /// <param name="message">The queue message</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>The deletion task</returns>
+        public virtual Task DeleteMessage(QueueMessage message, CancellationToken cancellationToken)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+
+            if (string.IsNullOrWhiteSpace(message.MessageId))
+            {
+                throw new ArgumentException("The message ID is required");
+            }
+
+            bool messageFound = false;
+
+            lock (this.queue)
+            {
+                LinkedListNode<QueueMessage> node = this.queue.First;
+                while (node != null)
+                {
+                    LinkedListNode<QueueMessage> nextNode = node.Next;
+
+                    if (node.Value.ExpirationTime <= DateTime.UtcNow || 
+                        (node.Value.MessageId == message.MessageId && node.Value.ImplementationData == message.ImplementationData /* etag */))
+                    {
+                        // remove messages that have expired
+                        this.queue.Remove(node); // O(1)
+
+                        if (node.Value.MessageId == message.MessageId && node.Value.ImplementationData == message.ImplementationData /* etag */)
+                        {
+                            messageFound = true;
+                            break;
+                        }
+                    }
+
+                    node = nextNode;
+                }
+            }
+
+            if (!messageFound)
+            {
+                throw new DeleteMessageException();
+            }
+
+            return Task.FromResult<object>(null);
         }
     }
 }

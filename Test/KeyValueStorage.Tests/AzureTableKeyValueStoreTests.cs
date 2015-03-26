@@ -20,14 +20,14 @@
         /// <summary>
         /// The table name
         /// </summary>
-        private string tableName = "test_";
+        private string tableName = "test";
 
         /// <summary>
         /// Reset the Azure table store
         /// </summary>
         protected override void InitStore()
         {
-            this.tableName = "test" + Guid.NewGuid().ToString("N").Substring(8);
+            this.tableName = "test" + Guid.NewGuid().ToString("N").Substring(0, 8);
             
             AzureTableKeyValueStore<Dog> azureTableStore = new AzureTableKeyValueStore<Dog>();
             azureTableStore.InitAzureTable(ConnectionString, this.tableName);

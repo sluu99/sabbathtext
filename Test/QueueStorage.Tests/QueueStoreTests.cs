@@ -26,10 +26,19 @@
         }
 
         /// <summary>
+        /// this method will be called after test runs
+        /// </summary>
+        [TestCleanup]
+        public void CleanUp()
+        {
+            this.CleanUpStore();
+        }
+
+        /// <summary>
         /// AddMessage should allow messages with the same body
         /// </summary>
         [TestMethod]
-        public void AddMessage_ShouldAllowDuplicates()
+        public void AddMessage_ShouldAllowDuplicateBody()
         {
             this.Store.AddMessage(
                 "hello",
@@ -64,10 +73,11 @@
                 cancellationToken: CancellationToken.None).Wait();
 
             // call get message twice to make sure both returns
-            QueueMessage msg1 = this.Store.GetMessage(visibilityTimeout: TimeSpan.Zero, cancellationToken: CancellationToken.None).Result;
-            QueueMessage msg2 = this.Store.GetMessage(visibilityTimeout: TimeSpan.Zero, cancellationToken: CancellationToken.None).Result;
+            QueueMessage msg1 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+            QueueMessage msg2 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
 
-            Assert.IsNotNull(msg2, "GetMessage did not return anything despite having zero visibility timeout");
+            Assert.IsNotNull(msg2, "GetMessage did not return anythingt");
             Assert.AreEqual(msg1.MessageId, msg2.MessageId, "GetMessage did not resturn the same message");
 
             this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(5), cancellationToken: CancellationToken.None).Wait();
@@ -95,15 +105,15 @@
                 cancellationToken: CancellationToken.None).Wait();
 
             Assert.IsNotNull(
-                this.Store.GetMessage(visibilityTimeout: TimeSpan.Zero, cancellationToken: CancellationToken.None).Result,
-                "GetMessage should not return anything for another five seconds");
+                this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result,
+                "GetMessage is expected to return a message");
 
             // wait for the message to expire
             Thread.Sleep(TimeSpan.FromSeconds(5));
 
             Assert.IsNull(
-                this.Store.GetMessage(visibilityTimeout: TimeSpan.Zero, cancellationToken: CancellationToken.None).Result,
-                "GetMessage is expected to return the message");
+                this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result,
+                "GetMessage should not return expired messages");
         }
 
         /// <summary>
@@ -119,16 +129,84 @@
                 cancellationToken: CancellationToken.None).Wait();
 
             // call get message twice to make sure both returns
-            QueueMessage msg1 = this.Store.GetMessage(visibilityTimeout: TimeSpan.Zero, cancellationToken: CancellationToken.None).Result;
-            QueueMessage msg2 = this.Store.GetMessage(visibilityTimeout: TimeSpan.Zero, cancellationToken: CancellationToken.None).Result;
+            QueueMessage msg1 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+            QueueMessage msg2 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
 
             Assert.IsNotNull(msg2, "GetMessage did not return anything despite having zero visibility timeout");
             Assert.AreEqual(msg1.MessageId, msg2.MessageId, "GetMessage did not resturn the same message");
 
-            this.Store.DeleteMessage(msg1, CancellationToken.None).Wait();
+            this.Store.DeleteMessage(msg2, CancellationToken.None).Wait();
             Assert.IsNull(
-                this.Store.GetMessage(visibilityTimeout: TimeSpan.Zero, cancellationToken: CancellationToken.None).Result,
+                this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result,
                 "Nothing is expected to return after deletion");
+        }
+
+        /// <summary>
+        /// Tests deleting a message that does not exist
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(DeleteMessageException))]
+        public void DeleteMessage_ShouldThrowExceptionWhenMessgeDoesNotExist()
+        {
+            this.Store.AddMessage(
+                "hello",
+                visibilityDelay: TimeSpan.Zero,
+                messageLifeSpan: TimeSpan.FromDays(7),
+                cancellationToken: CancellationToken.None).Wait();
+
+            // call get message twice to make sure both returns
+            QueueMessage msg = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
+
+            this.Store.DeleteMessage(msg, CancellationToken.None).Wait();
+
+            try
+            {
+                this.Store.DeleteMessage(msg, CancellationToken.None).Wait();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    throw ex.InnerException;
+                }
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Tests deleting a message that got checked out by others
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(DeleteMessageException))]
+        public void DeleteMessage_ShouldThrowExceptionWhenCheckedOutByOthers()
+        {
+            this.Store.AddMessage(
+                "hello",
+                visibilityDelay: TimeSpan.Zero,
+                messageLifeSpan: TimeSpan.FromDays(7),
+                cancellationToken: CancellationToken.None).Wait();
+
+            // checkout the message twice
+            QueueMessage msg1 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+            QueueMessage msg2 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
+            
+            try
+            {
+                // this should throw an exception, since the same message is checked out by someone else (msg2)
+                this.Store.DeleteMessage(msg1, CancellationToken.None).Wait();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    throw ex.InnerException;
+                }
+
+                throw;
+            }
         }
         
         /// <summary>

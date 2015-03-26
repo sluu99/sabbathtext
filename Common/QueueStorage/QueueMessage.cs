@@ -43,5 +43,11 @@
         /// </summary>
         [JsonProperty]
         public int DequeueCount { get; internal set; }
+
+        /// <summary>
+        /// Gets or sets the implementation specific data
+        /// </summary>
+        [JsonProperty]
+        internal string ImplementationData { get; set; }
     }
 }

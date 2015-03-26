@@ -20,7 +20,7 @@
         private CloudTable cloudTable;
 
         /// <summary>
-        /// Initializes a new instance of this class
+        /// Initializes the underlying Azure storage
         /// </summary>
         /// <param name="connectionString">The connection string</param>
         /// <param name="tableName">The table name</param>
