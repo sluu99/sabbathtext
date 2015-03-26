@@ -61,7 +61,7 @@
         /// <param name="partitionKey">The partition key for the checkpoint</param>
         /// <param name="status">The checkpoint status</param>
         /// <param name="checkpointData">The checkpoint data</param>
-        /// <returns>The async task</returns>
+        /// <returns>The response if it was already completed before, or null</returns>
         protected async Task<OperationResponse<T>> CreateOrUpdateCheckpoint(
             string partitionKey,
             CheckpointStatus status,
@@ -135,7 +135,6 @@
                 StatusCode = status,
                 ErrorMessage = errorMessage,
             };
-
 
             await this.CreateOrUpdateCheckpoint(partitionKey, CheckpointStatus.Completed, checkpointData);
 

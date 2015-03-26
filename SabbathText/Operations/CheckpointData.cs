@@ -3,7 +3,7 @@
     /// <summary>
     /// Operation data
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The response data type</typeparam>
     public class CheckpointData<T>
     {
         /// <summary>
