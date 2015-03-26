@@ -8,7 +8,7 @@
     /// Tests Azure implementation of the queue store
     /// </summary>
     [TestClass]
-    public class AzureQueueStoreTests : InMemoryQueueStoreTests
+    public class AzureQueueStoreTests : QueueStoreTests
     {
         /// <summary>
         /// The connection string
@@ -26,7 +26,7 @@
         protected override void InitStore()
         {
             this.queueName = "test" + Guid.NewGuid().ToString("N").Substring(0, 8);
-            AzureQueueStore store = new AzureQueueStore();
+            QueueStore store = new QueueStore();
             store.InitAzureQueue(ConnectionString, this.queueName);
             this.Store = store;
         }

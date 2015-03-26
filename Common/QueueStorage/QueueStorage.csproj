@@ -71,7 +71,7 @@
     <Compile Include="AzureQueue.cs">
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="AzureQueueStore.cs" />
+    <Compile Include="QueueStore.cs" />
     <Compile Include="EntityNotFoundException.cs" />
     <Compile Include="IQueue.cs">
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>

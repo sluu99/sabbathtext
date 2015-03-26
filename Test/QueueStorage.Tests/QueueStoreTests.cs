@@ -9,7 +9,7 @@
     /// This class tests the QueueStore class
     /// </summary>
     [TestClass]
-    public class InMemoryQueueStoreTests
+    public class QueueStoreTests
     {
         /// <summary>
         /// Gets or sets the queue store used for testing

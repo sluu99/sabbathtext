@@ -72,7 +72,7 @@
     <Compile Include="EntityNotFoundException.cs" />
     <Compile Include="ETagMismatchException.cs" />
     <Compile Include="KeyValueEntity.cs" />
-    <Compile Include="KeyValueStore.cs" />
+    <Compile Include="InMemoryKeyValueStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
