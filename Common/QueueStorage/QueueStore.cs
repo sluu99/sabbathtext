@@ -9,7 +9,7 @@
     /// <summary>
     /// A queue implementation backed by Azure queue
     /// </summary>
-    public class QueueStore : InMemoryQueueStore
+    public class QueueStore
     {
         private CloudQueue cloudQueue;
 
@@ -44,7 +44,7 @@
         /// <param name="messageLifeSpan">The amount of time that the message lives</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The operation task</returns>
-        public override Task AddMessage(string body, TimeSpan visibilityDelay, TimeSpan messageLifeSpan, CancellationToken cancellationToken)
+        public virtual Task AddMessage(string body, TimeSpan visibilityDelay, TimeSpan messageLifeSpan, CancellationToken cancellationToken)
         {
             CloudQueueMessage message = new CloudQueueMessage(body);
             return this.cloudQueue.AddMessageAsync(
@@ -62,7 +62,7 @@
         /// <param name="visibilityTimeout">The amount of time the returned message will stay hidden until it becomes visible again</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>A queue message, or null of there's none available</returns>
-        public override async Task<QueueMessage> GetMessage(TimeSpan visibilityTimeout, CancellationToken cancellationToken)
+        public virtual async Task<QueueMessage> GetMessage(TimeSpan visibilityTimeout, CancellationToken cancellationToken)
         {
             if (visibilityTimeout < TimeSpan.FromSeconds(1))
             {
@@ -109,7 +109,7 @@
         /// <param name="message">The queue message</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The deletion task</returns>
-        public override async Task DeleteMessage(QueueMessage message, CancellationToken cancellationToken)
+        public virtual async Task DeleteMessage(QueueMessage message, CancellationToken cancellationToken)
         {
             if (message == null)
             {

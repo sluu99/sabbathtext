@@ -9,7 +9,7 @@
     /// <summary>
     /// This class provides an in-memory implementation of the queue store
     /// </summary>
-    public class InMemoryQueueStore
+    public class InMemoryQueueStore : QueueStore
     {
         /// <summary>
         /// The internal storage
@@ -32,7 +32,7 @@
         /// <param name="messageLifeSpan">The amount of time that the message lives</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The operation task</returns>
-        public virtual Task AddMessage(string body, TimeSpan visibilityDelay, TimeSpan messageLifeSpan, CancellationToken cancellationToken)
+        public override Task AddMessage(string body, TimeSpan visibilityDelay, TimeSpan messageLifeSpan, CancellationToken cancellationToken)
         {
             QueueMessage message = new QueueMessage
             {
@@ -59,7 +59,7 @@
         /// <param name="visibilityTimeout">The amount of time the returned message will stay hidden until it becomes visible again</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>A queue message, or null of there's none available</returns>
-        public virtual Task<QueueMessage> GetMessage(TimeSpan visibilityTimeout, CancellationToken cancellationToken)
+        public override Task<QueueMessage> GetMessage(TimeSpan visibilityTimeout, CancellationToken cancellationToken)
         {
             if (visibilityTimeout < TimeSpan.FromSeconds(1))
             {
@@ -104,7 +104,7 @@
         /// <param name="message">The queue message</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The deletion task</returns>
-        public virtual Task DeleteMessage(QueueMessage message, CancellationToken cancellationToken)
+        public override Task DeleteMessage(QueueMessage message, CancellationToken cancellationToken)
         {
             if (message == null)
             {

@@ -4,6 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.WindowsAzure.Storage;
 
     /// <summary>
     /// This class tests the QueueStore class
@@ -12,9 +13,19 @@
     public class QueueStoreTests
     {
         /// <summary>
+        /// The connection string
+        /// </summary>
+        private const string ConnectionString = "UseDevelopmentStorage=true";
+
+        /// <summary>
+        /// The queue name
+        /// </summary>
+        private string queueName = "test";
+
+        /// <summary>
         /// Gets or sets the queue store used for testing
         /// </summary>
-        protected InMemoryQueueStore Store { get; set; }
+        protected QueueStore Store { get; set; }
 
         /// <summary>
         /// This method will be called before every test run
@@ -86,7 +97,7 @@
                 "GetMessage should not return anything for another five seconds");
 
             Thread.Sleep(TimeSpan.FromSeconds(5));
-            
+
             Assert.IsNotNull(
                 this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(5), cancellationToken: CancellationToken.None).Result,
                 "GetMessage is expected to return the message");
@@ -192,7 +203,7 @@
             QueueMessage msg1 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
             Thread.Sleep(TimeSpan.FromSeconds(1));
             QueueMessage msg2 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
-            
+
             try
             {
                 // this should throw an exception, since the same message is checked out by someone else (msg2)
@@ -208,21 +219,24 @@
                 throw;
             }
         }
-        
+
         /// <summary>
         /// Initializes the queue store used for testing
         /// </summary>
         protected virtual void InitStore()
         {
-            this.Store = new InMemoryQueueStore();
-            this.Store.InitMemory();
+            this.queueName = "test" + Guid.NewGuid().ToString().Substring(0, 8);
+            this.Store = new QueueStore();
+            this.Store.InitAzureQueue(ConnectionString, this.queueName);
         }
 
         /// <summary>
         /// Clean up the store after testing
         /// </summary>
         protected virtual void CleanUpStore()
-        {            
+        {
+            CloudStorageAccount account = CloudStorageAccount.Parse(ConnectionString);
+            account.CreateCloudQueueClient().GetQueueReference(this.queueName).DeleteIfExists();
         }
     }
 }

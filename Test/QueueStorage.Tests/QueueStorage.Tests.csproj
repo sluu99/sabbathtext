@@ -81,7 +81,7 @@
   <ItemGroup>
     <Compile Include="QueueStoreTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AzureQueueStoreTests.cs" />
+    <Compile Include="InMemoryQueueStoreTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\QueueStorage\QueueStorage.csproj">
