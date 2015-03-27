@@ -42,7 +42,7 @@
         [TestMethod]
         public void CreateAccountOperation_ShouldReturnBadRequestOnInvalidPhoneNumber()
         {
-            OperationResponse<Account> response = this.operation.CreateWithPhoneNumber(Guid.NewGuid().ToString()).Result;
+            OperationResponse<Account> response = this.operation.Run(Guid.NewGuid().ToString()).Result;
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
             Assert.AreEqual(CommonErrorCodes.InvalidInput, response.ErrorCode);
         }
@@ -54,7 +54,7 @@
         public void CreateAccountOperation_Success()
         {
             string phoneNumber = TestHelper.GetUSPhoneNumber();
-            OperationResponse<Account> response = this.operation.CreateWithPhoneNumber(phoneNumber).Result;
+            OperationResponse<Account> response = this.operation.Run(phoneNumber).Result;
             
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
             Assert.AreEqual(response.Data.PhoneNumber, phoneNumber);

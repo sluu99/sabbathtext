@@ -13,8 +13,6 @@
     /// </summary>
     public class CreateAccountOperation : BaseOperation<Account>
     {
-        private const string PhoneNumberTakenErrorCode = "PhoneNumberTaken";
-        private const string PhoneNumberTakenErrorDescription = "This phone number was used to create a different account";
         private const string AccountCreatedPhoneMismatchErrorCode = "AccountCreatedPhoneMismatch";
         private const string AccountCreatedPhoneMismatchErrorDescription = "This account was created with a different phone number";
 
@@ -40,7 +38,7 @@
         /// </summary>
         /// <param name="phoneNumber">The phone number</param>
         /// <returns>The account</returns>
-        public Task<OperationResponse<Account>> CreateWithPhoneNumber(string phoneNumber)
+        public Task<OperationResponse<Account>> Run(string phoneNumber)
         {
             phoneNumber = phoneNumber.ExtractUSPhoneNumber();
 
@@ -84,16 +82,7 @@
 
         private async Task<OperationResponse<Account>> TransitionToCreateIdentity()
         {
-            this.checkpointData.State = CreateAccountCheckpoint.CreatingIdentity;
-            this.checkpointData.AccountId = Guid.NewGuid().ToString();
-
-            OperationResponse<Account> response =
-                await this.CreateOrUpdateCheckpoint(this.checkpointData.AccountId, this.checkpointData);
-            if (response != null)
-            {
-                return response;
-            }
-
+            this.checkpointData.State = CreateAccountCheckpoint.CreatingIdentity;            
             return await this.EnterCreateIdentity();
         }
 
@@ -109,17 +98,7 @@
             };
 
             identity = await this.Context.IdentityStore.InsertOrGet(identity, this.Context.CancellationToken);
-
-            if (identity.AccountId != this.checkpointData.AccountId)
-            {
-                return await this.Complete(
-                    this.checkpointData.AccountId, /* partition key */
-                    this.checkpointData,
-                    HttpStatusCode.Conflict,
-                    null, /* response data */
-                    PhoneNumberTakenErrorCode,
-                    PhoneNumberTakenErrorDescription);
-            }
+            this.checkpointData.AccountId = identity.AccountId;
 
             return await this.TransitionToCreateAccount();
         }
@@ -128,14 +107,9 @@
         {
             this.checkpointData.State = CreateAccountCheckpoint.CreatingAccount;
             
-            OperationResponse<Account> response =
-                await this.CreateOrUpdateCheckpoint(this.checkpointData.AccountId, this.checkpointData);
-            if (response != null)
-            {
-                return response;
-            }
-
-            return await this.EnterCreateAccount();
+            return
+                await this.CreateOrUpdateCheckpoint(this.checkpointData.AccountId, this.checkpointData) ??
+                await this.EnterCreateAccount();
         }
 
         private async Task<OperationResponse<Account>> EnterCreateAccount()
