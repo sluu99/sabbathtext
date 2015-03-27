@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="V1\CheckpointHandler.cs" />
+    <Compile Include="V1\CompensationProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="V1\Checkpoint.cs" />
     <Compile Include="V1\CheckpointReference.cs" />

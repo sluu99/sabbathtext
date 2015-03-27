@@ -24,6 +24,16 @@
         /// The operation has been cancelled
         /// </summary>
         Cancelled,
+
+        /// <summary>
+        /// The operation is in the process of rolling back
+        /// </summary>
+        Cancelling,
+
+        /// <summary>
+        /// The operation is marked to continue later
+        /// </summary>
+        DelayedProcessing,
     }
 
     /// <summary>

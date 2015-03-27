@@ -66,5 +66,43 @@
         {
             return this.checkpointStore.Update(checkpoint, cancellationToken);
         }
+
+        /// <summary>
+        /// Gets the next checkpoint message available
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>A queue message</returns>
+        public Task<QueueMessage> GetCheckpointMessage(CancellationToken cancellationToken)
+        {
+            return this.checkpointQueue.GetMessage(this.checkpointTimeout, cancellationToken);
+        }
+
+        /// <summary>
+        /// Gets the checkpoint referenced by the queue message
+        /// </summary>
+        /// <param name="message">The queue message</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>A checkpoint</returns>
+        public Task<Checkpoint> GetCheckpoint(QueueMessage message, CancellationToken cancellationToken)
+        {
+            if (message == null)
+            {
+                throw new ArgumentException("message");
+            }
+
+            CheckpointReference checkpointRef = JsonConvert.DeserializeObject<CheckpointReference>(message.Body);
+            return this.checkpointStore.Get(checkpointRef.PartitionKey, checkpointRef.RowKey);
+        }
+
+        /// <summary>
+        /// Deletes a checkpoint message
+        /// </summary>
+        /// <param name="message">The checkpoint message</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>The delete task</returns>
+        public Task DeleteCheckpointMessge(QueueMessage message, CancellationToken cancellationToken)
+        {
+            return this.checkpointQueue.DeleteMessage(message, cancellationToken);
+        }
     }
 }
