@@ -69,17 +69,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clock.cs" />
-    <Compile Include="Compensation\Checkpoint.cs" />
-    <Compile Include="Compensation\CheckpointReference.cs" />
-    <Compile Include="Compensation\CompensationClient.cs" />
-    <Compile Include="Entities\Account.cs" />
-    <Compile Include="Entities\Identity.cs" />
+    <Compile Include="V1\Compensation\Checkpoint.cs" />
+    <Compile Include="V1\Compensation\CheckpointReference.cs" />
+    <Compile Include="V1\Compensation\CompensationClient.cs" />
+    <Compile Include="V1\Entities\Account.cs" />
+    <Compile Include="V1\Entities\Identity.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
-    <Compile Include="Operations\BaseOperation.cs" />
-    <Compile Include="Operations\CreateAccountOperation.cs" />
-    <Compile Include="Operations\CheckpointData.cs" />
-    <Compile Include="Operations\OperationContext.cs" />
-    <Compile Include="Operations\OperationResponse.cs" />
+    <Compile Include="V1\Operations\BaseOperation.cs" />
+    <Compile Include="V1\Operations\CreateAccountOperation.cs" />
+    <Compile Include="V1\Operations\CheckpointData.cs" />
+    <Compile Include="V1\Operations\OperationContext.cs" />
+    <Compile Include="V1\Operations\OperationResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnvironmentSettings.cs" />
   </ItemGroup>
