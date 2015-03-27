@@ -1,4 +1,4 @@
-﻿namespace SabbathText.Operations
+﻿namespace SabbathText.V1.Operations
 {
     using System;
     using System.Globalization;
@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
     using KeyValueStorage;
     using Newtonsoft.Json;
-    using SabbathText.Compensation;
+    using SabbathText.Compensation.V1;
 
     /// <summary>
     /// This is the base class for all the operations
@@ -59,12 +59,10 @@
         /// Creates or updates a checkpoint
         /// </summary>
         /// <param name="partitionKey">The partition key for the checkpoint</param>
-        /// <param name="status">The checkpoint status</param>
         /// <param name="checkpointData">The checkpoint data</param>
         /// <returns>The response if it was already completed before, or null</returns>
         protected async Task<OperationResponse<T>> CreateOrUpdateCheckpoint(
             string partitionKey,
-            CheckpointStatus status,
             CheckpointData<T> checkpointData)
         {
             if (this.checkpoint == null)
@@ -75,7 +73,7 @@
                     RowKey = this.Context.TrackingId,
                     TrackingId = this.Context.TrackingId,
                     OperationType = this.operationType,
-                    Status = status,
+                    Status = CheckpointStatus.InProgress,
                     CheckpointData = checkpointData == null ? null : JsonConvert.SerializeObject(checkpointData),
                 };
 
@@ -92,7 +90,6 @@
                 }
             }
 
-            this.checkpoint.Status = status;
             this.checkpoint.CheckpointData = JsonConvert.SerializeObject(checkpointData);
             await this.Context.Compensation.UpdateCheckpoint(this.checkpoint, this.Context.CancellationToken);
 
@@ -114,8 +111,9 @@
                 StatusCode = status,
                 Data = responseData,
             };
-            
-            await this.CreateOrUpdateCheckpoint(partitionKey, CheckpointStatus.Completed, checkpointData);
+
+            this.checkpoint.Status = CheckpointStatus.Completed;
+            await this.CreateOrUpdateCheckpoint(partitionKey, checkpointData);
 
             return checkpointData.Response;
         }
@@ -136,7 +134,8 @@
                 ErrorMessage = errorMessage,
             };
 
-            await this.CreateOrUpdateCheckpoint(partitionKey, CheckpointStatus.Completed, checkpointData);
+            this.checkpoint.Status = CheckpointStatus.Completed;
+            await this.CreateOrUpdateCheckpoint(partitionKey, checkpointData);
 
             return checkpointData.Response;
         }

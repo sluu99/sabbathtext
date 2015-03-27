@@ -30,7 +30,7 @@
         /// Gets the timeout before the compensation agent picks up the checkpoint.
         /// This should be higher than the operation timeout
         /// </summary>
-        public virtual TimeSpan CheckpointInvisibilityTimeout
+        public virtual TimeSpan CheckpointVisibilityTimeout
         {
             get { return TimeSpan.FromSeconds(60); }
         }

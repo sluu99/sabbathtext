@@ -1,4 +1,4 @@
-﻿namespace SabbathText.Compensation
+﻿namespace SabbathText.Compensation.V1
 {
     using KeyValueStorage;
     using Newtonsoft.Json;
@@ -10,11 +10,6 @@
     [JsonConverter(typeof(StringEnumConverter))]
     public enum CheckpointStatus
     {
-        /// <summary>
-        /// The operation has started
-        /// </summary>
-        Started,
-
         /// <summary>
         /// The operation is in progress
         /// </summary>

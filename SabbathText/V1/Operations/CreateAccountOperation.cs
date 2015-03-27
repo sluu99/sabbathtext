@@ -1,11 +1,11 @@
-﻿namespace SabbathText.Operations
+﻿namespace SabbathText.V1.Operations
 {
     using System;
     using System.Net;
     using System.Threading.Tasks;
     using KeyValueStorage;
     using SabbathText.Compensation;
-    using SabbathText.Entities;
+    using SabbathText.V1.Entities;
 
     /// <summary>
     /// This operation creates an account
@@ -62,7 +62,7 @@
             this.checkpointData.AccountId = Guid.NewGuid().ToString();
 
             OperationResponse<Account> response =
-                await this.CreateOrUpdateCheckpoint(this.checkpointData.AccountId, CheckpointStatus.InProgress, this.checkpointData);
+                await this.CreateOrUpdateCheckpoint(this.checkpointData.AccountId, this.checkpointData);
             if (response != null)
             {
                 return response;
@@ -101,7 +101,7 @@
             this.checkpointData.Checkpoint = CreateAccountCheckpoint.CreatingAccount;
             
             OperationResponse<Account> response =
-                await this.CreateOrUpdateCheckpoint(this.checkpointData.AccountId, CheckpointStatus.InProgress, this.checkpointData);
+                await this.CreateOrUpdateCheckpoint(this.checkpointData.AccountId, this.checkpointData);
             if (response != null)
             {
                 return response;

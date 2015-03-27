@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.Tests", "Test\S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueStorage.Tests", "Test\QueueStorage.Tests\QueueStorage.Tests.csproj", "{D3BC598A-6EF0-4EFE-8B35-73A01AD0E83F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.Compensation", "SabbathText.Compensation\SabbathText.Compensation.csproj", "{89227B2C-EBC6-4235-A5A8-E28EE4E034E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{D3BC598A-6EF0-4EFE-8B35-73A01AD0E83F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3BC598A-6EF0-4EFE-8B35-73A01AD0E83F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3BC598A-6EF0-4EFE-8B35-73A01AD0E83F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89227B2C-EBC6-4235-A5A8-E28EE4E034E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89227B2C-EBC6-4235-A5A8-E28EE4E034E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89227B2C-EBC6-4235-A5A8-E28EE4E034E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89227B2C-EBC6-4235-A5A8-E28EE4E034E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

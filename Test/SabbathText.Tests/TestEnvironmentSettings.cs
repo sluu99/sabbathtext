@@ -27,7 +27,7 @@
         /// <summary>
         /// Gets or sets the checkpoint invisibility timeout
         /// </summary>
-        public override TimeSpan CheckpointInvisibilityTimeout
+        public override TimeSpan CheckpointVisibilityTimeout
         {
             get
             {
@@ -36,7 +36,7 @@
                     return TimeSpan.FromDays(1);
                 }
 
-                return base.CheckpointInvisibilityTimeout;
+                return base.CheckpointVisibilityTimeout;
             }
         }
     }

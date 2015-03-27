@@ -1,4 +1,4 @@
-﻿namespace SabbathText.Compensation
+﻿namespace SabbathText.Compensation.V1
 {
     using System;
     using System.Threading;
@@ -14,19 +14,19 @@
     {
         private readonly TimeSpan checkpointLifespan = TimeSpan.FromDays(7);
 
-        private TimeSpan checkpointInvisibilityTimeout;
+        private TimeSpan checkpointTimeout;
         private KeyValueStore<Checkpoint> checkpointStore;
         private QueueStore checkpointQueue;
 
         /// <summary>
         /// Creates a new instance of the compensation client
         /// </summary>
-        /// <param name="settings">The environment settings</param>
         /// <param name="checkpointStore">The checkpoint store</param>
         /// <param name="checkpointQueue">The checkpoint queue</param>
-        public CompensationClient(EnvironmentSettings settings, KeyValueStore<Checkpoint> checkpointStore, QueueStore checkpointQueue)
+        /// <param name="checkpointTimeout">The checkpoint timeout</param>
+        public CompensationClient(KeyValueStore<Checkpoint> checkpointStore, QueueStore checkpointQueue, TimeSpan checkpointTimeout)
         {
-            this.checkpointInvisibilityTimeout = settings.CheckpointInvisibilityTimeout;
+            this.checkpointTimeout = checkpointTimeout;
             this.checkpointStore = checkpointStore;
             this.checkpointQueue = checkpointQueue;
         }
@@ -49,7 +49,7 @@
 
             await this.checkpointQueue.AddMessage(
                 JsonConvert.SerializeObject(checkpointRef),
-                this.checkpointInvisibilityTimeout,
+                this.checkpointTimeout,
                 this.checkpointLifespan,
                 cancellationToken);
 

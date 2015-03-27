@@ -1,4 +1,4 @@
-﻿namespace SabbathText.Entities
+﻿namespace SabbathText.V1.Entities
 {
     using KeyValueStorage;
 

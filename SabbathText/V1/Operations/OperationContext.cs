@@ -1,10 +1,10 @@
-﻿namespace SabbathText.Operations
+﻿namespace SabbathText.V1.Operations
 {
     using System.Threading;
     using KeyValueStorage;
     using QueueStorage;
-    using SabbathText.Compensation;
-    using SabbathText.Entities;
+    using SabbathText.Compensation.V1;
+    using SabbathText.V1.Entities;
 
     /// <summary>
     /// This class represents an operation context

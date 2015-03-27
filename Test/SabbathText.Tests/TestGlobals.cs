@@ -1,10 +1,10 @@
 ﻿namespace SabbathText.Tests
 {
     using System.Diagnostics.CodeAnalysis;
-using KeyValueStorage;
-using QueueStorage;
-using SabbathText.Compensation;
-using SabbathText.Entities;
+    using KeyValueStorage;
+    using QueueStorage;
+    using SabbathText.Compensation.V1;
+    using SabbathText.V1.Entities;
 
     /// <summary>
     /// Test global variables

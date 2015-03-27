@@ -1,11 +1,12 @@
-﻿namespace SabbathText.Tests.Operations
+﻿namespace SabbathText.Tests.V1.Operations
 {
     using System;
     using System.Net;
     using System.Threading;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using SabbathText.Entities;
-    using SabbathText.Operations;
+    using SabbathText.Compensation.V1;
+    using SabbathText.V1.Entities;
+    using SabbathText.V1.Operations;
 
     /// <summary>
     /// Tests CreateAccountOperation
@@ -28,8 +29,8 @@
                 CancellationToken = new CancellationTokenSource(TestGlobals.Settings.OperationTimeout).Token,
                 IdentityStore = TestGlobals.IdentityStore,
                 TrackingId = Guid.NewGuid().ToString(),
-                Compensation = new Compensation.CompensationClient(
-                    TestGlobals.Settings, TestGlobals.CheckpointStore, TestGlobals.CheckpointQueue),
+                Compensation = new CompensationClient(
+                    TestGlobals.CheckpointStore, TestGlobals.CheckpointQueue, TestGlobals.Settings.CheckpointVisibilityTimeout),
             };
 
             this.operation = new CreateAccountOperation(this.context);
