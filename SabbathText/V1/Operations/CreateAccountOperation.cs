@@ -12,6 +12,11 @@
     /// </summary>
     public class CreateAccountOperation : BaseOperation<Account>
     {
+        private const string PhoneNumberTakenErrorCode = "PhoneNumberTaken";
+        private const string PhoneNumberTakenErrorDescription = "This phone number was used to create a different account";
+        private const string AccountCreatedPhoneMismatchErrorCode = "AccountCreatedPhoneMismatch";
+        private const string AccountCreatedPhoneMismatchErrorDescription = "This account was created with a different phone number";
+
         private CreateAccountCheckpointData checkpointData;
 
         /// <summary>
@@ -25,7 +30,6 @@
 
         private enum CreateAccountCheckpoint
         {
-            Started,
             CreatingIdentity,
             CreatingAccount,
         }
@@ -44,6 +48,7 @@
                 return Task.FromResult(new OperationResponse<Account>
                 {
                     StatusCode = HttpStatusCode.BadRequest,
+                    ErrorCode = CommonErrorCodes.InvalidInput,
                     ErrorDescription = "Invalid phone number {0}".InvariantFormat(phoneNumber),
                 });
             }
@@ -91,8 +96,8 @@
                     this.checkpointData,
                     HttpStatusCode.Conflict,
                     null, /* response data */
-                    "PhoneNumberUsed",
-                    "A different operation already used this phone number to create an account");
+                    PhoneNumberTakenErrorCode,
+                    PhoneNumberTakenErrorDescription);
             }
 
             return await this.TransitionToCreateAccount();
@@ -133,8 +138,8 @@
                     this.checkpointData,
                     HttpStatusCode.Conflict,
                     null, /* response data */
-                    "AccountCreatedPhoneMismatch",
-                    "A diffent operation created the account with a different phone number");
+                    AccountCreatedPhoneMismatchErrorCode,
+                    AccountCreatedPhoneMismatchErrorDescription);
             }
 
             return await this.Complete(

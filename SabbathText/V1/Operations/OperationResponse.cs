@@ -15,7 +15,7 @@
         public HttpStatusCode StatusCode { get; set; }
 
         /// <summary>
-        /// The error code
+        /// Gets or sets the error code
         /// </summary>
         public string ErrorCode { get; set; }
 

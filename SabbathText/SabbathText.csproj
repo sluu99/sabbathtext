@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clock.cs" />
+    <Compile Include="CommonErrorCodes.cs" />
     <Compile Include="V1\Entities\Account.cs" />
     <Compile Include="V1\Entities\Identity.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
