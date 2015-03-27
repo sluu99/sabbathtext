@@ -119,6 +119,7 @@
                 PartitionKey = this.checkpointData.AccountId,
                 RowKey = this.checkpointData.AccountId,
                 AccountId = this.checkpointData.AccountId,
+                CreationTrackingId = this.Context.TrackingId,
                 CreationTime = Clock.UtcNow,
                 Status = AccountStatus.BrandNew,
                 PhoneNumber = this.checkpointData.PhoneNumber,

@@ -47,6 +47,12 @@
         public string AccountId { get; set; }
 
         /// <summary>
+        /// The tracking ID that was used when creating this account.
+        /// This is to make sure that cancellation does not delete an account created by a different operation
+        /// </summary>
+        public string CreationTrackingId { get; set; }
+
+        /// <summary>
         /// Gets or sets the account creation time
         /// </summary>
         public DateTime CreationTime { get; set; }        
