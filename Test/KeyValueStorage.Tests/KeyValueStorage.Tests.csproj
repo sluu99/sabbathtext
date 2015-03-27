@@ -79,6 +79,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Init.cs" />
     <Compile Include="InMemoryKeyValueStoreTests.cs" />
     <Compile Include="Fixtures\Dog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
