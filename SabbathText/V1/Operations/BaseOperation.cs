@@ -1,12 +1,13 @@
 ﻿namespace SabbathText.V1.Operations
 {
     using System;
-    using System.Globalization;
-    using System.Net;
-    using System.Threading.Tasks;
-    using KeyValueStorage;
-    using Newtonsoft.Json;
-    using SabbathText.Compensation.V1;
+using System.Globalization;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using KeyValueStorage;
+using Newtonsoft.Json;
+using SabbathText.Compensation.V1;
 
     /// <summary>
     /// This is the base class for all the operations
@@ -70,7 +71,7 @@
                 this.checkpoint = new Checkpoint
                 {
                     PartitionKey = partitionKey,
-                    RowKey = this.Context.TrackingId,
+                    RowKey = this.Context.TrackingId.Sha256(), // we need to hash this since the client can potentially pass in illegal chars
                     TrackingId = this.Context.TrackingId,
                     OperationType = this.operationType,
                     Status = CheckpointStatus.InProgress,
@@ -127,5 +128,12 @@
 
             return checkpointData.Response;
         }
+
+        /// <summary>
+        /// Resumes the operation
+        /// </summary>
+        /// <param name="serializedCheckpointData">The serialized checkpoint data</param>
+        /// <returns>The operation response</returns>
+        protected abstract Task<OperationResponse<T>> Resume(string serializedCheckpointData);
     }
 }

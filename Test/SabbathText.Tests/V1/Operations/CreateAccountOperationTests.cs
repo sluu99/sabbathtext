@@ -5,7 +5,7 @@
     using System.Threading;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SabbathText.Compensation.V1;
-    using SabbathText.V1.Entities;
+    using SabbathText.Entities;
     using SabbathText.V1.Operations;
 
     /// <summary>
@@ -44,6 +44,7 @@
         {
             OperationResponse<Account> response = this.operation.CreateWithPhoneNumber(Guid.NewGuid().ToString()).Result;
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.AreEqual(CommonErrorCodes.InvalidInput, response.ErrorCode);
         }
 
         /// <summary>
