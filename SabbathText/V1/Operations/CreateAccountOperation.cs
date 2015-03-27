@@ -44,7 +44,7 @@
                 return Task.FromResult(new OperationResponse<Account>
                 {
                     StatusCode = HttpStatusCode.BadRequest,
-                    ErrorMessage = "Invalid phone number {0}".InvariantFormat(phoneNumber),
+                    ErrorDescription = "Invalid phone number {0}".InvariantFormat(phoneNumber),
                 });
             }
 
@@ -86,11 +86,13 @@
 
             if (identity.AccountId != this.checkpointData.AccountId)
             {
-                return await this.EnterCompletedWithErrorState(
+                return await this.Complete(
                     this.checkpointData.AccountId, /* partition key */
+                    this.checkpointData,
                     HttpStatusCode.Conflict,
-                    "A different operation already creates an identity with this phone number",
-                    this.checkpointData);
+                    null, /* response data */
+                    "PhoneNumberUsed",
+                    "A different operation already used this phone number to create an account");
             }
 
             return await this.TransitionToCreateAccount();
@@ -126,14 +128,22 @@
 
             if (this.checkpointData.PhoneNumber != account.PhoneNumber)
             {
-                return await this.EnterCompletedWithErrorState(
+                return await this.Complete(
                     this.checkpointData.AccountId, /* partition key */
+                    this.checkpointData,
                     HttpStatusCode.Conflict,
-                    "A diffent operation created the account with a different phone number",
-                    this.checkpointData);
+                    null, /* response data */
+                    "AccountCreatedPhoneMismatch",
+                    "A diffent operation created the account with a different phone number");
             }
 
-            return await this.EnterCompletedState(this.checkpointData.AccountId, HttpStatusCode.Created, account, this.checkpointData);
+            return await this.Complete(
+                this.checkpointData.AccountId, /* partition key */
+                this.checkpointData,
+                HttpStatusCode.Created, 
+                account, /* response data */
+                errorCode: null,
+                errorDescription: null);
         }
 
         private class CreateAccountCheckpointData : CheckpointData<Account>

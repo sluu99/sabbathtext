@@ -100,38 +100,26 @@
         /// Updates the checkpoint to completed and returns a response
         /// </summary>
         /// <param name="partitionKey">Partition key for the checkpoint</param>
+        /// <param name="checkpointData">The checkpoint data</param>
         /// <param name="status">The operation status</param>
         /// <param name="responseData">The operation data</param>
-        /// <param name="checkpointData">The checkpoint data</param>
+        /// <param name="errorCode">The error code</param>
+        /// <param name="errorDescription">The error description</param>
         /// <returns>The final operation response</returns>
-        protected async Task<OperationResponse<T>> EnterCompletedState(string partitionKey, HttpStatusCode status, T responseData, CheckpointData<T> checkpointData)
+        protected async Task<OperationResponse<T>> Complete(
+            string partitionKey, 
+            CheckpointData<T> checkpointData,
+            HttpStatusCode status,
+            T responseData, 
+            string errorCode,
+            string errorDescription)
         {
             checkpointData.Response = new OperationResponse<T>
             {
                 StatusCode = status,
                 Data = responseData,
-            };
-
-            this.checkpoint.Status = CheckpointStatus.Completed;
-            await this.CreateOrUpdateCheckpoint(partitionKey, checkpointData);
-
-            return checkpointData.Response;
-        }
-
-        /// <summary>
-        /// Updates the checkpoint to completed and returns a response
-        /// </summary>
-        /// <param name="partitionKey">Partition key for the checkpoint</param>
-        /// <param name="status">The operation status</param>
-        /// <param name="errorMessage">The error message</param>
-        /// <param name="checkpointData">The checkpoint data</param>
-        /// <returns>The final operation response</returns>
-        protected async Task<OperationResponse<T>> EnterCompletedWithErrorState(string partitionKey, HttpStatusCode status, string errorMessage, CheckpointData<T> checkpointData)
-        {
-            checkpointData.Response = new OperationResponse<T>
-            {
-                StatusCode = status,
-                ErrorMessage = errorMessage,
+                ErrorCode = errorCode,
+                ErrorDescription = errorDescription
             };
 
             this.checkpoint.Status = CheckpointStatus.Completed;

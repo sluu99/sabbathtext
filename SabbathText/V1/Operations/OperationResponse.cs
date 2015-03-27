@@ -15,9 +15,14 @@
         public HttpStatusCode StatusCode { get; set; }
 
         /// <summary>
-        /// Gets or sets the error message
+        /// The error code
         /// </summary>
-        public string ErrorMessage { get; set; }
+        public string ErrorCode { get; set; }
+
+        /// <summary>
+        /// Gets or sets the error description
+        /// </summary>
+        public string ErrorDescription { get; set; }
 
         /// <summary>
         /// Gets or sets the data returned from the operation
