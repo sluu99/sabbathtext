@@ -29,7 +29,7 @@
         /// </summary>
         /// <param name="compensationClient">The compensation client</param>
         /// <param name="handler">The checkpoint handler</param>
-        /// <param name="operationTimeout">Opeartion timeout</param>
+        /// <param name="operationTimeout">Operation timeout</param>
         /// <param name="poisonCheckpointThreshold">The number de-queue count for a message be considered poison</param>
         public CompensationProcessor(
             CompensationClient compensationClient,

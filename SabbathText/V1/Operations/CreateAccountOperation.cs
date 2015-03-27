@@ -4,8 +4,9 @@
     using System.Net;
     using System.Threading.Tasks;
     using KeyValueStorage;
+    using Newtonsoft.Json;
     using SabbathText.Compensation;
-    using SabbathText.V1.Entities;
+    using SabbathText.Entities;
 
     /// <summary>
     /// This operation creates an account
@@ -60,10 +61,30 @@
 
             return this.TransitionToCreateIdentity();
         }
+        
+        /// <summary>
+        /// Resumes the current operation
+        /// </summary>
+        /// <param name="serializedCheckpointData">The serialized checkpoint data</param>
+        /// <returns>The operation response</returns>
+        protected override Task<OperationResponse<Account>> Resume(string serializedCheckpointData)
+        {
+            this.checkpointData = JsonConvert.DeserializeObject<CreateAccountCheckpointData>(serializedCheckpointData);
+
+            switch (this.checkpointData.State)
+            {
+                case CreateAccountCheckpoint.CreatingIdentity:
+                    return this.EnterCreateIdentity();
+                case CreateAccountCheckpoint.CreatingAccount:
+                    return this.EnterCreateAccount();
+                default:
+                    throw new NotImplementedException();
+            }
+        }
 
         private async Task<OperationResponse<Account>> TransitionToCreateIdentity()
         {
-            this.checkpointData.Checkpoint = CreateAccountCheckpoint.CreatingIdentity;
+            this.checkpointData.State = CreateAccountCheckpoint.CreatingIdentity;
             this.checkpointData.AccountId = Guid.NewGuid().ToString();
 
             OperationResponse<Account> response =
@@ -105,7 +126,7 @@
 
         private async Task<OperationResponse<Account>> TransitionToCreateAccount()
         {
-            this.checkpointData.Checkpoint = CreateAccountCheckpoint.CreatingAccount;
+            this.checkpointData.State = CreateAccountCheckpoint.CreatingAccount;
             
             OperationResponse<Account> response =
                 await this.CreateOrUpdateCheckpoint(this.checkpointData.AccountId, this.checkpointData);
@@ -156,7 +177,7 @@
             /// <summary>
             /// Gets or sets the checkpoint
             /// </summary>
-            public CreateAccountCheckpoint Checkpoint { get; set; }
+            public CreateAccountCheckpoint State { get; set; }
 
             /// <summary>
             /// Gets or sets the phone number

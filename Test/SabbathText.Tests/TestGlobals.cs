@@ -4,7 +4,7 @@
     using KeyValueStorage;
     using QueueStorage;
     using SabbathText.Compensation.V1;
-    using SabbathText.V1.Entities;
+    using SabbathText.Entities;
 
     /// <summary>
     /// Test global variables

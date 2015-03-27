@@ -70,8 +70,8 @@
   <ItemGroup>
     <Compile Include="Clock.cs" />
     <Compile Include="CommonErrorCodes.cs" />
-    <Compile Include="V1\Entities\Account.cs" />
-    <Compile Include="V1\Entities\Identity.cs" />
+    <Compile Include="Entities\Account.cs" />
+    <Compile Include="Entities\Identity.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="V1\Operations\BaseOperation.cs" />
     <Compile Include="V1\Operations\CreateAccountOperation.cs" />

@@ -1,4 +1,4 @@
-﻿namespace SabbathText.V1.Entities
+﻿namespace SabbathText.Entities
 {
     using System;
     using System.Collections.Generic;
