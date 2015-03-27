@@ -55,7 +55,7 @@ public static class StringExtension
         {
             byte[] hashBytes = sha.ComputeHash(data);
 
-            return BitConverter.ToString(hashBytes).Replace("-", string.Empty);
+            return BitConverter.ToString(hashBytes).Replace("-", string.Empty).ToLowerInvariant();
         }
     }
 
