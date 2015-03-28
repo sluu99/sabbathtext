@@ -17,6 +17,11 @@
     public abstract class BaseOperation<T>
     {
         /// <summary>
+        /// The timeout before a delay processing checkpoint could be picked up
+        /// </summary>
+        private static readonly TimeSpan DelayProcessingCheckpointVisibilityDelay = TimeSpan.Zero;
+
+        /// <summary>
         /// The checkpoint for this operation
         /// </summary>
         private Checkpoint checkpoint;
@@ -60,18 +65,20 @@
         /// <summary>
         /// Creates or updates a checkpoint
         /// </summary>
-        /// <param name="partitionKey">The partition key for the checkpoint</param>
         /// <param name="checkpointData">The checkpoint data</param>
         /// <returns>The response if it was already completed before, or null</returns>
-        protected async Task<OperationResponse<T>> CreateOrUpdateCheckpoint(
-            string partitionKey,
-            CheckpointData<T> checkpointData)
+        protected async Task<OperationResponse<T>> CreateOrUpdateCheckpoint(CheckpointData<T> checkpointData)
         {
+            if (checkpointData == null || string.IsNullOrWhiteSpace(checkpointData.AccountId))
+            {
+                throw new ArgumentException("The account ID in checkpoint data is required");
+            }
+
             if (this.checkpoint == null)
             {
                 this.checkpoint = new Checkpoint
                 {
-                    PartitionKey = partitionKey,
+                    PartitionKey = checkpointData.AccountId,
                     RowKey = this.Context.TrackingId.Sha256(), // we need to hash this since the client can potentially pass in illegal chars
                     TrackingId = this.Context.TrackingId,
                     OperationType = this.operationType,
@@ -101,31 +108,51 @@
         /// <summary>
         /// Updates the checkpoint to completed and returns a response
         /// </summary>
-        /// <param name="partitionKey">Partition key for the checkpoint</param>
         /// <param name="checkpointData">The checkpoint data</param>
         /// <param name="status">The operation status</param>
         /// <param name="responseData">The operation data</param>
-        /// <param name="errorCode">The error code</param>
-        /// <param name="errorDescription">The error description</param>
         /// <returns>The final operation response</returns>
         protected async Task<OperationResponse<T>> Complete(
-            string partitionKey,
             CheckpointData<T> checkpointData,
             HttpStatusCode status,
-            T responseData,
-            string errorCode,
-            string errorDescription)
+            T responseData)
         {
             checkpointData.Response = new OperationResponse<T>
             {
                 StatusCode = status,
                 Data = responseData,
-                ErrorCode = errorCode,
-                ErrorDescription = errorDescription
             };
 
             this.checkpoint.Status = CheckpointStatus.Completed;
-            await this.CreateOrUpdateCheckpoint(partitionKey, checkpointData);
+            await this.CreateOrUpdateCheckpoint(checkpointData);
+
+            return checkpointData.Response;
+        }
+
+        /// <summary>
+        /// Mark a checkpoint for delay processing
+        /// </summary>
+        /// <param name="checkpointData">The checkpoint data</param>
+        /// <param name="status">The operation response status</param>
+        /// <param name="responseData">The operation response data</param>
+        /// <returns>The operation response</returns>
+        protected async Task<OperationResponse<T>> DelayProcessing(
+            CheckpointData<T> checkpointData,
+            HttpStatusCode status,
+            T responseData)
+        {
+            checkpointData.Response = new OperationResponse<T>
+            {
+                StatusCode = status,
+                Data = responseData,
+            };
+
+            this.checkpoint.Status = CheckpointStatus.DelayedProcessing;
+            await this.CreateOrUpdateCheckpoint(checkpointData);
+            await this.Context.Compensation.QueueCheckpoint(
+                this.checkpoint,
+                DelayProcessingCheckpointVisibilityDelay,
+                this.Context.CancellationToken);
 
             return checkpointData.Response;
         }
@@ -144,7 +171,7 @@
         /// <returns>The account</returns>
         protected async Task<AccountEntity> GetOrCreateAccount(string phoneNumber)
         {
-            string accountId = ("PhoneNumber:" + phoneNumber).Sha256();
+            string accountId = this.GetAccountId(phoneNumber);
 
             AccountEntity account = await this.Context.AccountStore.Get(accountId, accountId, this.Context.CancellationToken);
 
@@ -166,6 +193,16 @@
             account = await this.Context.AccountStore.InsertOrGet(account, this.Context.CancellationToken);
 
             return account;
+        }
+
+        /// <summary>
+        /// Gets an account ID from a phone number
+        /// </summary>
+        /// <param name="phoneNumber">The phone umber</param>
+        /// <returns>The account ID</returns>
+        protected string GetAccountId(string phoneNumber)
+        {
+            return ("PhoneNumber:" + phoneNumber).Sha256();
         }
     }
 }

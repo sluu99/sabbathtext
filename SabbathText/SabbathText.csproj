@@ -74,6 +74,7 @@
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="V1\BaseOperation.cs" />
     <Compile Include="V1\CheckpointData.cs" />
+    <Compile Include="V1\Message.cs" />
     <Compile Include="V1\OperationContext.cs" />
     <Compile Include="V1\OperationResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

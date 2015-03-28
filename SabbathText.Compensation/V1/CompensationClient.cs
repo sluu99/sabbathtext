@@ -57,6 +57,28 @@
         }
 
         /// <summary>
+        /// Puts a checkpoint into the work queue
+        /// </summary>
+        /// <param name="checkpoint">The checkpoint</param>
+        /// <param name="visibilityDelay">The timeout before this checkpoint could be picked up by the compensation agent</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>The operation task</returns>
+        public Task QueueCheckpoint(Checkpoint checkpoint, TimeSpan visibilityDelay, CancellationToken cancellationToken)
+        {
+            CheckpointReference checkpointRef = new CheckpointReference
+            {
+                PartitionKey = checkpoint.PartitionKey,
+                RowKey = checkpoint.RowKey,
+            };
+
+            return this.checkpointQueue.AddMessage(
+                JsonConvert.SerializeObject(checkpointRef),
+                visibilityDelay,
+                this.checkpointLifespan,
+                cancellationToken);
+        }
+
+        /// <summary>
         /// Updates a checkpoint
         /// </summary>
         /// <param name="checkpoint">The checkpoint</param>
