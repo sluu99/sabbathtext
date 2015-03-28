@@ -24,7 +24,12 @@
         /// <summary>
         /// Gets or sets the account store
         /// </summary>
-        public InMemoryKeyValueStore<AccountEntity> AccountStore { get; set; }
+        public KeyValueStore<AccountEntity> AccountStore { get; set; }
+
+        /// <summary>
+        /// Gets or sets the message store
+        /// </summary>
+        public KeyValueStore<MessageEntity> MessageStore { get; set; }
 
         /// <summary>
         /// Gets or sets the compensation client

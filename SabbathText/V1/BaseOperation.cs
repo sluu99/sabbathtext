@@ -136,7 +136,7 @@
         /// <param name="status">The operation response status</param>
         /// <param name="responseData">The operation response data</param>
         /// <returns>The operation response</returns>
-        protected async Task<OperationResponse<T>> DelayProcessing(
+        protected async Task<OperationResponse<T>> DelayProcessingCheckpoint(
             CheckpointData<T> checkpointData,
             HttpStatusCode status,
             T responseData)

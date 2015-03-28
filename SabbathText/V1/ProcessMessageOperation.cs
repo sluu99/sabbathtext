@@ -4,6 +4,9 @@
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
+    using SabbathText.Entities;
 
     /// <summary>
     /// This operation processes an incoming message
@@ -11,6 +14,7 @@
     public class ProcessMessageOperation : BaseOperation<bool>
     {
         private ProcessMessageCheckpointData checkpointData;
+        private MessageEntity incomingMessageEntity;
 
         /// <summary>
         /// Creates a new instance of this operation
@@ -19,6 +23,17 @@
         public ProcessMessageOperation(OperationContext context)
             : base(context, "ProcessMessageOperation.V1")
         {
+        }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        private enum ProcessMessageOperationState
+        {
+            MarkedForProcessing,
+            RecordingIncomingMessage,
+            RecordingOutgoingMessage,
+            SendingOutgoingMessage,
+            UpdatingOutgoingMessageStatus,
+            UpdatingIncomingMessageStatus,
         }
 
         /// <summary>
@@ -51,10 +66,65 @@
 
         private Task<OperationResponse<bool>> TransitionToMarkedForProcessing()
         {
-            return this.DelayProcessing(
+            return this.DelayProcessingCheckpoint(
                 this.checkpointData,
                 HttpStatusCode.Accepted,
                 true /* response data */);
+        }
+
+        /// <summary>
+        /// This method will be called when the operation is resumed from delayed processing
+        /// </summary>
+        /// <returns>The operation response</returns>
+        private Task<OperationResponse<bool>> EnterProcessing()
+        {
+            return this.TransitionToRecordingIncomingMessage();
+        }
+
+        private async Task<OperationResponse<bool>> TransitionToRecordingIncomingMessage()
+        {
+            this.checkpointData.IncomingMessageId = Guid.NewGuid().ToString();
+            this.checkpointData.State = ProcessMessageOperationState.RecordingIncomingMessage;
+
+            return
+                await this.CreateOrUpdateCheckpoint(this.checkpointData) ??
+                await this.EnterRecordingIncomingMessage();
+        }
+
+        private async Task<OperationResponse<bool>> EnterRecordingIncomingMessage()
+        {
+            this.incomingMessageEntity = new MessageEntity
+            {
+                AccountId = this.checkpointData.AccountId,
+                MessageId = this.checkpointData.IncomingMessageId,
+                PartitionKey = this.checkpointData.AccountId,
+                RowKey = this.checkpointData.IncomingMessageId,
+                Sender = this.checkpointData.Message.Sender,
+                Recipient = this.checkpointData.Message.Recipient,
+                Body = this.checkpointData.Message.Body,
+                Direction = MessageDirection.Incoming,
+                Status = MessageStatus.Received,
+                MessageTimestamp = this.checkpointData.Message.Timestamp,
+            };
+
+            await this.Context.MessageStore.InsertOrGet(incomingMessageEntity);
+            
+            return await this.TransitionToRecordingOutgoingMessage();
+        }
+
+        private async Task<OperationResponse<bool>> TransitionToRecordingOutgoingMessage()
+        {
+            this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
+            this.checkpointData.State = ProcessMessageOperationState.RecordingOutgoingMessage;
+
+            return
+                await this.CreateOrUpdateCheckpoint(this.checkpointData) ??
+                await this.EnterRecordingOutgoingMessage();
+        }
+
+        private Task<OperationResponse<bool>> EnterRecordingOutgoingMessage()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -75,9 +145,19 @@
             public Message Message { get; set; }
 
             /// <summary>
-            /// Gets or sets the account phone number
+            /// Gets or sets the ID of the incoming message
             /// </summary>
-            public string PhoneNumber { get; set; }
+            public string IncomingMessageId { get; set; }
+
+            /// <summary>
+            /// Gets or sets the ID of the outoging message
+            /// </summary>
+            public string OutgoingMessageId { get; set; }
+
+            /// <summary>
+            /// Gets or sets the operation state
+            /// </summary>
+            public ProcessMessageOperationState State { get; set; }
         }
     }
 }
