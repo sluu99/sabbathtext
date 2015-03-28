@@ -21,16 +21,11 @@
         /// The checkpoint store
         /// </summary>
         public static InMemoryKeyValueStore<Checkpoint> CheckpointStore = new InMemoryKeyValueStore<Checkpoint>();
-
-        /// <summary>
-        /// The identity store
-        /// </summary>
-        public static InMemoryKeyValueStore<Identity> IdentityStore = new InMemoryKeyValueStore<Identity>();
-
+        
         /// <summary>
         /// The account store
         /// </summary>
-        public static InMemoryKeyValueStore<Account> AccountStore = new InMemoryKeyValueStore<Account>();
+        public static InMemoryKeyValueStore<AccountEntity> AccountStore = new InMemoryKeyValueStore<AccountEntity>();
 
         /// <summary>
         /// The checkpoint queue
@@ -43,7 +38,6 @@
         static TestGlobals()
         {
             CheckpointStore.InitMemory();
-            IdentityStore.InitMemory();
             AccountStore.InitMemory();
             CheckpointQueue.InitMemory();
         }

@@ -31,12 +31,12 @@
     /// <summary>
     /// The account entity
     /// </summary>
-    public class Account : KeyValueEntity
+    public class AccountEntity : KeyValueEntity
     {
         /// <summary>
         /// Initializes a new instance of this class
         /// </summary>
-        public Account()
+        public AccountEntity()
         {
             this.RecentlySentVerses = new List<string>();
         }
@@ -45,12 +45,6 @@
         /// Gets or sets the account ID
         /// </summary>
         public string AccountId { get; set; }
-
-        /// <summary>
-        /// The tracking ID that was used when creating this account.
-        /// This is to make sure that cancellation does not delete an account created by a different operation
-        /// </summary>
-        public string CreationTrackingId { get; set; }
 
         /// <summary>
         /// Gets or sets the account creation time

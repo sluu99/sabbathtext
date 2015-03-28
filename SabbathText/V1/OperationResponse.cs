@@ -1,4 +1,4 @@
-﻿namespace SabbathText.V1.Operations
+﻿namespace SabbathText.V1
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Net;

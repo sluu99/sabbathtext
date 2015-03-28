@@ -1,4 +1,4 @@
-﻿namespace SabbathText.V1.Operations
+﻿namespace SabbathText.V1
 {
     using System.Threading;
     using KeyValueStorage;
@@ -20,16 +20,11 @@
         /// Gets or sets the cancellation token for the operation
         /// </summary>
         public CancellationToken CancellationToken { get; set; }
-
-        /// <summary>
-        /// Gets or sets the entity store
-        /// </summary>
-        public InMemoryKeyValueStore<Identity> IdentityStore { get; set; }
-
+        
         /// <summary>
         /// Gets or sets the account store
         /// </summary>
-        public InMemoryKeyValueStore<Account> AccountStore { get; set; }
+        public InMemoryKeyValueStore<AccountEntity> AccountStore { get; set; }
 
         /// <summary>
         /// Gets or sets the compensation client

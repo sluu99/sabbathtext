@@ -1,13 +1,14 @@
-﻿namespace SabbathText.V1.Operations
+﻿namespace SabbathText.V1
 {
     using System;
-using System.Globalization;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using KeyValueStorage;
-using Newtonsoft.Json;
-using SabbathText.Compensation.V1;
+    using System.Globalization;
+    using System.Net;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using KeyValueStorage;
+    using Newtonsoft.Json;
+    using SabbathText.Compensation.V1;
+    using SabbathText.Entities;
 
     /// <summary>
     /// This is the base class for all the operations
@@ -83,7 +84,7 @@ using SabbathText.Compensation.V1;
                 if (this.checkpoint.CheckpointData != null)
                 {
                     CheckpointData<T> existingCheckpointData = JsonConvert.DeserializeObject<CheckpointData<T>>(this.checkpoint.CheckpointData);
-                    
+
                     if (existingCheckpointData.Response != null)
                     {
                         return existingCheckpointData.Response;
@@ -108,10 +109,10 @@ using SabbathText.Compensation.V1;
         /// <param name="errorDescription">The error description</param>
         /// <returns>The final operation response</returns>
         protected async Task<OperationResponse<T>> Complete(
-            string partitionKey, 
+            string partitionKey,
             CheckpointData<T> checkpointData,
             HttpStatusCode status,
-            T responseData, 
+            T responseData,
             string errorCode,
             string errorDescription)
         {
@@ -135,5 +136,36 @@ using SabbathText.Compensation.V1;
         /// <param name="serializedCheckpointData">The serialized checkpoint data</param>
         /// <returns>The operation response</returns>
         protected abstract Task<OperationResponse<T>> Resume(string serializedCheckpointData);
+
+        /// <summary>
+        /// Gets or create an account using a phone number
+        /// </summary>
+        /// <param name="phoneNumber">The phone number</param>
+        /// <returns>The account</returns>
+        protected async Task<AccountEntity> GetOrCreateAccount(string phoneNumber)
+        {
+            string accountId = ("PhoneNumber:" + phoneNumber).Sha256();
+
+            AccountEntity account = await this.Context.AccountStore.Get(accountId, accountId, this.Context.CancellationToken);
+
+            if (account != null)
+            {
+                return account;
+            }
+
+            account = new AccountEntity
+            {
+                PartitionKey = accountId,
+                RowKey = accountId,
+                AccountId = accountId,
+                CreationTime = Clock.UtcNow,
+                PhoneNumber = phoneNumber,
+                Status = AccountStatus.BrandNew,
+            };
+
+            account = await this.Context.AccountStore.InsertOrGet(account, this.Context.CancellationToken);
+
+            return account;
+        }
     }
 }

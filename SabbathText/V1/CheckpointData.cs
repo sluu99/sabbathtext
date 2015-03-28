@@ -1,4 +1,4 @@
-﻿namespace SabbathText.V1.Operations
+﻿namespace SabbathText.V1
 {
     /// <summary>
     /// Operation data
