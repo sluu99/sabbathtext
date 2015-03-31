@@ -38,7 +38,7 @@
         /// </summary>
         public AccountEntity()
         {
-            this.RecentlySentVerses = new List<string>();
+            this.RecentMessages = new List<MessageEntity>();
         }
 
         /// <summary>
@@ -65,20 +65,10 @@
         /// Gets or sets the account status
         /// </summary>
         public AccountStatus Status { get; set; }
-        
-        /// <summary>
-        /// Gets or sets the last sabbath message time
-        /// </summary>
-        public DateTime LastSabbathMessageTime { get; set; }
-        
-        /// <summary>
-        /// Gets or sets the cycle key
-        /// </summary>
-        public string CycleKey { get; set; }
 
         /// <summary>
-        /// Gets or sets the recently sent verses
+        /// Gets or sets the list of recent messages
         /// </summary>
-        public List<string> RecentlySentVerses { get; set; }
+        public List<MessageEntity> RecentMessages { get; set; }
     }
 }

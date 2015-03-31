@@ -13,8 +13,10 @@
     /// <summary>
     /// This is the base class for all the operations
     /// </summary>
-    /// <typeparam name="T">The data type of the operation response</typeparam>
-    public abstract class BaseOperation<T>
+    /// <typeparam name="TResponse">The data type of the operation response</typeparam>
+    /// <typeparam name="TState">The operation state enumeration type</typeparam>
+    public abstract class BaseOperation<TResponse, TState>
+        where TState : struct, IConvertible
     {
         /// <summary>
         /// The timeout before a delay processing checkpoint could be picked up
@@ -67,9 +69,9 @@
         /// </summary>
         /// <param name="checkpointData">The checkpoint data</param>
         /// <returns>The response if it was already completed before, or null</returns>
-        protected async Task<OperationResponse<T>> CreateOrUpdateCheckpoint(CheckpointData<T> checkpointData)
+        protected async Task<OperationResponse<TResponse>> CreateOrUpdateCheckpoint(CheckpointData<TResponse, TState> checkpointData)
         {
-            if (checkpointData == null || string.IsNullOrWhiteSpace(checkpointData.AccountId))
+            if (this.Context == null || string.IsNullOrWhiteSpace(this.Context.Account.AccountId))
             {
                 throw new ArgumentException("The account ID in checkpoint data is required");
             }
@@ -78,7 +80,7 @@
             {
                 this.checkpoint = new Checkpoint
                 {
-                    PartitionKey = checkpointData.AccountId,
+                    PartitionKey = this.Context.Account.AccountId,
                     RowKey = this.Context.TrackingId.Sha256(), // we need to hash this since the client can potentially pass in illegal chars
                     TrackingId = this.Context.TrackingId,
                     OperationType = this.operationType,
@@ -90,7 +92,8 @@
 
                 if (this.checkpoint.CheckpointData != null)
                 {
-                    CheckpointData<T> existingCheckpointData = JsonConvert.DeserializeObject<CheckpointData<T>>(this.checkpoint.CheckpointData);
+                    CheckpointData<TResponse, TState> existingCheckpointData =
+                        JsonConvert.DeserializeObject<CheckpointData<TResponse, TState>>(this.checkpoint.CheckpointData);
 
                     if (existingCheckpointData.Response != null)
                     {
@@ -112,15 +115,42 @@
         /// <param name="status">The operation status</param>
         /// <param name="responseData">The operation data</param>
         /// <returns>The final operation response</returns>
-        protected async Task<OperationResponse<T>> Complete(
-            CheckpointData<T> checkpointData,
+        protected async Task<OperationResponse<TResponse>> CompleteCheckpoint(
+            CheckpointData<TResponse, TState> checkpointData,
             HttpStatusCode status,
-            T responseData)
+            TResponse responseData)
         {
-            checkpointData.Response = new OperationResponse<T>
+            checkpointData.Response = new OperationResponse<TResponse>
             {
                 StatusCode = status,
                 Data = responseData,
+            };
+
+            this.checkpoint.Status = CheckpointStatus.Completed;
+            await this.CreateOrUpdateCheckpoint(checkpointData);
+
+            return checkpointData.Response;
+        }
+
+        /// <summary>
+        /// Updates the checkpoint to completed and returns a response with error
+        /// </summary>
+        /// <param name="checkpointData">The checkpoint data</param>
+        /// <param name="status">The operation status</param>
+        /// <param name="errorCode">The error code</param>
+        /// <param name="errorDescription">The error description</param>
+        /// <returns>The operation response</returns>
+        protected async Task<OperationResponse<TResponse>> CompleteCheckpoint(
+            CheckpointData<TResponse, TState> checkpointData,
+            HttpStatusCode status,
+            string errorCode,
+            string errorDescription)
+        {
+            checkpointData.Response = new OperationResponse<TResponse>
+            {
+                StatusCode = status,
+                ErrorCode = errorCode,
+                ErrorDescription = errorDescription,
             };
 
             this.checkpoint.Status = CheckpointStatus.Completed;
@@ -136,12 +166,12 @@
         /// <param name="status">The operation response status</param>
         /// <param name="responseData">The operation response data</param>
         /// <returns>The operation response</returns>
-        protected async Task<OperationResponse<T>> DelayProcessingCheckpoint(
-            CheckpointData<T> checkpointData,
+        protected async Task<OperationResponse<TResponse>> DelayProcessingCheckpoint(
+            CheckpointData<TResponse, TState> checkpointData,
             HttpStatusCode status,
-            T responseData)
+            TResponse responseData)
         {
-            checkpointData.Response = new OperationResponse<T>
+            checkpointData.Response = new OperationResponse<TResponse>
             {
                 StatusCode = status,
                 Data = responseData,
@@ -162,47 +192,6 @@
         /// </summary>
         /// <param name="serializedCheckpointData">The serialized checkpoint data</param>
         /// <returns>The operation response</returns>
-        protected abstract Task<OperationResponse<T>> Resume(string serializedCheckpointData);
-
-        /// <summary>
-        /// Gets or create an account using a phone number
-        /// </summary>
-        /// <param name="phoneNumber">The phone number</param>
-        /// <returns>The account</returns>
-        protected async Task<AccountEntity> GetOrCreateAccount(string phoneNumber)
-        {
-            string accountId = this.GetAccountId(phoneNumber);
-
-            AccountEntity account = await this.Context.AccountStore.Get(accountId, accountId, this.Context.CancellationToken);
-
-            if (account != null)
-            {
-                return account;
-            }
-
-            account = new AccountEntity
-            {
-                PartitionKey = accountId,
-                RowKey = accountId,
-                AccountId = accountId,
-                CreationTime = Clock.UtcNow,
-                PhoneNumber = phoneNumber,
-                Status = AccountStatus.BrandNew,
-            };
-
-            account = await this.Context.AccountStore.InsertOrGet(account, this.Context.CancellationToken);
-
-            return account;
-        }
-
-        /// <summary>
-        /// Gets an account ID from a phone number
-        /// </summary>
-        /// <param name="phoneNumber">The phone umber</param>
-        /// <returns>The account ID</returns>
-        protected string GetAccountId(string phoneNumber)
-        {
-            return ("PhoneNumber:" + phoneNumber).Sha256();
-        }
+        protected abstract Task<OperationResponse<TResponse>> Resume(string serializedCheckpointData);
     }
 }

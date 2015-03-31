@@ -20,7 +20,12 @@
         /// Gets or sets the cancellation token for the operation
         /// </summary>
         public CancellationToken CancellationToken { get; set; }
-        
+
+        /// <summary>
+        /// Gets or sets the account of the operation
+        /// </summary>
+        public AccountEntity Account { get; set; }
+
         /// <summary>
         /// Gets or sets the account store
         /// </summary>

@@ -9,9 +9,51 @@
     using SabbathText.Entities;
 
     /// <summary>
+    /// Process message operation state
+    /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum ProcessMessageOperationState
+    {
+        /// <summary>
+        /// The message is marked for processing
+        /// </summary>
+        MarkedForProcessing,
+
+        /// <summary>
+        /// The incoming message is being recorded
+        /// </summary>
+        RecordingIncomingMessage,
+
+        /// <summary>
+        /// Recording the outgoing message
+        /// </summary>
+        RecordingOutgoingMessage,
+
+        /// <summary>
+        /// Sending the outgoing message
+        /// </summary>
+        SendingOutgoingMessage,
+
+        /// <summary>
+        /// Updating the account conversation context
+        /// </summary>
+        UpdatingAccountContext,
+
+        /// <summary>
+        /// Updating the outgoing message status
+        /// </summary>
+        UpdatingOutgoingMessageStatus,
+
+        /// <summary>
+        /// Updating the incoming message status
+        /// </summary>
+        UpdatingIncomingMessageStatus,
+    }
+
+    /// <summary>
     /// This operation processes an incoming message
     /// </summary>
-    public class ProcessMessageOperation : BaseOperation<bool>
+    public class ProcessMessageOperation : BaseOperation<bool, ProcessMessageOperationState>
     {
         private ProcessMessageCheckpointData checkpointData;
         private MessageEntity incomingMessageEntity;
@@ -23,17 +65,6 @@
         public ProcessMessageOperation(OperationContext context)
             : base(context, "ProcessMessageOperation.V1")
         {
-        }
-
-        [JsonConverter(typeof(StringEnumConverter))]
-        private enum ProcessMessageOperationState
-        {
-            MarkedForProcessing,
-            RecordingIncomingMessage,
-            RecordingOutgoingMessage,
-            SendingOutgoingMessage,
-            UpdatingOutgoingMessageStatus,
-            UpdatingIncomingMessageStatus,
         }
 
         /// <summary>
@@ -57,7 +88,6 @@
 
             this.checkpointData = new ProcessMessageCheckpointData
             {
-                AccountId = this.GetAccountId(phoneNumber),
                 Message = message,
             };
 
@@ -95,9 +125,9 @@
         {
             this.incomingMessageEntity = new MessageEntity
             {
-                AccountId = this.checkpointData.AccountId,
+                AccountId = this.Context.Account.AccountId,
                 MessageId = this.checkpointData.IncomingMessageId,
-                PartitionKey = this.checkpointData.AccountId,
+                PartitionKey = this.Context.Account.AccountId,
                 RowKey = this.checkpointData.IncomingMessageId,
                 Sender = this.checkpointData.Message.Sender,
                 Recipient = this.checkpointData.Message.Recipient,
@@ -137,7 +167,7 @@
             throw new NotImplementedException();
         }
 
-        private class ProcessMessageCheckpointData : CheckpointData<bool>
+        private class ProcessMessageCheckpointData : CheckpointData<bool, ProcessMessageOperationState>
         {
             /// <summary>
             /// Gets or sets the message to be processed
