@@ -5,6 +5,7 @@
     using QueueStorage;
     using SabbathText.Compensation.V1;
     using SabbathText.Entities;
+using SabbathText.Tests.V1;
 
     /// <summary>
     /// Test global variables
@@ -28,18 +29,30 @@
         public static InMemoryKeyValueStore<AccountEntity> AccountStore = new InMemoryKeyValueStore<AccountEntity>();
 
         /// <summary>
+        /// The message store
+        /// </summary>
+        public static InMemoryKeyValueStore<MessageEntity> MessageStore = new InMemoryKeyValueStore<MessageEntity>();
+
+        /// <summary>
         /// The checkpoint queue
         /// </summary>
         public static InMemoryQueueStore CheckpointQueue = new InMemoryQueueStore();
+
+        /// <summary>
+        /// The message client
+        /// </summary>
+        public static InMemoryMessageClient MessageClient = new InMemoryMessageClient();
 
         /// <summary>
         /// The static constructor
         /// </summary>
         static TestGlobals()
         {
-            CheckpointStore.InitMemory();
             AccountStore.InitMemory();
+            MessageStore.InitMemory();
+            CheckpointStore.InitMemory();
             CheckpointQueue.InitMemory();
+            MessageClient.InitMemory();
         }
     }
 }

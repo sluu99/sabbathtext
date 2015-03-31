@@ -83,6 +83,7 @@
     <Compile Include="TestGlobals.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="V1\InMemoryMessageClient.cs" />
+    <Compile Include="V1\TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
