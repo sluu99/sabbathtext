@@ -107,7 +107,7 @@
                 MessageTimestamp = this.checkpointData.Message.Timestamp,
             };
 
-            await this.Context.MessageStore.InsertOrGet(incomingMessageEntity);
+            await this.Context.MessageStore.InsertOrGet(this.incomingMessageEntity);
             
             return await this.TransitionToRecordingOutgoingMessage();
         }
@@ -150,7 +150,7 @@
             public string IncomingMessageId { get; set; }
 
             /// <summary>
-            /// Gets or sets the ID of the outoging message
+            /// Gets or sets the ID of the outgoing message
             /// </summary>
             public string OutgoingMessageId { get; set; }
 

@@ -82,7 +82,7 @@
                 }
 
                 entity.ETag = Guid.NewGuid().ToString();
-                entity.Timestamp = DateTime.UtcNow;
+                entity.Timestamp = Clock.UtcNow;
 
                 this.entities.Add(key, JsonConvert.SerializeObject(entity));
             }
@@ -125,7 +125,7 @@
                 }
 
                 entity.ETag = Guid.NewGuid().ToString();
-                entity.Timestamp = DateTime.UtcNow;
+                entity.Timestamp = Clock.UtcNow;
 
                 this.entities[key] = JsonConvert.SerializeObject(entity);
             }

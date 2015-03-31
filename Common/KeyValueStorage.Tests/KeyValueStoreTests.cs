@@ -53,7 +53,7 @@
         {
             Dog dog = new Dog
             {
-                Birthday = DateTime.UtcNow.AddYears(-2),
+                Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
@@ -74,7 +74,7 @@
         {
             Dog dog = new Dog
             {
-                Birthday = DateTime.UtcNow.AddYears(-2),
+                Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
@@ -86,7 +86,7 @@
 
             Dog elf = new Dog
             {
-                Birthday = DateTime.UtcNow.AddYears(-1),
+                Birthday = Clock.UtcNow.AddYears(-1),
                 Breed = DogBreed.GermanShepherd,
                 Name = "Elf",
                 PartitionKey = "B",
@@ -117,7 +117,7 @@
         {
             Dog dog = new Dog
             {
-                Birthday = DateTime.UtcNow.AddYears(-2),
+                Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
@@ -157,7 +157,7 @@
         {
             Dog dog = new Dog
             {
-                Birthday = DateTime.UtcNow.AddYears(-2),
+                Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
@@ -186,7 +186,7 @@
         {
             Dog dog = new Dog
             {
-                Birthday = DateTime.UtcNow.AddYears(-2),
+                Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
@@ -226,14 +226,14 @@
         {
             Dog dog = new Dog
             {
-                Birthday = DateTime.UtcNow.AddYears(-2),
+                Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
                 RowKey = "dogs:buddy",
                 Weight = 98.4f,
                 ETag = "*",
-                Timestamp = DateTime.UtcNow,
+                Timestamp = Clock.UtcNow,
             };
 
             dog.Weight += 3f;
@@ -261,7 +261,7 @@
         {
             Dog dog = new Dog
             {
-                Birthday = DateTime.UtcNow.AddYears(-2),
+                Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
@@ -285,7 +285,7 @@
         {
             Dog dog = new Dog
             {
-                Birthday = DateTime.UtcNow.AddYears(-2),
+                Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
@@ -323,14 +323,14 @@
         {
             Dog dog = new Dog
             {
-                Birthday = DateTime.UtcNow.AddYears(-2),
+                Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
                 PartitionKey = "B",
                 RowKey = "dogs:buddy",
                 Weight = 98.4f,
                 ETag = "*",
-                Timestamp = DateTime.UtcNow,
+                Timestamp = Clock.UtcNow,
             };
             
             try

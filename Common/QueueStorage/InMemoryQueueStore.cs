@@ -39,9 +39,9 @@
                 MessageId = Guid.NewGuid().ToString(),
                 Body = body,
                 DequeueCount = 0,
-                ExpirationTime = DateTime.UtcNow + messageLifeSpan,
-                InsertionTime = DateTime.UtcNow,
-                NextVisibleTime = DateTime.UtcNow + visibilityDelay,
+                ExpirationTime = Clock.UtcNow + messageLifeSpan,
+                InsertionTime = Clock.UtcNow,
+                NextVisibleTime = Clock.UtcNow + visibilityDelay,
                 ImplementationData = Guid.NewGuid().ToString(), // etag
             };
 
@@ -73,12 +73,12 @@
                 {
                     LinkedListNode<QueueMessage> nextNode = node.Next;
 
-                    if (node.Value.ExpirationTime <= DateTime.UtcNow)
+                    if (node.Value.ExpirationTime <= Clock.UtcNow)
                     {
                         // remove messages that have expired
                         this.queue.Remove(node); // O(1)
                     }
-                    else if (node.Value.NextVisibleTime <= DateTime.UtcNow)
+                    else if (node.Value.NextVisibleTime <= Clock.UtcNow)
                     {
                         // found a visible message
                         node.Value.DequeueCount++;
@@ -125,7 +125,7 @@
                 {
                     LinkedListNode<QueueMessage> nextNode = node.Next;
 
-                    if (node.Value.ExpirationTime <= DateTime.UtcNow || 
+                    if (node.Value.ExpirationTime <= Clock.UtcNow || 
                         (node.Value.MessageId == message.MessageId && node.Value.ImplementationData == message.ImplementationData /* etag */))
                     {
                         // remove messages that have expired

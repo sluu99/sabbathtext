@@ -79,19 +79,19 @@
     <None Include="Properties\webjob-publish-settings.json" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\common\KeyValueStorage\KeyValueStorage.csproj">
+    <ProjectReference Include="..\common\KeyValueStorage\KeyValueStorage.csproj">
       <Project>{baeac47d-ea85-4a29-9651-a48ae1cc31e6}</Project>
       <Name>KeyValueStorage</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Common\QueueStorage\QueueStorage.csproj">
+    <ProjectReference Include="..\Common\QueueStorage\QueueStorage.csproj">
       <Project>{c6cc3315-77e5-48f0-beae-e4ae8c584983}</Project>
       <Name>QueueStorage</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SabbathText.Compensation\SabbathText.Compensation.csproj">
+    <ProjectReference Include="..\SabbathText.Compensation\SabbathText.Compensation.csproj">
       <Project>{89227b2c-ebc6-4235-a5a8-e28ee4e034e9}</Project>
       <Name>SabbathText.Compensation</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SabbathText\SabbathText.csproj">
+    <ProjectReference Include="..\SabbathText\SabbathText.csproj">
       <Project>{ab2bf8a3-020e-4cf6-b47a-e2a2c91de503}</Project>
       <Name>SabbathText</Name>
     </ProjectReference>

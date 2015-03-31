@@ -68,7 +68,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Clock.cs" />
     <Compile Include="CommonErrorCodes.cs" />
     <Compile Include="Entities\AccountEntity.cs" />
     <Compile Include="Entities\MessageEntity.cs" />
@@ -90,6 +89,10 @@
     <ProjectReference Include="..\Common\QueueStorage\QueueStorage.csproj">
       <Project>{c6cc3315-77e5-48f0-beae-e4ae8c584983}</Project>
       <Name>QueueStorage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\System2\System2.csproj">
+      <Project>{88035141-476b-4625-a5df-738509b58e99}</Project>
+      <Name>System2</Name>
     </ProjectReference>
     <ProjectReference Include="..\SabbathText.Compensation\SabbathText.Compensation.csproj">
       <Project>{89227b2c-ebc6-4235-a5a8-e28ee4e034e9}</Project>
