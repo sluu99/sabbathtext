@@ -89,6 +89,10 @@
       <Project>{c6cc3315-77e5-48f0-beae-e4ae8c584983}</Project>
       <Name>QueueStorage</Name>
     </ProjectReference>
+    <ProjectReference Include="..\System2\System2.csproj">
+      <Project>{88035141-476b-4625-a5df-738509b58e99}</Project>
+      <Name>System2</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

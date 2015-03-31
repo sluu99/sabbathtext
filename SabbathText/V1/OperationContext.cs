@@ -35,5 +35,10 @@
         /// Gets or sets the compensation client
         /// </summary>
         public CompensationClient Compensation { get; set; }
+
+        /// <summary>
+        /// Gets or sets the message client
+        /// </summary>
+        public MessageClient MessageClient { get; set; }
     }
 }

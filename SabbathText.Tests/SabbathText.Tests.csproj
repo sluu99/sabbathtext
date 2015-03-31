@@ -82,14 +82,13 @@
     <Compile Include="TestEnvironmentSettings.cs" />
     <Compile Include="TestGlobals.cs" />
     <Compile Include="TestHelper.cs" />
+    <Compile Include="V1\InMemoryMessageClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="V1\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\common\KeyValueStorage\KeyValueStorage.csproj">
       <Project>{baeac47d-ea85-4a29-9651-a48ae1cc31e6}</Project>
@@ -98,6 +97,10 @@
     <ProjectReference Include="..\Common\QueueStorage\QueueStorage.csproj">
       <Project>{c6cc3315-77e5-48f0-beae-e4ae8c584983}</Project>
       <Name>QueueStorage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\System2\System2.csproj">
+      <Project>{88035141-476b-4625-a5df-738509b58e99}</Project>
+      <Name>System2</Name>
     </ProjectReference>
     <ProjectReference Include="..\SabbathText.Compensation\SabbathText.Compensation.csproj">
       <Project>{89227b2c-ebc6-4235-a5a8-e28ee4e034e9}</Project>
