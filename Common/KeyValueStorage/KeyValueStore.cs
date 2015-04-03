@@ -343,6 +343,7 @@
                 {
                     uncompressedStream.CopyTo(gzip);
                 }
+
                 return memory.ToArray();
             }
         }
@@ -356,7 +357,7 @@
             }
         }
 
-        private T Deserialize<T>(byte[] data)
+        private TData Deserialize<TData>(byte[] data)
         {
             using (MemoryStream compressedStream = new MemoryStream(data))
             using (MemoryStream stream = new MemoryStream())
@@ -367,7 +368,7 @@
                 stream.Position = 0;
 
                 JsonSerializer serializer = new JsonSerializer();
-                return serializer.Deserialize<T>(jsonReader);
+                return serializer.Deserialize<TData>(jsonReader);
             }
         }
     }

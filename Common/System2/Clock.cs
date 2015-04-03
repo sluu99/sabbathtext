@@ -1,4 +1,5 @@
-﻿namespace System
+﻿using System.Threading;
+namespace System
 {
     /// <summary>
     /// This class provides a way to get time, which allows test cases to manipulate the time
@@ -43,6 +44,22 @@
                 }
 
                 return DateTime.UtcNow;
+            }
+        }
+
+        /// <summary>
+        /// Sleep for an amount of time.
+        /// </summary>
+        /// <param name="timeout">The amount of time to sleep.</param>
+        public static void Sleep(TimeSpan timeout)
+        {
+            if (fakeClock)
+            {
+                RollClock(timeout);
+            }
+            else
+            {
+                Thread.Sleep(timeout);
             }
         }
 

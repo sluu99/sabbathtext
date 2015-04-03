@@ -85,7 +85,7 @@
 
             // call get message twice to make sure both returns
             QueueMessage msg1 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Clock.Sleep(TimeSpan.FromSeconds(1));
             QueueMessage msg2 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
 
             Assert.IsNotNull(msg2, "GetMessage did not return anythingt");
@@ -96,7 +96,7 @@
                 this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(5), cancellationToken: CancellationToken.None).Result,
                 "GetMessage should not return anything for another five seconds");
 
-            Thread.Sleep(TimeSpan.FromSeconds(5));
+            Clock.Sleep(TimeSpan.FromSeconds(5));
 
             Assert.IsNotNull(
                 this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(5), cancellationToken: CancellationToken.None).Result,
@@ -120,7 +120,7 @@
                 "GetMessage is expected to return a message");
 
             // wait for the message to expire
-            Thread.Sleep(TimeSpan.FromSeconds(5));
+            Clock.Sleep(TimeSpan.FromSeconds(5));
 
             Assert.IsNull(
                 this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result,
@@ -141,7 +141,7 @@
 
             // call get message twice to make sure both returns
             QueueMessage msg1 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Clock.Sleep(TimeSpan.FromSeconds(1));
             QueueMessage msg2 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
 
             Assert.IsNotNull(msg2, "GetMessage did not return anything despite having zero visibility timeout");
@@ -201,7 +201,7 @@
 
             // checkout the message twice
             QueueMessage msg1 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
-            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Clock.Sleep(TimeSpan.FromSeconds(1));
             QueueMessage msg2 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
 
             try
