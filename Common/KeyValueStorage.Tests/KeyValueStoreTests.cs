@@ -15,7 +15,7 @@
         /// <summary>
         /// The connection string
         /// </summary>
-        private const string ConnectionString = "UseDevelopmentStorage=true";
+        private const string ConnectionString = "DefaultEndpointsProtocol=http;AccountName=sluu99dev;AccountKey=Y2FgOw4QTv79BJ/gFNSTq7RekwOH4EwwmchrIq42uj4cFc3EqBCF/tOJikjQZYHXKq9Ziigbqf6yn0VjMARx7g==";
 
         /// <summary>
         /// The table name
@@ -130,7 +130,7 @@
             Dog buddy = this.Store.Get("B", "dogs:buddy").Result;
 
             Assert.IsNotNull(buddy, "Get should not return null");
-            Assert.AreEqual(dog.Birthday, buddy.Birthday);
+            Assert.AreEqual(dog.Birthday, buddy.Birthday.ToUniversalTime());
             Assert.AreEqual(dog.Breed, buddy.Breed);
             Assert.AreEqual(dog.Name, buddy.Name);
             Assert.AreEqual(dog.PartitionKey, buddy.PartitionKey);

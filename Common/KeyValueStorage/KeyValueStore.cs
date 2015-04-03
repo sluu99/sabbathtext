@@ -1,11 +1,14 @@
 ﻿namespace KeyValueStorage
 {
     using System;
+    using System.IO;
+    using System.IO.Compression;
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Bson;
 
     /// <summary>
     /// Key value store backed by azure table    
@@ -79,7 +82,7 @@
                 return null;
             }
 
-            T entity = JsonConvert.DeserializeObject<T>(rawEntity.EntityData);
+            T entity = this.Deserialize<T>(rawEntity.EntityData);
             entity.Timestamp = rawEntity.Timestamp.UtcDateTime;
             entity.ETag = rawEntity.ETag;
 
@@ -116,7 +119,7 @@
             {
                 PartitionKey = entity.PartitionKey,
                 RowKey = entity.RowKey,
-                EntityData = JsonConvert.SerializeObject(entity),
+                EntityData = this.Serialize(entity),
             };
 
             TableOperation insertOperation = TableOperation.Insert(rawEntity);
@@ -168,7 +171,7 @@
             {
                 PartitionKey = entity.PartitionKey,
                 RowKey = entity.RowKey,
-                EntityData = JsonConvert.SerializeObject(entity),
+                EntityData = this.Serialize(entity),
                 ETag = entity.ETag,
                 Timestamp = entity.Timestamp,
             };
@@ -310,6 +313,61 @@
             if (string.IsNullOrEmpty(rowKey))
             {
                 throw new ArgumentNullException("rowKey");
+            }
+        }
+
+        private byte[] Serialize(object obj)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            using (StreamWriter writer = new StreamWriter(stream))
+            using (JsonTextWriter jsonWriter = new JsonTextWriter(writer))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.Serialize(jsonWriter, obj);
+
+                jsonWriter.Flush();
+                stream.Flush();
+                stream.Position = 0;
+
+                return this.Compress(stream);
+            }
+        }
+
+        private byte[] Compress(MemoryStream uncompressedStream)
+        {
+            uncompressedStream.Position = 0;
+
+            using (MemoryStream memory = new MemoryStream())
+            {
+                using (GZipStream gzip = new GZipStream(memory, CompressionLevel.Optimal, true))
+                {
+                    uncompressedStream.CopyTo(gzip);
+                }
+                return memory.ToArray();
+            }
+        }
+
+        private void Decompressed(MemoryStream compressedStream, MemoryStream outStream)
+        {
+            compressedStream.Position = 0;
+            using (GZipStream gzip = new GZipStream(compressedStream, CompressionMode.Decompress, true))
+            {
+                gzip.CopyTo(outStream);
+            }
+        }
+
+        private T Deserialize<T>(byte[] data)
+        {
+            using (MemoryStream compressedStream = new MemoryStream(data))
+            using (MemoryStream stream = new MemoryStream())
+            using (StreamReader reader = new StreamReader(stream))
+            using (JsonTextReader jsonReader = new JsonTextReader(reader))
+            {
+                this.Decompressed(compressedStream, stream);
+                stream.Position = 0;
+
+                JsonSerializer serializer = new JsonSerializer();
+                return serializer.Deserialize<T>(jsonReader);
             }
         }
     }

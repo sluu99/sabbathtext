@@ -90,15 +90,23 @@
 
                 this.checkpoint = await this.Context.Compensation.InsertOrGetCheckpoint(this.checkpoint, this.Context.CancellationToken);
 
-                if (this.checkpoint.CheckpointData != null)
+                if (this.checkpoint.Status == CheckpointStatus.Completed || this.checkpoint.Status == CheckpointStatus.Cancelled)
                 {
+                    // the checkpoint is at terminal states
                     CheckpointData<TResponse, TState> existingCheckpointData =
                         JsonConvert.DeserializeObject<CheckpointData<TResponse, TState>>(this.checkpoint.CheckpointData);
 
-                    if (existingCheckpointData.Response != null)
+                    return existingCheckpointData.Response;
+                }
+                else
+                {
+                    // the checkpoint is in progress
+                    return new OperationResponse<TResponse>
                     {
-                        return existingCheckpointData.Response;
-                    }
+                        StatusCode = HttpStatusCode.Conflict,
+                        ErrorCode = CommonErrorCodes.OperationInProgress,
+                        ErrorDescription = "The operation is in progress",
+                    };
                 }
             }
 

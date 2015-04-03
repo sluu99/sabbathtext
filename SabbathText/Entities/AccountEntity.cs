@@ -70,5 +70,15 @@
         /// Gets or sets the list of recent messages
         /// </summary>
         public List<MessageEntity> RecentMessages { get; set; }
+
+        /// <summary>
+        /// Gets the account ID from a phone number
+        /// </summary>
+        /// <param name="phoneNumber">The phone number</param>
+        /// <returns>The account ID</returns>
+        public static string GetAccountId(string phoneNumber)
+        {
+            return ("PhoneNumber:" + phoneNumber).Sha256();
+        }
     }
 }

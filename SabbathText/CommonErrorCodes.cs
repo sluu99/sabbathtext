@@ -9,5 +9,6 @@
     public static class CommonErrorCodes
     {
         public const string InvalidInput = "InvalidInput";
+        public const string OperationInProgress = "OperationInProgress";
     }
 }

@@ -7,6 +7,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using SabbathText.Entities;
     using SabbathText.V1;
 
     /// <summary>
@@ -21,15 +22,29 @@
         /// <returns>An OperationContext instance</returns>
         protected OperationContext CreateContext()
         {
+            string phoneNumber = TestHelper.GetUSPhoneNumber();
+            string accountId = AccountEntity.GetAccountId(phoneNumber);
+
+            AccountEntity account = TestGlobals.AccountStore.InsertOrGet(new AccountEntity
+            {
+                PartitionKey = accountId,
+                RowKey = accountId,
+                AccountId = accountId,
+                CreationTime = Clock.UtcNow,
+                PhoneNumber = phoneNumber,
+                Status = AccountStatus.BrandNew,
+            }).Result;
+
             return new OperationContext
             {
                 TrackingId = Guid.NewGuid().ToString(),
-                AccountStore = TestGlobals.AccountStore,
+                Account = account,
                 CancellationToken = new CancellationTokenSource(TestGlobals.Settings.OperationTimeout).Token,
                 Compensation = new Compensation.V1.CompensationClient(
                     TestGlobals.CheckpointStore, TestGlobals.CheckpointQueue, TestGlobals.Settings.CheckpointVisibilityTimeout),
                 MessageClient = TestGlobals.MessageClient,
                 MessageStore = TestGlobals.MessageStore,
+                AccountStore = TestGlobals.AccountStore,
             };
         }
     }

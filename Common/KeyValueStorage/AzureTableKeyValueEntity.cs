@@ -10,6 +10,6 @@
         /// <summary>
         /// Gets or sets the serialized entity data
         /// </summary>
-        public string EntityData { get; set; }
+        public byte[] EntityData { get; set; }
     }
 }
