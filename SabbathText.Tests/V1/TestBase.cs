@@ -7,6 +7,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using SabbathText.Compensation.V1;
     using SabbathText.Entities;
     using SabbathText.V1;
 
@@ -40,12 +41,52 @@
                 TrackingId = Guid.NewGuid().ToString(),
                 Account = account,
                 CancellationToken = new CancellationTokenSource(TestGlobals.Settings.OperationTimeout).Token,
-                Compensation = new Compensation.V1.CompensationClient(
+                Compensation = new CompensationClient(
                     TestGlobals.CheckpointStore, TestGlobals.CheckpointQueue, TestGlobals.Settings.CheckpointVisibilityTimeout),
                 MessageClient = TestGlobals.MessageClient,
                 MessageStore = TestGlobals.MessageStore,
                 AccountStore = TestGlobals.AccountStore,
             };
+        }
+
+        /// <summary>
+        /// Ensure an operation is finished base on the checkpoint.
+        /// </summary>
+        /// <param name="context">The operation context.</param>
+        protected void AssertOperationFinishes(OperationContext context)
+        {
+            Checkpoint checkpoint = this.GetCheckpoint(context);
+            Assert.IsNotNull(checkpoint, "Cannot find a checkpoint for this operation.");
+            
+            CompensationClient compensation = new CompensationClient(
+                TestGlobals.CheckpointStore, TestGlobals.CheckpointQueue, TestGlobals.Settings.CheckpointVisibilityTimeout);
+            OperationCheckpointHandler handler = new OperationCheckpointHandler(
+                TestGlobals.AccountStore,
+                TestGlobals.MessageStore,
+                TestGlobals.MessageClient,
+                compensation);
+            CancellationTokenSource cts = new CancellationTokenSource(TestGlobals.Settings.OperationTimeout);
+            handler.Finish(checkpoint, cts.Token).Wait();
+
+            Assert.IsTrue(
+                checkpoint.Status == CheckpointStatus.Completed || checkpoint.Status == CheckpointStatus.Cancelled,
+                string.Format("Expected the checkpoint status to be Completed or Cancelled, but is actually {0}", checkpoint.Status));
+        }
+
+        /// <summary>
+        /// Gets a checkpoint from the operation context.
+        /// </summary>
+        /// <param name="context">The operation context</param>
+        /// <returns>The checkpoint.</returns>
+        private Checkpoint GetCheckpoint(OperationContext context)
+        {
+            CheckpointReference checkpointRef = new CheckpointReference
+            {
+                PartitionKey = context.Account.AccountId,
+                RowKey = context.TrackingId.Sha256(),
+            };
+
+            return context.Compensation.GetCheckpoint(checkpointRef).Result;
         }
     }
 }

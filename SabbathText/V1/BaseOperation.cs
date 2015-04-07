@@ -65,11 +65,124 @@
         protected OperationContext Context { get; private set; }
 
         /// <summary>
+        /// Resumes an operation base on the checkpoint
+        /// </summary>
+        /// <param name="checkpoint">The checkpoint</param>
+        /// <returns>The operation response</returns>
+        public Task<OperationResponse<TResponse>> Resume(Checkpoint checkpoint)
+        {
+            if (string.Equals(checkpoint.OperationType, this.operationType) == false)
+            {
+                throw new NotSupportedException(string.Format(
+                    "Cannot resume an operation of type {0} using this implementation. The expected operation type is {1}.",
+                    checkpoint.OperationType,
+                    this.operationType));
+            }
+
+            this.checkpoint = checkpoint;
+            return this.Resume(checkpoint.CheckpointData);
+        }
+
+        /// <summary>
+        /// Resumes the operation
+        /// </summary>
+        /// <param name="serializedCheckpointData">The serialized checkpoint data</param>
+        /// <returns>The operation response</returns>
+        protected abstract Task<OperationResponse<TResponse>> Resume(string serializedCheckpointData);
+
+        /// <summary>
+        /// Updates the checkpoint to completed and returns a response
+        /// </summary>
+        /// <param name="checkpointData">The checkpoint data</param>
+        /// <param name="status">The operation status</param>
+        /// <param name="responseData">The operation data</param>
+        /// <returns>The final operation response</returns>
+        protected async Task<OperationResponse<TResponse>> CompleteCheckpoint(
+            CheckpointData<TResponse, TState> checkpointData,
+            HttpStatusCode status,
+            TResponse responseData)
+        {
+            checkpointData.Response = new OperationResponse<TResponse>
+            {
+                StatusCode = status,
+                Data = responseData,
+            };
+
+            await this.CreateOrUpdateCheckpoint(checkpointData, CheckpointStatus.Completed);
+
+            return checkpointData.Response;
+        }
+
+        /// <summary>
+        /// Updates the checkpoint to completed and returns a response with error
+        /// </summary>
+        /// <param name="checkpointData">The checkpoint data</param>
+        /// <param name="status">The operation status</param>
+        /// <param name="errorCode">The error code</param>
+        /// <param name="errorDescription">The error description</param>
+        /// <returns>The operation response</returns>
+        protected async Task<OperationResponse<TResponse>> CompleteCheckpoint(
+            CheckpointData<TResponse, TState> checkpointData,
+            HttpStatusCode status,
+            string errorCode,
+            string errorDescription)
+        {
+            checkpointData.Response = new OperationResponse<TResponse>
+            {
+                StatusCode = status,
+                ErrorCode = errorCode,
+                ErrorDescription = errorDescription,
+            };
+
+            await this.CreateOrUpdateCheckpoint(checkpointData, CheckpointStatus.Completed);
+
+            return checkpointData.Response;
+        }
+
+        /// <summary>
+        /// Mark a checkpoint for delay processing
+        /// </summary>
+        /// <param name="checkpointData">The checkpoint data</param>
+        /// <param name="status">The operation response status</param>
+        /// <param name="responseData">The operation response data</param>
+        /// <returns>The operation response</returns>
+        protected async Task<OperationResponse<TResponse>> DelayProcessingCheckpoint(
+            CheckpointData<TResponse, TState> checkpointData,
+            HttpStatusCode status,
+            TResponse responseData)
+        {
+            checkpointData.Response = new OperationResponse<TResponse>
+            {
+                StatusCode = status,
+                Data = responseData,
+            };
+
+            await this.CreateOrUpdateCheckpoint(checkpointData, CheckpointStatus.DelayedProcessing);
+            await this.Context.Compensation.QueueCheckpoint(
+                this.checkpoint,
+                DelayProcessingCheckpointVisibilityDelay,
+                this.Context.CancellationToken);
+
+            return checkpointData.Response;
+        }
+
+        /// <summary>
         /// Creates or updates a checkpoint
         /// </summary>
         /// <param name="checkpointData">The checkpoint data</param>
         /// <returns>The response if it was already completed before, or null</returns>
-        protected async Task<OperationResponse<TResponse>> CreateOrUpdateCheckpoint(CheckpointData<TResponse, TState> checkpointData)
+        protected Task<OperationResponse<TResponse>> CreateOrUpdateCheckpoint(CheckpointData<TResponse, TState> checkpointData)
+        {
+            return this.CreateOrUpdateCheckpoint(checkpointData, CheckpointStatus.InProgress);
+        }
+
+        /// <summary>
+        /// Creates or updates a checkpoint
+        /// </summary>
+        /// <param name="checkpointData">The checkpoint data</param>
+        /// <param name="checkpointStatus">The checkpoint status</param>
+        /// <returns>The response if it was already completed before, or null</returns>
+        private async Task<OperationResponse<TResponse>> CreateOrUpdateCheckpoint(CheckpointData<TResponse, TState> checkpointData, CheckpointStatus checkpointStatus)
         {
             if (this.Context == null || string.IsNullOrWhiteSpace(this.Context.Account.AccountId))
             {
@@ -84,7 +197,7 @@
                     RowKey = this.Context.TrackingId.Sha256(), // we need to hash this since the client can potentially pass in illegal chars
                     TrackingId = this.Context.TrackingId,
                     OperationType = this.operationType,
-                    Status = CheckpointStatus.InProgress,
+                    Status = checkpointStatus,
                     CheckpointData = checkpointData == null ? null : JsonConvert.SerializeObject(checkpointData),
                 };
 
@@ -111,95 +224,10 @@
             }
 
             this.checkpoint.CheckpointData = JsonConvert.SerializeObject(checkpointData);
+            this.checkpoint.Status = checkpointStatus;
             await this.Context.Compensation.UpdateCheckpoint(this.checkpoint, this.Context.CancellationToken);
 
             return null;
         }
-
-        /// <summary>
-        /// Updates the checkpoint to completed and returns a response
-        /// </summary>
-        /// <param name="checkpointData">The checkpoint data</param>
-        /// <param name="status">The operation status</param>
-        /// <param name="responseData">The operation data</param>
-        /// <returns>The final operation response</returns>
-        protected async Task<OperationResponse<TResponse>> CompleteCheckpoint(
-            CheckpointData<TResponse, TState> checkpointData,
-            HttpStatusCode status,
-            TResponse responseData)
-        {
-            checkpointData.Response = new OperationResponse<TResponse>
-            {
-                StatusCode = status,
-                Data = responseData,
-            };
-
-            this.checkpoint.Status = CheckpointStatus.Completed;
-            await this.CreateOrUpdateCheckpoint(checkpointData);
-
-            return checkpointData.Response;
-        }
-
-        /// <summary>
-        /// Updates the checkpoint to completed and returns a response with error
-        /// </summary>
-        /// <param name="checkpointData">The checkpoint data</param>
-        /// <param name="status">The operation status</param>
-        /// <param name="errorCode">The error code</param>
-        /// <param name="errorDescription">The error description</param>
-        /// <returns>The operation response</returns>
-        protected async Task<OperationResponse<TResponse>> CompleteCheckpoint(
-            CheckpointData<TResponse, TState> checkpointData,
-            HttpStatusCode status,
-            string errorCode,
-            string errorDescription)
-        {
-            checkpointData.Response = new OperationResponse<TResponse>
-            {
-                StatusCode = status,
-                ErrorCode = errorCode,
-                ErrorDescription = errorDescription,
-            };
-
-            this.checkpoint.Status = CheckpointStatus.Completed;
-            await this.CreateOrUpdateCheckpoint(checkpointData);
-
-            return checkpointData.Response;
-        }
-
-        /// <summary>
-        /// Mark a checkpoint for delay processing
-        /// </summary>
-        /// <param name="checkpointData">The checkpoint data</param>
-        /// <param name="status">The operation response status</param>
-        /// <param name="responseData">The operation response data</param>
-        /// <returns>The operation response</returns>
-        protected async Task<OperationResponse<TResponse>> DelayProcessingCheckpoint(
-            CheckpointData<TResponse, TState> checkpointData,
-            HttpStatusCode status,
-            TResponse responseData)
-        {
-            checkpointData.Response = new OperationResponse<TResponse>
-            {
-                StatusCode = status,
-                Data = responseData,
-            };
-
-            this.checkpoint.Status = CheckpointStatus.DelayedProcessing;
-            await this.CreateOrUpdateCheckpoint(checkpointData);
-            await this.Context.Compensation.QueueCheckpoint(
-                this.checkpoint,
-                DelayProcessingCheckpointVisibilityDelay,
-                this.Context.CancellationToken);
-
-            return checkpointData.Response;
-        }
-
-        /// <summary>
-        /// Resumes the operation
-        /// </summary>
-        /// <param name="serializedCheckpointData">The serialized checkpoint data</param>
-        /// <returns>The operation response</returns>
-        protected abstract Task<OperationResponse<TResponse>> Resume(string serializedCheckpointData);
     }
 }

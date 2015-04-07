@@ -83,6 +83,7 @@
     <Compile Include="V1\GreetUserOperation.cs" />
     <Compile Include="V1\Message.cs" />
     <Compile Include="V1\MessageClient.cs" />
+    <Compile Include="V1\OperationCheckpointHandler.cs" />
     <Compile Include="V1\OperationContext.cs" />
     <Compile Include="V1\OperationResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

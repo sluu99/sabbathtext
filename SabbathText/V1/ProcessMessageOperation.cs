@@ -86,7 +86,7 @@
                 });
             }
 
-            this.checkpointData = new ProcessMessageCheckpointData
+            this.checkpointData = new ProcessMessageCheckpointData(this.Context.Account.AccountId)
             {
                 Message = message,
             };
@@ -169,6 +169,10 @@
 
         private class ProcessMessageCheckpointData : CheckpointData<bool, ProcessMessageOperationState>
         {
+            public ProcessMessageCheckpointData(string accountId) : base(accountId)
+            {
+            }
+
             /// <summary>
             /// Gets or sets the message to be processed
             /// </summary>

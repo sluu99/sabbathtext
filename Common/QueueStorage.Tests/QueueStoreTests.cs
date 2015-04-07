@@ -31,7 +31,7 @@
         /// This method will be called before every test run
         /// </summary>
         [TestInitialize]
-        public void Init()
+        public virtual void Init()
         {
             this.InitStore();
         }
@@ -40,7 +40,7 @@
         /// this method will be called after test runs
         /// </summary>
         [TestCleanup]
-        public void CleanUp()
+        public virtual void CleanUp()
         {
             this.CleanUpStore();
         }

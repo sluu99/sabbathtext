@@ -42,22 +42,12 @@
             this.operationTimeout = operationTimeout;
             this.poisonThreshold = poisonCheckpointThreshold;
         }
-
-        /// <summary>
-        /// Process the compensation queue
-        /// </summary>
-        /// <returns>The process task</returns>
-        public Task Process()
-        {
-            return this.Process(null);
-        }
-
+        
         /// <summary>
         /// Process the compensation queue until it sees a particular tracking ID
         /// </summary>
-        /// <param name="stopAfterTrackingId">The processing will stop after seeing this tracking ID (if it is not null)</param>
         /// <returns>The process task</returns>
-        private async Task Process(string stopAfterTrackingId)
+        public async Task Process()
         {
             while (true)
             {
@@ -82,26 +72,16 @@
                     {
                         continue;
                     }
-                    
-                    if (checkpoint.Status == CheckpointStatus.InProgress ||
-                        checkpoint.Status == CheckpointStatus.Cancelling ||
-                        checkpoint.Status == CheckpointStatus.DelayedProcessing)
-                    {
-                        await this.handler.Finish(
-                            checkpoint,
-                            new CancellationTokenSource(this.operationTimeout).Token);
-                    }
+
+                    await this.handler.Finish(
+                        checkpoint,
+                        new CancellationTokenSource(this.operationTimeout).Token);
 
                     if (checkpoint.Status == CheckpointStatus.Completed || checkpoint.Status == CheckpointStatus.Cancelled)
                     {
                         await this.compensationClient.DeleteCheckpointMessge(
                             message,
                             new CancellationTokenSource(this.operationTimeout).Token);
-                    }
-
-                    if (stopAfterTrackingId != null && checkpoint.TrackingId == stopAfterTrackingId)
-                    {
-                        break;
                     }
                 }
                 catch (Exception ex)

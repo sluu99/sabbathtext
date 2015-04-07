@@ -100,6 +100,16 @@
         }
 
         /// <summary>
+        /// Gets a checkpoint from a checkpoint reference.
+        /// </summary>
+        /// <param name="checkpointRef">The checkpoint reference.</param>
+        /// <returns>The checkpoint, or null if it does not exist.</returns>
+        public Task<Checkpoint> GetCheckpoint(CheckpointReference checkpointRef)
+        {
+            return this.checkpointStore.Get(checkpointRef.PartitionKey, checkpointRef.RowKey);
+        }
+
+        /// <summary>
         /// Gets the checkpoint referenced by the queue message
         /// </summary>
         /// <param name="message">The queue message</param>

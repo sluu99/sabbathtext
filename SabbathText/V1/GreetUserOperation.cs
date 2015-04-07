@@ -47,7 +47,8 @@
         /// <returns>The operation response</returns>
         public Task<OperationResponse<bool>> Run()
         {
-            this.checkpointData = new GreetUserCheckpointData();
+            this.checkpointData = new GreetUserCheckpointData(this.Context.Account.AccountId);
+
             return this.TransitionToSendingMessage();
         }
 
@@ -128,6 +129,15 @@
 
         private class GreetUserCheckpointData : CheckpointData<bool, GreetUserOperationState>
         {
+            /// <summary>
+            /// Creates a new instance of the operation checkpoint data
+            /// </summary>
+            /// <param name="accountId">The account ID</param>
+            public GreetUserCheckpointData(string accountId)
+                : base(accountId)
+            {
+            }
+
             /// <summary>
             /// Gets or sets the message that was sent out
             /// </summary>
