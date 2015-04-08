@@ -34,6 +34,7 @@
                 CreationTime = Clock.UtcNow,
                 PhoneNumber = phoneNumber,
                 Status = AccountStatus.BrandNew,
+                ConversationContext = ConversationContext.NoContext,
             }).Result;
 
             return new OperationContext

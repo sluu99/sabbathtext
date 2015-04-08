@@ -15,7 +15,7 @@
         /// <summary>
         /// The connection string
         /// </summary>
-        private const string ConnectionString = "DefaultEndpointsProtocol=http;AccountName=sluu99dev;AccountKey=Y2FgOw4QTv79BJ/gFNSTq7RekwOH4EwwmchrIq42uj4cFc3EqBCF/tOJikjQZYHXKq9Ziigbqf6yn0VjMARx7g==";
+        private const string ConnectionString = "UseDevelopmentStorage=true";
 
         /// <summary>
         /// The table name

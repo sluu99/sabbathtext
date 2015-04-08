@@ -121,6 +121,7 @@
                 };
 
                 this.Context.Account.RecentMessages.Add(messageEntity);
+                this.Context.Account.ConversationContext = ConversationContext.Greetings;
 
                 await this.Context.AccountStore.Update(this.Context.Account);
             }

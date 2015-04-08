@@ -46,6 +46,10 @@
                 .FirstOrDefault(m => m.Recipient == context.Account.PhoneNumber && m.Template == MessageTemplate.Greetings);
 
             AccountEntity account = context.AccountStore.Get(context.Account.AccountId, context.Account.AccountId).Result;
+            Assert.AreEqual<ConversationContext>(
+                ConversationContext.Greetings,
+                account.ConversationContext,
+                "The conversation context is expected to be {0}. Actual context: {1}".InvariantFormat(ConversationContext.Greetings, account.ConversationContext));
 
             MessageEntity messageEntity = account.RecentMessages.FirstOrDefault(m =>
                 m.Recipient == context.Account.PhoneNumber &&
