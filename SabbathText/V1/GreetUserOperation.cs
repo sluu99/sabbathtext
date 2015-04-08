@@ -117,6 +117,7 @@
                     Recipient = this.Context.Account.PhoneNumber,
                     RowKey = this.checkpointData.MessageEntityId,
                     Status = MessageStatus.Sent,
+                    Template = MessageTemplate.Greetings,
                 };
 
                 this.Context.Account.RecentMessages.Add(messageEntity);

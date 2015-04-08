@@ -1,8 +1,10 @@
 ﻿namespace SabbathText.Tests.V1
 {
     using System;
+    using System.Linq;
     using System.Net;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using SabbathText.Entities;
     using SabbathText.V1;
 
     /// <summary>
@@ -38,6 +40,20 @@
             Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
 
             this.AssertOperationFinishes(context);
+
+            Message message =
+                TestGlobals.MessageClient.Messages
+                .FirstOrDefault(m => m.Recipient == context.Account.PhoneNumber && m.Template == MessageTemplate.Greetings);
+
+            AccountEntity account = context.AccountStore.Get(context.Account.AccountId, context.Account.AccountId).Result;
+
+            MessageEntity messageEntity = account.RecentMessages.FirstOrDefault(m =>
+                m.Recipient == context.Account.PhoneNumber &&
+                m.Direction == MessageDirection.Outgoing &&
+                m.Status == MessageStatus.Sent &&
+                m.Template == MessageTemplate.Greetings);
+
+            Assert.IsNotNull(messageEntity, "Cannot find the message entity from the recent messages");
         }
     }
 }

@@ -83,6 +83,9 @@
     <Compile Include="V1\GreetUserOperation.cs" />
     <Compile Include="V1\Message.cs" />
     <Compile Include="V1\MessageClient.cs" />
+    <Compile Include="Entities\MessageDirection.cs" />
+    <Compile Include="Entities\MessageStatus.cs" />
+    <Compile Include="Entities\MessageTemplate.cs" />
     <Compile Include="V1\OperationCheckpointHandler.cs" />
     <Compile Include="V1\OperationContext.cs" />
     <Compile Include="V1\OperationResponse.cs" />

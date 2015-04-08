@@ -1,6 +1,7 @@
 ﻿namespace SabbathText.V1
 {
     using System;
+    using SabbathText.Entities;
 
     /// <summary>
     /// This class represents a message
@@ -33,6 +34,11 @@
         public DateTime Timestamp { get; set; }
 
         /// <summary>
+        /// Gets or sets the message template.
+        /// </summary>
+        public MessageTemplate Template { get; set; }
+
+        /// <summary>
         /// Creates a new message to greet the user
         /// </summary>
         /// <param name="phoneNumber">The recipient phone number</param>
@@ -41,6 +47,7 @@
         {
             return CreateMessage(
                 phoneNumber,
+                MessageTemplate.FreeForm,
                 "Greetings from SabbathText.com! Text \"subscribe\" to get started. (Messaging rates may apply. Text \"STOP\" anytime)");
         }
 
@@ -48,15 +55,17 @@
         /// Creates new message
         /// </summary>
         /// <param name="phoneNumber">The recipient</param>
+        /// <param name="template">The message template.</param>
         /// <param name="body">The message body</param>
         /// <returns>The message</returns>
-        private static Message CreateMessage(string phoneNumber, string body)
+        private static Message CreateMessage(string phoneNumber, MessageTemplate template, string body)
         {
             return new Message
             {
                 Body = body,
                 Recipient = phoneNumber,
                 Timestamp = Clock.UtcNow,
+                Template = template,
             };
         }
     }

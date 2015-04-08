@@ -2,52 +2,6 @@
 {
     using System;
     using KeyValueStorage;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
-    /// <summary>
-    /// The message direction
-    /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum MessageDirection
-    {
-        /// <summary>
-        /// An incoming message
-        /// </summary>
-        Incoming,
-
-        /// <summary>
-        /// An outgoing message
-        /// </summary>
-        Outgoing
-    }
-
-    /// <summary>
-    /// The message status
-    /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum MessageStatus
-    {
-        /// <summary>
-        /// An incoming message is received
-        /// </summary>
-        Received,
-
-        /// <summary>
-        /// An incoming message is responded
-        /// </summary>
-        Responded,
-
-        /// <summary>
-        /// An outgoing message is queued
-        /// </summary>
-        Queued,
-
-        /// <summary>
-        /// An outgoing message is sent
-        /// </summary>
-        Sent,
-    }
 
     /// <summary>
     /// A message entity
@@ -93,5 +47,10 @@ using Newtonsoft.Json.Converters;
         /// Gets or sets the message status
         /// </summary>
         public MessageStatus Status { get; set; }
+
+        /// <summary>
+        /// Gets or sets the message template.
+        /// </summary>
+        public MessageTemplate Template { get; set; }
     }
 }
