@@ -37,7 +37,6 @@
     public class ProcessMessageOperation : BaseOperation<bool, ProcessMessageOperationState>
     {
         private ProcessMessageCheckpointData checkpointData;
-        private MessageEntity incomingMessageEntity;
 
         /// <summary>
         /// Creates a new instance of this operation
@@ -81,7 +80,6 @@
             {
                 outgoingMessage = Message.CreateNotUnderstandable(recipient);
             }
-
 
             if (this.Context.Account.ConversationContext == ConversationContext.Unknown)
             {
@@ -185,7 +183,7 @@
             }
 
             await this.Context.AccountStore.Update(this.Context.Account);
-            return await CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, true);
+            return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, true);
         }
 
         /// <summary>

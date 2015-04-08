@@ -84,6 +84,7 @@
     <Compile Include="TestHelper.cs" />
     <Compile Include="V1\InMemoryMessageClient.cs" />
     <Compile Include="V1\ProcessMessageOperationTests.cs" />
+    <Compile Include="V1\GreetingsContextTests.cs" />
     <Compile Include="V1\TestBase.cs" />
     <Compile Include="V1\GreetUserOperationTests.cs" />
   </ItemGroup>

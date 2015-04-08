@@ -13,28 +13,12 @@
     public class ProcessMessageOperationTests : TestBase
     {
         /// <summary>
-        /// Tests an incoming "subscribe" message after greeting the users
-        /// </summary>
-        [TestMethod]
-        public void ProcessMessage_SubscribeAfterGreetings()
-        {
-            AccountEntity account = this.CreateAccount();
-            this.GreetUser(account);
-            this.AssertConversationContext(account.AccountId, ConversationContext.Greetings);
-
-            Message subscribeMessage = this.CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
-            this.ProcessMessage(account, subscribeMessage);
-            this.AssertConversationContext(account.AccountId, ConversationContext.SubscriptionConfirmed);
-            this.AssertLastSentMessage(account.AccountId, MessageTemplate.SubscriptionConfirmed);
-        }
-
-        /// <summary>
         /// Creates an incoming message.
         /// </summary>
         /// <param name="sender">The sender phone number.</param>
         /// <param name="body">The message body.</param>
         /// <returns>The message.</returns>
-        private Message CreateIncomingMessage(string sender, string body)
+        protected Message CreateIncomingMessage(string sender, string body)
         {
             return new Message
             {
@@ -51,7 +35,7 @@
         /// Sends a greeting message to a specific account.
         /// </summary>
         /// <param name="account">The account.</param>
-        private void GreetUser(AccountEntity account)
+        protected void GreetUser(AccountEntity account)
         {
             OperationContext context = this.CreateContext(account);
             GreetUserOperation operation = new GreetUserOperation(context);
@@ -65,7 +49,7 @@
         /// </summary>
         /// <param name="account">The account.</param>
         /// <param name="incomingMessage">The incoming message.</param>
-        private void ProcessMessage(AccountEntity account, Message incomingMessage)
+        protected void ProcessMessage(AccountEntity account, Message incomingMessage)
         {
             OperationContext context = this.CreateContext(account);
             ProcessMessageOperation operation = new ProcessMessageOperation(context);

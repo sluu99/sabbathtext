@@ -52,7 +52,7 @@
         }
 
         /// <summary>
-        /// Creates a "not understanable" message.
+        /// Creates a "not understandable" message.
         /// </summary>
         /// <param name="phoneNumber">The recipient phone number.</param>
         /// <returns>The message.</returns>
