@@ -111,6 +111,17 @@ public static class StringExtension
         return NormalizePhoneNumber(digits);
     }
 
+    /// <summary>
+    /// Compares two strings using OrdinalIgnoreCase.
+    /// </summary>
+    /// <param name="str1">The first string.</param>
+    /// <param name="str2">The second string.</param>
+    /// <returns>True if the two strings are equal. False otherwise.</returns>
+    public static bool OicEquals(this string str1, string str2)
+    {
+        return string.Equals(str1, str2, StringComparison.OrdinalIgnoreCase);
+    }
+
     private static string NormalizePhoneNumber(string phoneNumber)
     {
         if (phoneNumber.Length == 11)

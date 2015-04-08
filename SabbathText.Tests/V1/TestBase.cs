@@ -18,25 +18,12 @@
     public abstract class TestBase
     {
         /// <summary>
-        /// Creates a new OperationContext instance
+        /// Creates an operation context for a specific account.
         /// </summary>
-        /// <returns>An OperationContext instance</returns>
-        protected OperationContext CreateContext()
+        /// <param name="account">The account.</param>
+        /// <returns>An Operation context instance.</returns>
+        protected OperationContext CreateContext(AccountEntity account)
         {
-            string phoneNumber = TestHelper.GetUSPhoneNumber();
-            string accountId = AccountEntity.GetAccountId(phoneNumber);
-
-            AccountEntity account = TestGlobals.AccountStore.InsertOrGet(new AccountEntity
-            {
-                PartitionKey = accountId,
-                RowKey = accountId,
-                AccountId = accountId,
-                CreationTime = Clock.UtcNow,
-                PhoneNumber = phoneNumber,
-                Status = AccountStatus.BrandNew,
-                ConversationContext = ConversationContext.NoContext,
-            }).Result;
-
             return new OperationContext
             {
                 TrackingId = Guid.NewGuid().ToString(),
@@ -51,7 +38,37 @@
         }
 
         /// <summary>
-        /// Ensure an operation is finished base on the checkpoint.
+        /// Creates a new OperationContext instance
+        /// </summary>
+        /// <returns>An OperationContext instance</returns>
+        protected OperationContext CreateContext()
+        {
+            return this.CreateContext(this.CreateAccount());
+        }
+
+        /// <summary>
+        /// Creates a new test account.
+        /// </summary>
+        /// <returns>The test account.</returns>
+        protected AccountEntity CreateAccount()
+        {
+            string phoneNumber = TestHelper.GetUSPhoneNumber();
+            string accountId = AccountEntity.GetAccountId(phoneNumber);
+
+            return TestGlobals.AccountStore.InsertOrGet(new AccountEntity
+            {
+                PartitionKey = accountId,
+                RowKey = accountId,
+                AccountId = accountId,
+                CreationTime = Clock.UtcNow,
+                PhoneNumber = phoneNumber,
+                Status = AccountStatus.BrandNew,
+                ConversationContext = ConversationContext.Unknown,
+            }).Result;
+        }
+
+        /// <summary>
+        /// Ensures an operation is finished base on the checkpoint.
         /// </summary>
         /// <param name="context">The operation context.</param>
         protected void AssertOperationFinishes(OperationContext context)
@@ -72,6 +89,35 @@
             Assert.IsTrue(
                 checkpoint.Status == CheckpointStatus.Completed || checkpoint.Status == CheckpointStatus.Cancelled,
                 string.Format("Expected the checkpoint status to be Completed or Cancelled, but is actually {0}", checkpoint.Status));
+        }
+
+        /// <summary>
+        /// Ensures that the account has the expected conversation context.
+        /// </summary>
+        /// <param name="accountId">The account ID.</param>
+        /// <param name="expectedContext">The expected conversation context.</param>
+        protected void AssertConversationContext(string accountId, ConversationContext expectedContext)
+        {
+            AccountEntity account = TestGlobals.AccountStore.Get(accountId, accountId).Result;
+            Assert.AreEqual<ConversationContext>(expectedContext, account.ConversationContext);
+        }
+
+        /// <summary>
+        /// Ensures that the last message sent to the user has a particular template.
+        /// </summary>
+        /// <param name="accountId">The account ID.</param>
+        /// <param name="template">The message template.</param>
+        protected void AssertLastSentMessage(string accountId, MessageTemplate template)
+        {
+            AccountEntity account = TestGlobals.AccountStore.Get(accountId, accountId).Result;
+            Assert.IsTrue(
+                account.RecentMessages.Count > 0,
+                "Could not find any recent messages");
+
+            MessageEntity lastMessage = account.RecentMessages[account.RecentMessages.Count - 1];
+            Assert.AreEqual<MessageDirection>(MessageDirection.Outgoing, lastMessage.Direction);
+            Assert.AreEqual<MessageStatus>(MessageStatus.Sent, lastMessage.Status);
+            Assert.AreEqual<MessageTemplate>(template, lastMessage.Template);
         }
 
         /// <summary>

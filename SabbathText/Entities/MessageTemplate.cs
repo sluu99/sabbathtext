@@ -15,8 +15,18 @@
         FreeForm,
 
         /// <summary>
-        /// Greeting message
+        /// Greeting message.
         /// </summary>
         Greetings,
+        
+        /// <summary>
+        /// Lets the user know that he/she has subscribed.
+        /// </summary>
+        SubscriptionConfirmed,
+
+        /// <summary>
+        /// The service could not understand the last incoming message.
+        /// </summary>
+        NotUnderstandable,
     }
 }

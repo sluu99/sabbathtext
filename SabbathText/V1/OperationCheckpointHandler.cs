@@ -84,6 +84,14 @@
                         await operation.Resume(checkpoint);
                         break;
                     }
+                case "ProcessMessageOperation.V1":
+                    {
+                        ProcessMessageOperation operation = new ProcessMessageOperation(context);
+                        await operation.Resume(checkpoint);
+                        break;
+                    }
+                default:
+                    throw new NotSupportedException("{0} is not handled for compensation.".InvariantFormat(checkpoint.OperationType));
             }
         }
     }

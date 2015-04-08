@@ -1,6 +1,7 @@
 ﻿namespace SabbathText.V1
 {
     using System;
+    using System.Linq;
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
@@ -15,39 +16,19 @@
     public enum ProcessMessageOperationState
     {
         /// <summary>
-        /// The message is marked for processing
+        /// The message is being processed
         /// </summary>
-        MarkedForProcessing,
-
-        /// <summary>
-        /// The incoming message is being recorded
-        /// </summary>
-        RecordingIncomingMessage,
-
-        /// <summary>
-        /// Recording the outgoing message
-        /// </summary>
-        RecordingOutgoingMessage,
+        Processing,
 
         /// <summary>
         /// Sending the outgoing message
         /// </summary>
-        SendingOutgoingMessage,
+        SendingReply,
 
         /// <summary>
         /// Updating the account conversation context
         /// </summary>
-        UpdatingAccountContext,
-
-        /// <summary>
-        /// Updating the outgoing message status
-        /// </summary>
-        UpdatingOutgoingMessageStatus,
-
-        /// <summary>
-        /// Updating the incoming message status
-        /// </summary>
-        UpdatingIncomingMessageStatus,
+        UpdatingAccount,
     }
 
     /// <summary>
@@ -74,87 +55,137 @@
         /// <returns>The operation response</returns>
         public Task<OperationResponse<bool>> Run(Message message)
         {
-            string phoneNumber = message.Recipient.ExtractUSPhoneNumber();
-
-            if (string.IsNullOrWhiteSpace(phoneNumber))
-            {
-                return Task.FromResult(new OperationResponse<bool>
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ErrorCode = CommonErrorCodes.InvalidInput,
-                    ErrorDescription = "The recipient must be a valid US phone number",
-                });
-            }
-
-            this.checkpointData = new ProcessMessageCheckpointData(this.Context.Account.AccountId)
-            {
-                Message = message,
-            };
-
-            return this.TransitionToMarkedForProcessing();
+            this.checkpointData = new ProcessMessageCheckpointData(this.Context.Account.AccountId);
+            return this.TransitionToProcessing(message);
         }
 
-        private Task<OperationResponse<bool>> TransitionToMarkedForProcessing()
+        private Task<OperationResponse<bool>> TransitionToProcessing(Message message)
         {
+            this.checkpointData.IncomingMessage = message;
+            this.checkpointData.State = ProcessMessageOperationState.Processing;
+
             return this.DelayProcessingCheckpoint(
                 this.checkpointData,
                 HttpStatusCode.Accepted,
                 true /* response data */);
         }
 
-        /// <summary>
-        /// This method will be called when the operation is resumed from delayed processing
-        /// </summary>
-        /// <returns>The operation response</returns>
         private Task<OperationResponse<bool>> EnterProcessing()
         {
-            return this.TransitionToRecordingIncomingMessage();
+            Message outgoingMessage = null;
+            ConversationContext conversationContext = ConversationContext.Unknown;
+            string body = this.checkpointData.IncomingMessage.Body.ExtractAlphaNumericSpace().Trim();
+            string recipient = this.Context.Account.PhoneNumber;
+
+            if (string.IsNullOrEmpty(body))
+            {
+                outgoingMessage = Message.CreateNotUnderstandable(recipient);
+            }
+
+
+            if (this.Context.Account.ConversationContext == ConversationContext.Unknown)
+            {
+                if ("subscribe".OicEquals(body))
+                {
+                    conversationContext = ConversationContext.SubscriptionConfirmed;
+                    outgoingMessage = Message.CreateSubscriptionConfirmed(recipient);
+                }
+            }
+            else if (this.Context.Account.ConversationContext == ConversationContext.Greetings)
+            {
+                if ("subscribe".OicEquals(body) ||
+                    "yes".OicEquals(body) ||
+                    "sure".OicEquals(body))
+                {
+                    conversationContext = ConversationContext.SubscriptionConfirmed;
+                    outgoingMessage = Message.CreateSubscriptionConfirmed(recipient);
+                }
+            }
+
+            if (outgoingMessage == null)
+            {
+                outgoingMessage = Message.CreateNotUnderstandable(recipient);
+            }
+            
+            return this.TransitionToSendingReply(outgoingMessage, conversationContext);
         }
 
-        private async Task<OperationResponse<bool>> TransitionToRecordingIncomingMessage()
+        private async Task<OperationResponse<bool>> TransitionToSendingReply(Message outgoingMessage, ConversationContext conversationContext)
+        {
+            this.checkpointData.OutgoingMessage = outgoingMessage;
+            this.checkpointData.ConversationContext = conversationContext;
+
+            return
+                await this.CreateOrUpdateCheckpoint(this.checkpointData) ??
+                await this.EnterSendingReply();
+        }
+
+        private async Task<OperationResponse<bool>> EnterSendingReply()
+        {
+            await this.Context.MessageClient.SendMessage(this.checkpointData.OutgoingMessage);
+
+            return await this.TransitionToUpdatingAccount();
+        }
+
+        private async Task<OperationResponse<bool>> TransitionToUpdatingAccount()
         {
             this.checkpointData.IncomingMessageId = Guid.NewGuid().ToString();
-            this.checkpointData.State = ProcessMessageOperationState.RecordingIncomingMessage;
-
-            return
-                await this.CreateOrUpdateCheckpoint(this.checkpointData) ??
-                await this.EnterRecordingIncomingMessage();
-        }
-
-        private async Task<OperationResponse<bool>> EnterRecordingIncomingMessage()
-        {
-            this.incomingMessageEntity = new MessageEntity
-            {
-                AccountId = this.Context.Account.AccountId,
-                MessageId = this.checkpointData.IncomingMessageId,
-                PartitionKey = this.Context.Account.AccountId,
-                RowKey = this.checkpointData.IncomingMessageId,
-                Sender = this.checkpointData.Message.Sender,
-                Recipient = this.checkpointData.Message.Recipient,
-                Body = this.checkpointData.Message.Body,
-                Direction = MessageDirection.Incoming,
-                Status = MessageStatus.Received,
-                MessageTimestamp = this.checkpointData.Message.Timestamp,
-            };
-
-            await this.Context.MessageStore.InsertOrGet(this.incomingMessageEntity);
-            
-            return await this.TransitionToRecordingOutgoingMessage();
-        }
-
-        private async Task<OperationResponse<bool>> TransitionToRecordingOutgoingMessage()
-        {
             this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
-            this.checkpointData.State = ProcessMessageOperationState.RecordingOutgoingMessage;
 
             return
                 await this.CreateOrUpdateCheckpoint(this.checkpointData) ??
-                await this.EnterRecordingOutgoingMessage();
+                await this.EnterUpdatingAccount();
         }
 
-        private Task<OperationResponse<bool>> EnterRecordingOutgoingMessage()
+        private async Task<OperationResponse<bool>> EnterUpdatingAccount()
         {
-            throw new NotImplementedException();
+            if (this.Context.Account.RecentMessages.Any(m => m.MessageId == this.checkpointData.IncomingMessageId) == false)
+            {
+                this.Context.Account.RecentMessages.Add(
+                    new MessageEntity
+                    {
+                        AccountId = this.Context.Account.AccountId,
+                        Body = this.checkpointData.IncomingMessage.Body,
+                        Direction = MessageDirection.Incoming,
+                        MessageId = this.checkpointData.IncomingMessageId,
+                        MessageTimestamp = this.checkpointData.IncomingMessage.Timestamp,
+                        PartitionKey = this.Context.Account.AccountId,
+                        Recipient = this.checkpointData.IncomingMessage.Recipient,
+                        RowKey = this.checkpointData.IncomingMessageId,
+                        Sender = this.checkpointData.IncomingMessage.Sender,
+                        Status = MessageStatus.Responded,
+                        Template = this.checkpointData.IncomingMessage.Template,
+                    });
+            }
+
+            if (this.Context.Account.RecentMessages.Any(m => m.MessageId == this.checkpointData.OutgoingMessageId) == false)
+            {
+                this.Context.Account.RecentMessages.Add(
+                    new MessageEntity
+                    {
+                        AccountId = this.Context.Account.AccountId,
+                        Body = this.checkpointData.OutgoingMessage.Body,
+                        Direction = MessageDirection.Outgoing,
+                        MessageId = this.checkpointData.OutgoingMessageId,
+                        MessageTimestamp = this.checkpointData.OutgoingMessage.Timestamp,
+                        PartitionKey = this.Context.Account.AccountId,
+                        Recipient = this.checkpointData.OutgoingMessage.Recipient,
+                        RowKey = this.checkpointData.OutgoingMessageId,
+                        Sender = this.checkpointData.OutgoingMessage.Sender,
+                        Status = MessageStatus.Sent,
+                        Template = this.checkpointData.OutgoingMessage.Template,
+                    });
+            }
+
+            if (this.checkpointData.ConversationContext != ConversationContext.Unknown)
+            {
+                // we never change the conversation context to Unknown.
+                // we only use that when we don't understand an incoming message
+                this.Context.Account.ConversationContext = this.checkpointData.ConversationContext;
+            }
+
+            await this.Context.AccountStore.Update(this.Context.Account);
+            return await CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, true);
         }
 
         /// <summary>
@@ -164,7 +195,15 @@
         /// <returns>The operation response</returns>
         protected override Task<OperationResponse<bool>> Resume(string serializedCheckpointData)
         {
-            throw new NotImplementedException();
+            this.checkpointData = JsonConvert.DeserializeObject<ProcessMessageCheckpointData>(serializedCheckpointData);
+
+            switch (this.checkpointData.State)
+            {
+                case ProcessMessageOperationState.Processing:
+                    return this.EnterProcessing();
+                default:
+                    throw new NotSupportedException("{0} state is not supported for resume.".InvariantFormat(this.checkpointData.State));
+            }
         }
 
         private class ProcessMessageCheckpointData : CheckpointData<bool, ProcessMessageOperationState>
@@ -176,7 +215,7 @@
             /// <summary>
             /// Gets or sets the message to be processed
             /// </summary>
-            public Message Message { get; set; }
+            public Message IncomingMessage { get; set; }
 
             /// <summary>
             /// Gets or sets the ID of the incoming message
@@ -189,9 +228,19 @@
             public string OutgoingMessageId { get; set; }
 
             /// <summary>
+            /// Gets or sets the outgoing message.
+            /// </summary>
+            public Message OutgoingMessage { get; set; }
+
+            /// <summary>
             /// Gets or sets the operation state
             /// </summary>
             public ProcessMessageOperationState State { get; set; }
+
+            /// <summary>
+            /// Gets or sets the conversation context.
+            /// </summary>
+            public ConversationContext ConversationContext { get; set; }
         }
     }
 }

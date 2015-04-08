@@ -52,6 +52,32 @@
         }
 
         /// <summary>
+        /// Creates a "not understanable" message.
+        /// </summary>
+        /// <param name="phoneNumber">The recipient phone number.</param>
+        /// <returns>The message.</returns>
+        public static Message CreateNotUnderstandable(string phoneNumber)
+        {
+            return CreateMessage(
+                phoneNumber,
+                MessageTemplate.NotUnderstandable,
+                "Sorry, we didn't understand that. Can you try again?");
+        }
+
+        /// <summary>
+        /// Creates a message to confirm the user subscription.
+        /// </summary>
+        /// <param name="phoneNumber">The recipient phone number.</param>
+        /// <returns>The message.</returns>
+        public static Message CreateSubscriptionConfirmed(string phoneNumber)
+        {
+            return CreateMessage(
+                phoneNumber,
+                MessageTemplate.SubscriptionConfirmed,
+                "Thanks for subscribing! Just one more thing. We need your ZIP code to calculate the sunset time.");
+        }
+
+        /// <summary>
         /// Creates new message
         /// </summary>
         /// <param name="phoneNumber">The recipient</param>
