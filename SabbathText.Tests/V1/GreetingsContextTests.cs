@@ -7,6 +7,7 @@
     /// <summary>
     /// Test cases for scenarios which the the conversation context is "Greetings"
     /// </summary>
+    [TestClass]
     public class GreetingsContextTests : ProcessMessageOperationTests
     {
         /// <summary>
