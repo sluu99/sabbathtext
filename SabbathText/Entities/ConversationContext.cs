@@ -23,5 +23,10 @@
         /// Confirms that the user has subscribed.
         /// </summary>
         SubscriptionConfirmed,
+
+        /// <summary>
+        /// The account is already subscribed with an existing ZIP code.
+        /// </summary>
+        AlreadySubscribedWithZipCode,
     }
 }

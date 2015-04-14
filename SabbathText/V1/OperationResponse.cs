@@ -28,5 +28,19 @@
         /// Gets or sets the data returned from the operation
         /// </summary>
         public T Data { get; set; }
+
+        /// <summary>
+        /// Create a new OK response.
+        /// </summary>
+        /// <param name="responseData">The response data.</param>
+        /// <returns>A response with OK status code.</returns>
+        public static OperationResponse<T> CreateOK(T responseData)
+        {
+            return new OperationResponse<T>
+            {
+                Data = responseData,
+                StatusCode = HttpStatusCode.OK,
+            };
+        }
     }
 }

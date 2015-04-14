@@ -18,7 +18,7 @@
         /// Greeting message.
         /// </summary>
         Greetings,
-        
+
         /// <summary>
         /// Lets the user know that he/she has subscribed.
         /// </summary>
@@ -28,5 +28,10 @@
         /// The service could not understand the last incoming message.
         /// </summary>
         NotUnderstandable,
+
+        /// <summary>
+        /// The account is already subscribed with an existing ZIP code.
+        /// </summary>
+        AlreadySubscribedWithZipCode,
     }
 }

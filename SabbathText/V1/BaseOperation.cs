@@ -14,9 +14,7 @@
     /// This is the base class for all the operations
     /// </summary>
     /// <typeparam name="TResponse">The data type of the operation response</typeparam>
-    /// <typeparam name="TState">The operation state enumeration type</typeparam>
-    public abstract class BaseOperation<TResponse, TState>
-        where TState : struct, IConvertible
+    public abstract class BaseOperation<TResponse>
     {
         /// <summary>
         /// The timeout before a delay processing checkpoint could be picked up
@@ -98,7 +96,7 @@
         /// <param name="responseData">The operation data</param>
         /// <returns>The final operation response</returns>
         protected async Task<OperationResponse<TResponse>> CompleteCheckpoint(
-            CheckpointData<TResponse, TState> checkpointData,
+            CheckpointData<TResponse> checkpointData,
             HttpStatusCode status,
             TResponse responseData)
         {
@@ -122,7 +120,7 @@
         /// <param name="errorDescription">The error description</param>
         /// <returns>The operation response</returns>
         protected async Task<OperationResponse<TResponse>> CompleteCheckpoint(
-            CheckpointData<TResponse, TState> checkpointData,
+            CheckpointData<TResponse> checkpointData,
             HttpStatusCode status,
             string errorCode,
             string errorDescription)
@@ -147,7 +145,7 @@
         /// <param name="responseData">The operation response data</param>
         /// <returns>The operation response</returns>
         protected async Task<OperationResponse<TResponse>> DelayProcessingCheckpoint(
-            CheckpointData<TResponse, TState> checkpointData,
+            CheckpointData<TResponse> checkpointData,
             HttpStatusCode status,
             TResponse responseData)
         {
@@ -171,7 +169,7 @@
         /// </summary>
         /// <param name="checkpointData">The checkpoint data</param>
         /// <returns>The response if it was already completed before, or null</returns>
-        protected Task<OperationResponse<TResponse>> CreateOrUpdateCheckpoint(CheckpointData<TResponse, TState> checkpointData)
+        protected Task<OperationResponse<TResponse>> CreateOrUpdateCheckpoint(CheckpointData<TResponse> checkpointData)
         {
             return this.CreateOrUpdateCheckpoint(checkpointData, CheckpointStatus.InProgress);
         }
@@ -182,7 +180,7 @@
         /// <param name="checkpointData">The checkpoint data</param>
         /// <param name="checkpointStatus">The checkpoint status</param>
         /// <returns>The response if it was already completed before, or null</returns>
-        private async Task<OperationResponse<TResponse>> CreateOrUpdateCheckpoint(CheckpointData<TResponse, TState> checkpointData, CheckpointStatus checkpointStatus)
+        private async Task<OperationResponse<TResponse>> CreateOrUpdateCheckpoint(CheckpointData<TResponse> checkpointData, CheckpointStatus checkpointStatus)
         {
             if (this.Context == null || string.IsNullOrWhiteSpace(this.Context.Account.AccountId))
             {
@@ -206,8 +204,8 @@
                 if (this.checkpoint.Status == CheckpointStatus.Completed || this.checkpoint.Status == CheckpointStatus.Cancelled)
                 {
                     // the checkpoint is at terminal states
-                    CheckpointData<TResponse, TState> existingCheckpointData =
-                        JsonConvert.DeserializeObject<CheckpointData<TResponse, TState>>(this.checkpoint.CheckpointData);
+                    CheckpointData<TResponse> existingCheckpointData =
+                        JsonConvert.DeserializeObject<CheckpointData<TResponse>>(this.checkpoint.CheckpointData);
 
                     return existingCheckpointData.Response;
                 }

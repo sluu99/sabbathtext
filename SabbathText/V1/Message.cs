@@ -74,7 +74,25 @@
             return CreateMessage(
                 phoneNumber,
                 MessageTemplate.SubscriptionConfirmed,
-                "Thanks for subscribing! Just one more thing. We need your ZIP code to calculate the sunset time.");
+                "Thanks for subscribing! Just one more thing. Text us your ZIP code to calculate the sunset time.");
+        }
+
+        /// <summary>
+        /// The user already subscribed, and has a ZIP code.
+        /// </summary>
+        /// <param name="phoneNumber">The account phone number.</param>
+        /// <param name="zipCode">The ZIP code.</param>
+        /// <returns>The message.</returns>
+        public static Message CreateAlreadySubscribedWithZipCode(string phoneNumber, string zipCode)
+        {
+            string message =
+                "You are already with the ZIP code {0}. You can change your ZIP code at anytime by texting \"Zipcode <zip>\"."
+                .InvariantFormat(zipCode);
+
+            return CreateMessage(
+                phoneNumber,
+                MessageTemplate.AlreadySubscribedWithZipCode,
+                message);
         }
 
         /// <summary>

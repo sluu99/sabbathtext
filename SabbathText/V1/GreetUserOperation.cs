@@ -9,26 +9,9 @@
     using SabbathText.Entities;
 
     /// <summary>
-    /// Greet user operation states
-    /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum GreetUserOperationState
-    {
-        /// <summary>
-        /// Sending the message
-        /// </summary>
-        SendingMessage,
-        
-        /// <summary>
-        /// Updating the account with the recently sent message
-        /// </summary>
-        UpdatingAccountContext,
-    }
-
-    /// <summary>
     /// An operation which sends the user a greeting message
     /// </summary>
-    public class GreetUserOperation : BaseOperation<bool, GreetUserOperationState>
+    public class GreetUserOperation : BaseOperation<bool>
     {
         private GreetUserCheckpointData checkpointData;
 
@@ -63,9 +46,9 @@
 
             switch (this.checkpointData.OperationState)
             {
-                case GreetUserOperationState.SendingMessage:
+                case GreetUserState.SendingMessage:
                     return this.EnterSendingMessage();
-                case GreetUserOperationState.UpdatingAccountContext:
+                case GreetUserState.UpdatingAccountContext:
                     return this.EnterUpdatingAccount();
             }
 
@@ -74,7 +57,7 @@
         
         private Task<OperationResponse<bool>> TransitionToSendingMessage()
         {
-            this.checkpointData.OperationState = GreetUserOperationState.SendingMessage;
+            this.checkpointData.OperationState = GreetUserState.SendingMessage;
             return this.DelayProcessingCheckpoint(
                 this.checkpointData,
                 HttpStatusCode.Accepted,
@@ -92,7 +75,7 @@
 
         private async Task<OperationResponse<bool>> TransitionToUpdatingAccount()
         {
-            this.checkpointData.OperationState = GreetUserOperationState.UpdatingAccountContext;
+            this.checkpointData.OperationState = GreetUserState.UpdatingAccountContext;
             this.checkpointData.MessageEntityId = Guid.NewGuid().ToString();
 
             return
@@ -127,28 +110,6 @@
             }
 
             return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, responseData: true);
-        }
-
-        private class GreetUserCheckpointData : CheckpointData<bool, GreetUserOperationState>
-        {
-            /// <summary>
-            /// Creates a new instance of the operation checkpoint data
-            /// </summary>
-            /// <param name="accountId">The account ID</param>
-            public GreetUserCheckpointData(string accountId)
-                : base(accountId)
-            {
-            }
-
-            /// <summary>
-            /// Gets or sets the message that was sent out
-            /// </summary>
-            public Message Message { get; set; }
-
-            /// <summary>
-            /// Gets or sets the message entity ID that will be ended into the account entity
-            /// </summary>
-            public string MessageEntityId { get; set; }
         }
     }
 }

@@ -32,10 +32,8 @@
     /// Operation specific  data
     /// </summary>
     /// <typeparam name="TResponse">The response data type</typeparam>
-    /// <typeparam name="TState">The operation enumeration type</typeparam>
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "A generic variation of the base class")]
-    public class CheckpointData<TResponse, TState> : CheckpointData
-        where TState : struct, IConvertible /* enum */
+    public class CheckpointData<TResponse> : CheckpointData
     {
         /// <summary>
         /// Creates a new instance of the checkpoint data.
@@ -50,10 +48,5 @@
         /// Gets or sets the operation response
         /// </summary>
         public OperationResponse<TResponse> Response { get; set; }
-
-        /// <summary>
-        /// Gets or sets the operation state
-        /// </summary>
-        public TState OperationState { get; set; }
     }
 }
