@@ -14,6 +14,37 @@
     public class SunCalculator
     {
         /// <summary>
+        /// Calculates the Sunset for a specific day, at a specific location.
+        /// </summary>
+        /// <param name="year">The year.</param>
+        /// <param name="month">The month.</param>
+        /// <param name="day">The day.</param>
+        /// <param name="latitude">The latitude.</param>
+        /// <param name="longitude">The longitude.</param>
+        /// <returns>The Sun set time in UTC.</returns>
+        public static DateTime CalculateSunSetUtc(int year, int month, int day, double latitude, double longitude)
+        {
+            double julianDay = CalcJulianDay(year, month, day);
+            double sunsetUtc = CalcSunSetUtc(julianDay, latitude, longitude);
+
+            return new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Utc).AddMinutes(sunsetUtc);
+        }
+
+        private static double CalcJulianDay(int year, int month, int day)
+        {
+            if (month <= 2)
+            {
+                year -= 1;
+                month += 12;
+            }
+
+            double a = Math.Floor(year / 100.0);
+            double b = 2 - a + Math.Floor(a / 4);
+
+            return Math.Floor(365.25 * (year + 4716)) + Math.Floor(30.6001 * (month + 1)) + day + b - 1524.5;
+        }
+
+        /// <summary>
         /// Calculates the UTC of sunset for a given day at the given location on earth.
         /// </summary>
         /// <param name="julianDay">Julian da.y</param>
@@ -62,9 +93,9 @@
         {
             double latRad = DegToRad(latitude);
             double solarDecRad = DegToRad(solarDec);
-            
+
             double hourAngle = Math.Acos(
-                (Math.Cos(DegToRad(90.833)) / (Math.Cos(latRad) * Math.Cos(solarDecRad))) - 
+                (Math.Cos(DegToRad(90.833)) / (Math.Cos(latRad) * Math.Cos(solarDecRad))) -
                 (Math.Tan(latRad) * Math.Tan(solarDecRad)));
 
             return hourAngle;  // in radians
