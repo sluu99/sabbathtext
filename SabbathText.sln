@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.Tests", "Sabbat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System2", "Common\System2\System2.csproj", "{88035141-476B-4625-A5DF-738509B58E99}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.Location", "SabbathText.Location\SabbathText.Location.csproj", "{8434442E-36AE-4B1E-B37F-4CC89B4839DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{88035141-476B-4625-A5DF-738509B58E99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88035141-476B-4625-A5DF-738509B58E99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88035141-476B-4625-A5DF-738509B58E99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8434442E-36AE-4B1E-B37F-4CC89B4839DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8434442E-36AE-4B1E-B37F-4CC89B4839DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8434442E-36AE-4B1E-B37F-4CC89B4839DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8434442E-36AE-4B1E-B37F-4CC89B4839DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
