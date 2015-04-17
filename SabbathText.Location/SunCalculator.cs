@@ -26,6 +26,14 @@
             return new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Utc).AddMinutes(sunsetUtc);
         }
 
+        /// <summary>
+        /// Calculates the Julian day value for a specific day.
+        /// Starting from noon January 1, 4713 BC.
+        /// </summary>
+        /// <param name="year">The year.</param>
+        /// <param name="month">The month.</param>
+        /// <param name="day">The day.</param>
+        /// <returns>The Julian day value.</returns>
         private static double CalcJulianDay(int year, int month, int day)
         {
             if (month <= 2)
