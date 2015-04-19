@@ -52,6 +52,7 @@
     <Compile Include="V1\RawData.cs" />
     <Compile Include="V1\SunCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="V1\TimeInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
