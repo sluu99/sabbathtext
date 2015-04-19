@@ -15,6 +15,7 @@ $testAssemblies = @(
     # "$root\SabbathText.Core.Tests\bin\Release\SabbathText.Core.Tests.dll",
     "$root\Common\KeyValueStorage.Tests\bin\Release\KeyValueStorage.Tests.dll",
     "$root\Common\QueueStorage.Tests\bin\Release\QueueStorage.Tests.dll",
+	"$root\SabbathText.Location.Tests\bin\Release\SabbathText.Location.Tests.dll",
     "$root\SabbathText.Tests\bin\Release\SabbathText.Tests.dll"
 )
 
