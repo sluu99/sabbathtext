@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="V1\LocationInfo.cs" />
     <Compile Include="V1\LocationType.cs" />
-    <Compile Include="V1\PositionSensitiveStreamReader.cs" />
+    <Compile Include="V1\LineReader.cs" />
     <Compile Include="V1\RawData.cs" />
     <Compile Include="V1\SunCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
