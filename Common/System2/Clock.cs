@@ -1,6 +1,7 @@
-﻿using System.Threading;
-namespace System
+﻿namespace System
 {
+    using System.Threading;
+
     /// <summary>
     /// This class provides a way to get time, which allows test cases to manipulate the time
     /// </summary>
