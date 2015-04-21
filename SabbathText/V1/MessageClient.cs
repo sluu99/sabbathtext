@@ -15,12 +15,11 @@
         private string twilioPhoneNumber;
 
         /// <summary>
-        /// Initializes the message manager to send messages using Twilio
+        /// Initializes the message manager to send messages using <c>Twilio</c>.
         /// </summary>
-        /// <param name="twilioAccount">The Twilio account</param>
-        /// <param name="twilioToken">The Twilio access token</param>
-        /// <param name="twilioPhoneNumber">The Twilio phone number</param>
-        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Twilio is a company name.")]
+        /// <param name="twilioAccount">The <c>Twilio</c> account</param>
+        /// <param name="twilioToken">The <c>Twilio</c> access token</param>
+        /// <param name="twilioPhoneNumber">The <c>Twilio</c> phone number</param>
         public void InitTwilio(string twilioAccount, string twilioToken, string twilioPhoneNumber)
         {
             this.twilioAccount = twilioAccount;
