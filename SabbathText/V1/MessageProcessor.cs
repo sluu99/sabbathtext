@@ -13,8 +13,6 @@
     /// </summary>
     public class MessageProcessor
     {
-        private static readonly Regex ZipMessageRegex = new Regex(@"^Zip(?:Code)?\s*(?<ZipCode>\d+)$", RegexOptions.IgnoreCase);
-
         /// <summary>
         /// Process a message.
         /// </summary>
@@ -37,13 +35,13 @@
                 SubscribeMessageOperation subscribe = new SubscribeMessageOperation(context);
                 return subscribe.Run(message);
             }
+            else if (body.ToLowerInvariant().StartsWith("zip"))
+            {
+                UpdateZipCodeOperation updateZipCode = new UpdateZipCodeOperation(context);
+                return updateZipCode.Run(message);
+            }
 
             return Task.FromResult<OperationResponse<bool>>(null);
-        }
-
-        private Message ProcessZipCode(AccountEntity account, string zipCode)
-        {
-            throw new NotImplementedException();
         }
 
         private bool IsPositiveMessage(string message)
@@ -74,22 +72,6 @@
             }
 
             return false;
-        }
-
-        private Message ProcessSubscribe(AccountEntity account, string message)
-        {
-            if (account.Status == AccountStatus.Subscribed &&
-                string.IsNullOrWhiteSpace(account.ZipCode) == false)
-            {
-                account.ConversationContext = ConversationContext.AlreadySubscribedWithZipCode;
-                return Message.CreateAlreadySubscribedWithZipCode(
-                    account.PhoneNumber,
-                    account.ZipCode);
-            }
-
-            account.Status = AccountStatus.Subscribed;
-            account.ConversationContext = ConversationContext.SubscriptionConfirmed;
-            return Message.CreateSubscriptionConfirmed(account.PhoneNumber);
         }
     }
 }

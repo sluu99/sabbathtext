@@ -98,6 +98,9 @@
     <Compile Include="V1\SubscribeMessageOperation.cs" />
     <Compile Include="V1\SubscribeMessageOperationCheckpointData.cs" />
     <Compile Include="V1\SubscribeMessageOperationState.cs" />
+    <Compile Include="V1\UpdateZipCodeOperation.cs" />
+    <Compile Include="V1\UpdateZipCodeOperationCheckpointData.cs" />
+    <Compile Include="V1\GenericOperationState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\common\KeyValueStorage\KeyValueStorage.csproj">
