@@ -37,7 +37,7 @@
         /// Gets or sets the message template.
         /// </summary>
         public MessageTemplate Template { get; set; }
-
+        
         /// <summary>
         /// Creates a new message to greet the user
         /// </summary>
@@ -86,13 +86,26 @@
         public static Message CreateAlreadySubscribedWithZipCode(string phoneNumber, string zipCode)
         {
             string message =
-                "You are already with the ZIP code {0}. You can change your ZIP code at anytime by texting \"Zipcode <zip>\"."
+                "You are already subscribed with the ZIP code {0}. You can change your ZIP code at anytime by texting \"Zip <zip>\"."
                 .InvariantFormat(zipCode);
 
             return CreateMessage(
                 phoneNumber,
                 MessageTemplate.AlreadySubscribedWithZipCode,
                 message);
+        }
+
+        /// <summary>
+        /// Notifies the user that she needs to subscribe.
+        /// </summary>
+        /// <param name="phoneNumber">The phone number.</param>
+        /// <returns>The message.</returns>
+        public static Message CreateSubscriptionRequired(string phoneNumber)
+        {
+            return CreateMessage(
+                phoneNumber,
+                MessageTemplate.SubscriptionRequired,
+                "A subscription is required before we can proceed. Do you want to subscribe?");
         }
 
         /// <summary>
@@ -110,6 +123,31 @@
                 Recipient = phoneNumber,
                 Timestamp = Clock.UtcNow,
                 Template = template,
+            };
+        }
+        
+        /// <summary>
+        /// Converts this message to a <c>MessageEntity</c>.
+        /// </summary>
+        /// <param name="accountId">The account ID.</param>
+        /// <param name="messageId">The message ID.</param>
+        /// <param name="direction">The Message direction.</param>
+        /// <param name="status">The message status.</param>
+        /// <returns>The message entity.</returns>
+        public MessageEntity ToEntity(string accountId, string messageId, MessageDirection direction, MessageStatus status)
+        {
+            return new MessageEntity
+            {
+                AccountId = accountId,
+                Body = this.Body,
+                Direction = direction,
+                ExternalId = this.ExternalId,
+                MessageId = messageId,
+                MessageTimestamp = this.Timestamp,
+                Recipient = this.Recipient,
+                Sender = this.Sender,
+                Status = status,
+                Template = this.Template,
             };
         }
     }

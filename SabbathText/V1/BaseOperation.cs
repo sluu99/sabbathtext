@@ -2,6 +2,7 @@
 {
     using System;
     using System.Globalization;
+    using System.Linq;
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
@@ -61,6 +62,23 @@
         /// Gets the operation context
         /// </summary>
         protected OperationContext Context { get; private set; }
+
+        /// <summary>
+        /// Try adding a message to the account.
+        /// </summary>
+        /// <param name="account">The account.</param>
+        /// <param name="message">The message.</param>
+        /// <returns>True if the message is added, false otherwise.</returns>
+        protected bool TryAddMessageEntity(AccountEntity account, MessageEntity message)
+        {
+            if (!account.RecentMessages.Any(m => m.MessageId == message.MessageId))
+            {
+                account.RecentMessages.Add(message);
+                return true;
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// Resumes an operation base on the checkpoint
@@ -191,8 +209,7 @@
             {
                 this.checkpoint = new Checkpoint
                 {
-                    PartitionKey = this.Context.Account.AccountId,
-                    RowKey = this.Context.TrackingId.Sha256(), // we need to hash this since the client can potentially pass in illegal chars
+                    AccountId = this.Context.Account.AccountId,
                     TrackingId = this.Context.TrackingId,
                     OperationType = this.operationType,
                     Status = checkpointStatus,

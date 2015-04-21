@@ -11,42 +11,34 @@
     /// <summary>
     /// Processes a message in the context of a conversation.
     /// </summary>
-    public class ConversationProcessor
+    public class MessageProcessor
     {
         private static readonly Regex ZipMessageRegex = new Regex(@"^Zip(?:Code)?\s*(?<ZipCode>\d+)$", RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Process a message.
         /// </summary>
-        /// <param name="account">The account to process the message for.</param>
-        /// <param name="message">The message content.</param>
+        /// <param name="context">The operation context.</param>
+        /// <param name="message">The message .</param>
         /// <returns>A response message.</returns>
-        public Message Process(AccountEntity account, string message)
+        public Task<OperationResponse<bool>> Process(OperationContext context, Message message)
         {
-            if (string.IsNullOrWhiteSpace(message))
+            string body = message.Body;
+
+            if (string.IsNullOrWhiteSpace(body))
             {
                 throw new ArgumentException("Message cannot be null or white space", "message");
             }
 
-            message = message.ExtractAlphaNumericSpace().Trim();
+            body = body.ExtractAlphaNumericSpace().Trim();
 
-            if ("subscribe".OicEquals(message))
+            if ("subscribe".OicEquals(body))
             {
-                return this.ProcessSubscribe(account, message);
+                SubscribeMessageOperation subscribe = new SubscribeMessageOperation(context);
+                return subscribe.Run(message);
             }
 
-            if (this.IsZipCode(message) && account.ConversationContext == ConversationContext.SubscriptionConfirmed)
-            {
-                return this.ProcessZipCode(account, message);
-            }
-
-            Match zipMatch = ZipMessageRegex.Match(message);
-            if (zipMatch != null && zipMatch.Success && string.IsNullOrWhiteSpace(zipMatch.Groups["ZipCode"].Value) == false)
-            {
-                return this.ProcessZipCode(account, zipMatch.Groups["ZipCode"].Value);
-            }
-
-            return Message.CreateNotUnderstandable(account.PhoneNumber);
+            return Task.FromResult<OperationResponse<bool>>(null);
         }
 
         private Message ProcessZipCode(AccountEntity account, string zipCode)

@@ -52,9 +52,8 @@
         protected void ProcessMessage(AccountEntity account, Message incomingMessage)
         {
             OperationContext context = this.CreateContext(account);
-            ProcessMessageOperation operation = new ProcessMessageOperation(context);
-            OperationResponse<bool> response = operation.Run(incomingMessage).Result;
-            Assert.AreEqual<HttpStatusCode>(HttpStatusCode.Accepted, response.StatusCode);
+            MessageProcessor processor = new MessageProcessor();
+            processor.Process(context, incomingMessage).Wait();
             this.AssertOperationFinishes(context);
         }
     }

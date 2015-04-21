@@ -28,5 +28,10 @@
         /// The account is already subscribed with an existing ZIP code.
         /// </summary>
         AlreadySubscribedWithZipCode,
+
+        /// <summary>
+        /// Notify the user that he/she needs to subscribe before continuing.
+        /// </summary>
+        SubscriptionRequired,
     }
 }

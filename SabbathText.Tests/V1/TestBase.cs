@@ -57,8 +57,6 @@
 
             return TestGlobals.AccountStore.InsertOrGet(new AccountEntity
             {
-                PartitionKey = accountId,
-                RowKey = accountId,
                 AccountId = accountId,
                 CreationTime = Clock.UtcNow,
                 PhoneNumber = phoneNumber,
@@ -98,7 +96,11 @@
         /// <param name="expectedContext">The expected conversation context.</param>
         protected void AssertConversationContext(string accountId, ConversationContext expectedContext)
         {
-            AccountEntity account = TestGlobals.AccountStore.Get(accountId, accountId).Result;
+            AccountEntity account = new AccountEntity
+            {
+                AccountId = accountId,
+            };
+            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey).Result;
             Assert.AreEqual<ConversationContext>(expectedContext, account.ConversationContext);
         }
 
@@ -109,7 +111,11 @@
         /// <param name="template">The message template.</param>
         protected void AssertLastSentMessage(string accountId, MessageTemplate template)
         {
-            AccountEntity account = TestGlobals.AccountStore.Get(accountId, accountId).Result;
+            AccountEntity account = new AccountEntity
+            {
+                AccountId = accountId,
+            };
+            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey).Result;
             Assert.IsTrue(
                 account.RecentMessages.Count > 0,
                 "Could not find any recent messages");
@@ -130,7 +136,7 @@
             CheckpointReference checkpointRef = new CheckpointReference
             {
                 PartitionKey = context.Account.AccountId,
-                RowKey = context.TrackingId.Sha256(),
+                RowKey = context.TrackingId,
             };
 
             return context.Compensation.GetCheckpoint(checkpointRef).Result;

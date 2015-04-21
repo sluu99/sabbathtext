@@ -42,6 +42,11 @@
     public class Checkpoint : KeyValueEntity
     {
         /// <summary>
+        /// Gets or sets the account ID.
+        /// </summary>
+        public string AccountId { get; set; }
+
+        /// <summary>
         /// Gets or sets the tracking ID
         /// </summary>
         public string TrackingId { get; set; }
@@ -60,5 +65,23 @@
         /// Gets or sets the checkpoint data
         /// </summary>
         public string CheckpointData { get; set; }
+
+        /// <summary>
+        /// Gets the partition key.
+        /// </summary>
+        public override string PartitionKey
+        {
+            get { return this.AccountId; }
+            set { }
+        }
+
+        /// <summary>
+        /// Gets the row key.
+        /// </summary>
+        public override string RowKey
+        {
+            get { return this.TrackingId; }
+            set { }
+        }
     }
 }

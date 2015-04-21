@@ -96,9 +96,7 @@
                     Direction = MessageDirection.Outgoing,
                     MessageId = this.checkpointData.MessageEntityId,
                     MessageTimestamp = this.checkpointData.Message.Timestamp,
-                    PartitionKey = this.Context.Account.AccountId,
                     Recipient = this.Context.Account.PhoneNumber,
-                    RowKey = this.checkpointData.MessageEntityId,
                     Status = MessageStatus.Sent,
                     Template = MessageTemplate.Greetings,
                 };

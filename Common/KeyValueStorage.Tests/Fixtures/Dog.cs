@@ -48,5 +48,23 @@ using Newtonsoft.Json.Converters;
         /// Gets or sets weight
         /// </summary>
         public float Weight { get; set; }
+
+        /// <summary>
+        /// Gets or sets the partition key.
+        /// </summary>
+        public override string PartitionKey
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the row key.
+        /// </summary>
+        public override string RowKey
+        {
+            get;
+            set;
+        }
     }
 }

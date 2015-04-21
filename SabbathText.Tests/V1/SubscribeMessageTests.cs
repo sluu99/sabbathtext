@@ -8,7 +8,7 @@
     /// Test cases for scenarios which the the conversation context is "Greetings"
     /// </summary>
     [TestClass]
-    public class GreetingsContextTests : ProcessMessageOperationTests
+    public class SubscribeMessageTests : ProcessMessageOperationTests
     {
         /// <summary>
         /// Tests an incoming "subscribe" message after greeting the users

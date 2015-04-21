@@ -62,9 +62,13 @@
                 checkpoint.Status = CheckpointStatus.Cancelling;
                 await this.compensation.UpdateCheckpoint(checkpoint, cancellationToken);
             }
-            
+
             CheckpointData checkpointData = JsonConvert.DeserializeObject<CheckpointData>(checkpoint.CheckpointData);
-            AccountEntity account = await this.accountStore.Get(checkpointData.AccountId, checkpointData.AccountId);
+            AccountEntity account = new AccountEntity
+            {
+                AccountId = checkpointData.AccountId,
+            };
+            account = await this.accountStore.Get(account.PartitionKey, account.RowKey);
             OperationContext context = new OperationContext
             {
                 Account = account,
@@ -85,9 +89,9 @@
                         break;
                     }
 
-                case "ProcessMessageOperation.V1":
+                case "SubscribeMessageOperation.V1":
                     {
-                        ProcessMessageOperation operation = new ProcessMessageOperation(context);
+                        SubscribeMessageOperation operation = new SubscribeMessageOperation(context);
                         await operation.Resume(checkpoint);
                         break;
                     }

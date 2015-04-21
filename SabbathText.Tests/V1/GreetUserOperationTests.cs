@@ -45,7 +45,7 @@
                 TestGlobals.MessageClient.Messages
                 .FirstOrDefault(m => m.Recipient == context.Account.PhoneNumber && m.Template == MessageTemplate.Greetings);
 
-            AccountEntity account = context.AccountStore.Get(context.Account.AccountId, context.Account.AccountId).Result;
+            AccountEntity account = context.AccountStore.Get(context.Account.PartitionKey, context.Account.RowKey).Result;
             Assert.AreEqual<ConversationContext>(
                 ConversationContext.Greetings,
                 account.ConversationContext,

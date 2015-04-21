@@ -13,13 +13,13 @@
         /// Gets or sets the partition key
         /// </summary>
         [JsonProperty]
-        public string PartitionKey { get; set; }
+        public abstract string PartitionKey { get; set; }
 
         /// <summary>
         /// Gets or sets the row key
         /// </summary>
         [JsonProperty]
-        public string RowKey { get; set; }
+        public abstract string RowKey { get; set; }
         
         /// <summary>
         /// Gets or sets the e-tag
