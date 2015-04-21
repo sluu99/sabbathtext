@@ -3,13 +3,13 @@
     /// <summary>
     /// Checkpoint data for the GreetUserOperation
     /// </summary>
-    public class GreetUserCheckpointData : CheckpointData<bool>
+    public class GreetUserOperationCheckpointData : CheckpointData<bool>
     {
         /// <summary>
         /// Creates a new instance of the operation checkpoint data
         /// </summary>
         /// <param name="accountId">The account ID</param>
-        public GreetUserCheckpointData(string accountId)
+        public GreetUserOperationCheckpointData(string accountId)
             : base(accountId)
         {
         }
@@ -27,6 +27,6 @@
         /// <summary>
         /// Gets or sets the operation state
         /// </summary>
-        public GreetUserState OperationState { get; set; }
+        public GreetUserOperationState OperationState { get; set; }
     }
 }

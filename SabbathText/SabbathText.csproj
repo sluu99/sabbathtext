@@ -82,9 +82,9 @@
     <Compile Include="V1\BaseOperation.cs" />
     <Compile Include="V1\CheckpointData.cs" />
     <Compile Include="V1\MessageProcessor.cs" />
-    <Compile Include="V1\GreetUserCheckpointData.cs" />
+    <Compile Include="V1\GreetUserOperationCheckpointData.cs" />
     <Compile Include="V1\GreetUserOperation.cs" />
-    <Compile Include="V1\GreetUserState.cs" />
+    <Compile Include="V1\GreetUserOperationState.cs" />
     <Compile Include="V1\Message.cs" />
     <Compile Include="V1\MessageClient.cs" />
     <Compile Include="Entities\MessageDirection.cs" />

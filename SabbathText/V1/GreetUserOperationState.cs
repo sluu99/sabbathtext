@@ -7,7 +7,7 @@
     /// Greet user operation states
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum GreetUserState
+    public enum GreetUserOperationState
     {
         /// <summary>
         /// Sending the message

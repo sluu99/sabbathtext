@@ -13,7 +13,7 @@
     /// </summary>
     public class GreetUserOperation : BaseOperation<bool>
     {
-        private GreetUserCheckpointData checkpointData;
+        private GreetUserOperationCheckpointData checkpointData;
 
         /// <summary>
         /// Creates a new instance of the operation
@@ -30,7 +30,7 @@
         /// <returns>The operation response</returns>
         public Task<OperationResponse<bool>> Run()
         {
-            this.checkpointData = new GreetUserCheckpointData(this.Context.Account.AccountId);
+            this.checkpointData = new GreetUserOperationCheckpointData(this.Context.Account.AccountId);
 
             return this.TransitionToSendingMessage();
         }
@@ -42,13 +42,13 @@
         /// <returns>The operation response</returns>
         protected override Task<OperationResponse<bool>> Resume(string serializedCheckpointData)
         {
-            this.checkpointData = JsonConvert.DeserializeObject<GreetUserCheckpointData>(serializedCheckpointData);
+            this.checkpointData = JsonConvert.DeserializeObject<GreetUserOperationCheckpointData>(serializedCheckpointData);
 
             switch (this.checkpointData.OperationState)
             {
-                case GreetUserState.SendingMessage:
+                case GreetUserOperationState.SendingMessage:
                     return this.EnterSendingMessage();
-                case GreetUserState.UpdatingAccountContext:
+                case GreetUserOperationState.UpdatingAccountContext:
                     return this.EnterUpdatingAccount();
             }
 
@@ -57,7 +57,7 @@
         
         private Task<OperationResponse<bool>> TransitionToSendingMessage()
         {
-            this.checkpointData.OperationState = GreetUserState.SendingMessage;
+            this.checkpointData.OperationState = GreetUserOperationState.SendingMessage;
             return this.DelayProcessingCheckpoint(
                 this.checkpointData,
                 HttpStatusCode.Accepted,
@@ -75,7 +75,7 @@
 
         private async Task<OperationResponse<bool>> TransitionToUpdatingAccount()
         {
-            this.checkpointData.OperationState = GreetUserState.UpdatingAccountContext;
+            this.checkpointData.OperationState = GreetUserOperationState.UpdatingAccountContext;
             this.checkpointData.MessageEntityId = Guid.NewGuid().ToString();
 
             return
