@@ -47,9 +47,9 @@
 
             switch (this.checkpointData.State)
             {
-                case SubscribeMessageOperationState.ProcessingMessage:
+                case GenericOperationState.ProcessingMessage:
                     return this.EnterProcessMessage();
-                case SubscribeMessageOperationState.UpdatingAccount:
+                case GenericOperationState.UpdatingAccount:
                     return this.EnterUpdateAccount();
             }
 
@@ -58,7 +58,7 @@
 
         private Task<OperationResponse<bool>> TransitionToProcessMessage(Message incomingMessage)
         {
-            this.checkpointData.State = SubscribeMessageOperationState.ProcessingMessage;
+            this.checkpointData.State = GenericOperationState.ProcessingMessage;
             this.checkpointData.IncomingMessage = incomingMessage;
             return this.DelayProcessingCheckpoint(this.checkpointData, HttpStatusCode.Accepted, true);
         }
@@ -89,7 +89,7 @@
         {
             this.checkpointData.OutgoingMessage = outgoingMessage;
             this.checkpointData.AccountAlreadySubscribed = alreadySubscribed;
-            this.checkpointData.State = SubscribeMessageOperationState.UpdatingAccount;
+            this.checkpointData.State = GenericOperationState.UpdatingAccount;
             this.checkpointData.StatusVersion = this.Context.Account.StatusVersion;
             this.checkpointData.IncomingMessageId = Guid.NewGuid().ToString();
             this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
