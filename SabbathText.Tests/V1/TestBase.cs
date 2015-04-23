@@ -105,6 +105,21 @@
         }
 
         /// <summary>
+        /// Ensures that the account has a certain ZIP code.
+        /// </summary>
+        /// <param name="accountId">The account ID.</param>
+        /// <param name="expectedZipCode">The expected ZIP code.</param>
+        protected void AssertZipCode(string accountId, string expectedZipCode)
+        {
+            AccountEntity account = new AccountEntity
+            {
+                AccountId = accountId,
+            };
+            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey).Result;
+            Assert.AreEqual<string>(expectedZipCode, account.ZipCode);
+        }
+
+        /// <summary>
         /// Ensures that the last message sent to the user has a particular template.
         /// </summary>
         /// <param name="accountId">The account ID.</param>

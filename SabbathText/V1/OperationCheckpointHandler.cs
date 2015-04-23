@@ -96,6 +96,13 @@
                         break;
                     }
 
+                case "UpdateZipCodeOperation.V1":
+                    {
+                        UpdateZipCodeOperation operation = new UpdateZipCodeOperation(context);
+                        await operation.Resume(checkpoint);
+                        break;
+                    }
+
                 default:
                     throw new NotSupportedException("{0} is not handled for compensation.".InvariantFormat(checkpoint.OperationType));
             }

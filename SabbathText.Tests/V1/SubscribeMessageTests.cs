@@ -5,7 +5,7 @@
     using SabbathText.V1;
 
     /// <summary>
-    /// Test cases for scenarios which the the conversation context is "Greetings"
+    /// Test cases for subscribe messages
     /// </summary>
     [TestClass]
     public class SubscribeMessageTests : ProcessMessageOperationTests
