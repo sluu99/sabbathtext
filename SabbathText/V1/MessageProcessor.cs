@@ -21,14 +21,17 @@
         /// <returns>A response message.</returns>
         public Task<OperationResponse<bool>> Process(OperationContext context, Message message)
         {
-            string body = message.Body;
-
-            if (string.IsNullOrWhiteSpace(body))
+            if (message == null || string.IsNullOrWhiteSpace(message.Body))
             {
-                throw new ArgumentException("Message cannot be null or white space", "message");
+                return Task.FromResult(
+                    new OperationResponse<bool>()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.BadRequest,
+                        ErrorCode = CommonErrorCodes.InvalidInput,
+                    });
             }
 
-            body = body.ExtractAlphaNumericSpace().Trim();
+            string body = message.Body.ExtractAlphaNumericSpace().Trim();
 
             if ("subscribe".OicEquals(body))
             {

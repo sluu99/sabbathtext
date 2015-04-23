@@ -19,5 +19,35 @@
             : base(accountId)
         {
         }
+
+        /// <summary>
+        /// Gets or sets the operation state.
+        /// </summary>
+        public GenericOperationState State { get; set; }
+
+        /// <summary>
+        /// Gets or sets the incoming message.
+        /// </summary>
+        public Message IncomingMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the current ZIP code of the account.
+        /// </summary>
+        public string CurrentZipCode { get; set; }
+
+        /// <summary>
+        /// Gets or sets the outgoing message.
+        /// </summary>
+        public Message OutgoingMessage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the incoming message entity ID.
+        /// </summary>
+        public string IncomingMessageId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the outgoing message entity ID.
+        /// </summary>
+        public string OutgoingMessageId { get; set; }
     }
 }

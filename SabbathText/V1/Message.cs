@@ -2,6 +2,7 @@
 {
     using System;
     using SabbathText.Entities;
+using SabbathText.Location.V1;
 
     /// <summary>
     /// This class represents a message
@@ -106,6 +107,47 @@
                 phoneNumber,
                 MessageTemplate.SubscriptionRequired,
                 "A subscription is required before we can proceed. Do you want to subscribe?");
+        }
+
+        /// <summary>
+        /// Sends the user the instruction for updating ZIP code.
+        /// </summary>
+        /// <param name="phoneNumber">The phone number.</param>
+        /// <returns>The message.</returns>
+        public static Message CreateUpdateZipInstruction(string phoneNumber)
+        {
+            return CreateMessage(
+                phoneNumber,
+                MessageTemplate.UpdateZipInstruction,
+                "To update your ZIP code, text the word \"zip\" followed by your ZIP code. For example: \"Zip 12345\".");
+        }
+
+        /// <summary>
+        /// Notifies the user that we could not find a location for the ZIP code provided.
+        /// </summary>
+        /// <param name="phoneNumber">The phone number.</param>
+        /// <param name="badZipCode">The Zip code.</param>
+        /// <returns>The message.</returns>
+        public static Message CreateLocationNotFound(string phoneNumber, string badZipCode)
+        {
+            return CreateMessage(
+                phoneNumber,
+                MessageTemplate.LocationNotFound,
+                "Sorry, but we cannot find a location for the ZIP code {0}.".InvariantFormat(badZipCode));
+        }
+
+        /// <summary>
+        /// Notifies the user that the ZIP code is updated.
+        /// </summary>
+        /// <param name="phoneNumber">The phone number.</param>
+        /// <param name="location">The new location.</param>
+        /// <returns>The message.</returns>
+        public static Message CreateZipCodeUpdated(string phoneNumber, LocationInfo location)
+        {
+            return CreateMessage(
+                phoneNumber,
+                MessageTemplate.ZipCodeUpdated,
+                "Your location is updated to {0}.".InvariantFormat(location.PrimaryCity));
         }
 
         /// <summary>

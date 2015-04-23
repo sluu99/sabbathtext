@@ -68,6 +68,7 @@
 
         /// <summary>
         /// Gets or sets the version number of the account status.
+        /// This version number is used to 
         /// </summary>
         public int StatusVersion { get; set; }
 

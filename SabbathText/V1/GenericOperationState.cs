@@ -15,6 +15,11 @@
         ProcessingMessage,
 
         /// <summary>
+        /// Sending response to the user,
+        /// </summary>
+        SendingResponse,
+
+        /// <summary>
         /// Updating account.
         /// </summary>
         UpdatingAccount,

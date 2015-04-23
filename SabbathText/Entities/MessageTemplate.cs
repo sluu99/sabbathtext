@@ -38,5 +38,20 @@
         /// Notify the user that he/she needs to subscribe before continuing.
         /// </summary>
         SubscriptionRequired,
+
+        /// <summary>
+        /// A message with instruction to update the ZIP code.
+        /// </summary>
+        UpdateZipInstruction,
+
+        /// <summary>
+        /// Cannot find a location for the ZIP code provided.
+        /// </summary>
+        LocationNotFound,
+        
+        /// <summary>
+        /// The ZIP code is updated.
+        /// </summary>
+        ZipCodeUpdated,
     }
 }
