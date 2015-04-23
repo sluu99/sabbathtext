@@ -17,11 +17,11 @@
         public void SubscribeMessage_SubscribeAfterGreetings()
         {
             AccountEntity account = CreateAccount();
-            this.GreetUser(account);
+            GreetUser(account);
             AssertConversationContext(account.AccountId, ConversationContext.Greetings);
 
-            Message subscribeMessage = this.CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
-            this.ProcessMessage(account, subscribeMessage);
+            Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
+            ProcessMessage(account.AccountId, subscribeMessage);
             AssertConversationContext(account.AccountId, ConversationContext.SubscriptionConfirmed);
             AssertLastSentMessage(account.AccountId, MessageTemplate.SubscriptionConfirmed);
             AssertMessageCount(account.PhoneNumber, MessageTemplate.SubscriptionConfirmed, 1);

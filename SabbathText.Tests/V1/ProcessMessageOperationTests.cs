@@ -18,7 +18,7 @@
         /// <param name="sender">The sender phone number.</param>
         /// <param name="body">The message body.</param>
         /// <returns>The message.</returns>
-        protected Message CreateIncomingMessage(string sender, string body)
+        protected static Message CreateIncomingMessage(string sender, string body)
         {
             return new Message
             {
@@ -35,7 +35,7 @@
         /// Sends a greeting message to a specific account.
         /// </summary>
         /// <param name="account">The account.</param>
-        protected void GreetUser(AccountEntity account)
+        protected static void GreetUser(AccountEntity account)
         {
             OperationContext context = CreateContext(account);
             GreetUserOperation operation = new GreetUserOperation(context);
@@ -47,10 +47,16 @@
         /// <summary>
         /// Processes an incoming message.
         /// </summary>
-        /// <param name="account">The account.</param>
+        /// <param name="accountId">The account ID.</param>
         /// <param name="incomingMessage">The incoming message.</param>
-        protected void ProcessMessage(AccountEntity account, Message incomingMessage)
+        protected static void ProcessMessage(string accountId, Message incomingMessage)
         {
+            AccountEntity account = new AccountEntity
+            {
+                AccountId = accountId,
+            };
+            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey).Result;
+
             OperationContext context = CreateContext(account);
             MessageProcessor processor = new MessageProcessor();
             processor.Process(context, incomingMessage).Wait();

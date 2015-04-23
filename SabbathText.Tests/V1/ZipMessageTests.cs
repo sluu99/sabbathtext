@@ -1,5 +1,6 @@
 ﻿namespace SabbathText.Tests.V1
 {
+    using System.Collections.Generic;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SabbathText.Entities;
     using SabbathText.V1;
@@ -19,11 +20,11 @@
             const string ZipCode = "60290"; // Chicago
             AccountEntity account = CreateAccount();
             
-            Message subscribeMessage = this.CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
-            this.ProcessMessage(account, subscribeMessage);
+            Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
+            ProcessMessage(account.AccountId, subscribeMessage);
 
-            Message zipMessage = this.CreateIncomingMessage(account.PhoneNumber, "Zip " + ZipCode);
-            this.ProcessMessage(account, zipMessage);
+            Message zipMessage = CreateIncomingMessage(account.PhoneNumber, "Zip " + ZipCode);
+            ProcessMessage(account.AccountId, zipMessage);
 
             AssertZipCode(account.AccountId, ZipCode);
             AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated, mustContain: "Chicago");
@@ -39,11 +40,11 @@
             const string ZipCode = "12346";
             AccountEntity account = CreateAccount();
 
-            Message subscribeMessage = this.CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
-            this.ProcessMessage(account, subscribeMessage);
+            Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
+            ProcessMessage(account.AccountId, subscribeMessage);
 
-            Message zipMessage = this.CreateIncomingMessage(account.PhoneNumber, "Zip " + ZipCode + ".");
-            this.ProcessMessage(account, zipMessage);
+            Message zipMessage = CreateIncomingMessage(account.PhoneNumber, "Zip " + ZipCode + ".");
+            ProcessMessage(account.AccountId, zipMessage);
 
             AssertZipCode(account.AccountId, null);
             AssertLastSentMessage(account.AccountId, MessageTemplate.LocationNotFound);
@@ -58,15 +59,49 @@
         {
             AccountEntity account = CreateAccount();
 
-            Message subscribeMessage = this.CreateIncomingMessage(account.PhoneNumber, "subscribe");
-            this.ProcessMessage(account, subscribeMessage);
+            Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "subscribe");
+            ProcessMessage(account.AccountId, subscribeMessage);
 
-            Message zipMessage = this.CreateIncomingMessage(account.PhoneNumber, "Zip blahblahblah!!!");
-            this.ProcessMessage(account, zipMessage);
+            Message zipMessage = CreateIncomingMessage(account.PhoneNumber, "Zip blahblahblah!!!");
+            ProcessMessage(account.AccountId, zipMessage);
 
             AssertZipCode(account.AccountId, null);
             AssertLastSentMessage(account.AccountId, MessageTemplate.UpdateZipInstruction);
             AssertMessageCount(account.PhoneNumber, MessageTemplate.UpdateZipInstruction, 1);
+        }
+
+        /// <summary>
+        /// Tests updating the ZIP code multiple times
+        /// </summary>
+        [TestMethod]
+        public void ZipMessage_UpdateMultipleTimes()
+        {
+            Dictionary<string, string> zipCodes = new Dictionary<string, string>(3)
+            {
+                { "60290", "Chicago" },
+                { "96813", "Honolulu" },
+                { "12015", "Athens" },
+            };
+
+            AccountEntity account = CreateAccount();
+
+            Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
+            ProcessMessage(account.AccountId, subscribeMessage);
+
+            int count = 0;
+            foreach (KeyValuePair<string, string> kv in zipCodes)
+            {
+                count++;
+                string zipCode = kv.Key;
+                string city = kv.Value;
+
+                Message zipMessage = CreateIncomingMessage(account.PhoneNumber, "Zip " + zipCode);
+                ProcessMessage(account.AccountId, zipMessage);
+
+                AssertZipCode(account.AccountId, zipCode);
+                AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated, mustContain: city);
+                AssertMessageCount(account.PhoneNumber, MessageTemplate.ZipCodeUpdated, count);
+            }            
         }
     }
 }
