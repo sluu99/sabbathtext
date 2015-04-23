@@ -118,13 +118,12 @@
 
         private async Task<OperationResponse<bool>> EnterUpdateAccount()
         {
-
             MessageEntity incomingMessageEntity = this.checkpointData.IncomingMessage.ToEntity(
                 this.Context.Account.AccountId,
                 this.checkpointData.IncomingMessageId,
                 MessageDirection.Incoming,
                 this.checkpointData.OutgoingMessage == null ? MessageStatus.Received : MessageStatus.Responded);
-            bool incomingMsgAdded =  this.TryAddMessageEntity(this.Context.Account, incomingMessageEntity);
+            bool incomingMsgAdded = this.TryAddMessageEntity(this.Context.Account, incomingMessageEntity);
 
             bool outgoingMsgAdded = false;
             if (this.checkpointData.OutgoingMessage != null)

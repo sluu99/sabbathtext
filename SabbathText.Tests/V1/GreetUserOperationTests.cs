@@ -20,7 +20,7 @@
         [TestMethod]
         public void GreetUserOperation_ShouldReturnAccepted()
         {
-            GreetUserOperation operation = new GreetUserOperation(this.CreateContext());
+            GreetUserOperation operation = new GreetUserOperation(CreateContext());
             OperationResponse<bool> response = operation.Run().Result;
 
             Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
@@ -33,13 +33,13 @@
         [TestMethod]
         public void GreetUserOperation_ShouldFinishSendingTheMessage()
         {
-            OperationContext context = this.CreateContext();
+            OperationContext context = CreateContext();
             GreetUserOperation operation = new GreetUserOperation(context);
             OperationResponse<bool> response = operation.Run().Result;
 
             Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
 
-            this.AssertOperationFinishes(context);
+            AssertOperationFinishes(context);
 
             Message message =
                 TestGlobals.MessageClient.Messages

@@ -16,14 +16,14 @@
         [TestMethod]
         public void SubscribeMessage_SubscribeAfterGreetings()
         {
-            AccountEntity account = this.CreateAccount();
+            AccountEntity account = CreateAccount();
             this.GreetUser(account);
-            this.AssertConversationContext(account.AccountId, ConversationContext.Greetings);
+            AssertConversationContext(account.AccountId, ConversationContext.Greetings);
 
             Message subscribeMessage = this.CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
             this.ProcessMessage(account, subscribeMessage);
-            this.AssertConversationContext(account.AccountId, ConversationContext.SubscriptionConfirmed);
-            this.AssertLastSentMessage(account.AccountId, MessageTemplate.SubscriptionConfirmed);
+            AssertConversationContext(account.AccountId, ConversationContext.SubscriptionConfirmed);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.SubscriptionConfirmed);
         }
     }
 }

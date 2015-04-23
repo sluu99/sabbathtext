@@ -16,17 +16,17 @@
         [TestMethod]
         public void ZipMessage_FirstTimeZipUpdate()
         {
-            const string zipCode = "60290"; // Chicago
-            AccountEntity account = this.CreateAccount();
+            const string ZipCode = "60290"; // Chicago
+            AccountEntity account = CreateAccount();
             
             Message subscribeMessage = this.CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
             this.ProcessMessage(account, subscribeMessage);
 
-            Message zipMessage = this.CreateIncomingMessage(account.PhoneNumber, "Zip " + zipCode);
+            Message zipMessage = this.CreateIncomingMessage(account.PhoneNumber, "Zip " + ZipCode);
             this.ProcessMessage(account, zipMessage);
 
-            this.AssertZipCode(account.AccountId, zipCode);
-            this.AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated);
+            AssertZipCode(account.AccountId, ZipCode);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated);
         }
     }
 }

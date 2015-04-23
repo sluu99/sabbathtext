@@ -37,11 +37,11 @@
         /// <param name="account">The account.</param>
         protected void GreetUser(AccountEntity account)
         {
-            OperationContext context = this.CreateContext(account);
+            OperationContext context = CreateContext(account);
             GreetUserOperation operation = new GreetUserOperation(context);
             OperationResponse<bool> response = operation.Run().Result;
             Assert.AreEqual<HttpStatusCode>(HttpStatusCode.Accepted, response.StatusCode);
-            this.AssertOperationFinishes(context);
+            AssertOperationFinishes(context);
         }
 
         /// <summary>
@@ -51,10 +51,10 @@
         /// <param name="incomingMessage">The incoming message.</param>
         protected void ProcessMessage(AccountEntity account, Message incomingMessage)
         {
-            OperationContext context = this.CreateContext(account);
+            OperationContext context = CreateContext(account);
             MessageProcessor processor = new MessageProcessor();
             processor.Process(context, incomingMessage).Wait();
-            this.AssertOperationFinishes(context);
+            AssertOperationFinishes(context);
         }
     }
 }

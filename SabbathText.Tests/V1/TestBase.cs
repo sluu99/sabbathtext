@@ -1,11 +1,7 @@
 ﻿namespace SabbathText.Tests.V1
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Threading;
-    using System.Threading.Tasks;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SabbathText.Compensation.V1;
     using SabbathText.Entities;
@@ -18,11 +14,26 @@
     public abstract class TestBase
     {
         /// <summary>
+        /// Ensures that the account has the expected conversation context.
+        /// </summary>
+        /// <param name="accountId">The account ID.</param>
+        /// <param name="expectedContext">The expected conversation context.</param>
+        protected static void AssertConversationContext(string accountId, ConversationContext expectedContext)
+        {
+            AccountEntity account = new AccountEntity
+            {
+                AccountId = accountId,
+            };
+            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey).Result;
+            Assert.AreEqual<ConversationContext>(expectedContext, account.ConversationContext);
+        }
+
+        /// <summary>
         /// Creates an operation context for a specific account.
         /// </summary>
         /// <param name="account">The account.</param>
         /// <returns>An Operation context instance.</returns>
-        protected OperationContext CreateContext(AccountEntity account)
+        protected static OperationContext CreateContext(AccountEntity account)
         {
             return new OperationContext
             {
@@ -41,16 +52,16 @@
         /// Creates a new OperationContext instance
         /// </summary>
         /// <returns>An OperationContext instance</returns>
-        protected OperationContext CreateContext()
+        protected static OperationContext CreateContext()
         {
-            return this.CreateContext(this.CreateAccount());
+            return CreateContext(CreateAccount());
         }
 
         /// <summary>
         /// Creates a new test account.
         /// </summary>
         /// <returns>The test account.</returns>
-        protected AccountEntity CreateAccount()
+        protected static AccountEntity CreateAccount()
         {
             string phoneNumber = TestHelper.GetUSPhoneNumber();
             string accountId = AccountEntity.GetAccountId(phoneNumber);
@@ -69,9 +80,9 @@
         /// Ensures an operation is finished base on the checkpoint.
         /// </summary>
         /// <param name="context">The operation context.</param>
-        protected void AssertOperationFinishes(OperationContext context)
+        protected static void AssertOperationFinishes(OperationContext context)
         {
-            Checkpoint checkpoint = this.GetCheckpoint(context);
+            Checkpoint checkpoint = GetCheckpoint(context);
             Assert.IsNotNull(checkpoint, "Cannot find a checkpoint for this operation.");
             
             CompensationClient compensation = new CompensationClient(
@@ -90,26 +101,11 @@
         }
 
         /// <summary>
-        /// Ensures that the account has the expected conversation context.
-        /// </summary>
-        /// <param name="accountId">The account ID.</param>
-        /// <param name="expectedContext">The expected conversation context.</param>
-        protected void AssertConversationContext(string accountId, ConversationContext expectedContext)
-        {
-            AccountEntity account = new AccountEntity
-            {
-                AccountId = accountId,
-            };
-            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey).Result;
-            Assert.AreEqual<ConversationContext>(expectedContext, account.ConversationContext);
-        }
-
-        /// <summary>
         /// Ensures that the account has a certain ZIP code.
         /// </summary>
         /// <param name="accountId">The account ID.</param>
         /// <param name="expectedZipCode">The expected ZIP code.</param>
-        protected void AssertZipCode(string accountId, string expectedZipCode)
+        protected static void AssertZipCode(string accountId, string expectedZipCode)
         {
             AccountEntity account = new AccountEntity
             {
@@ -124,7 +120,7 @@
         /// </summary>
         /// <param name="accountId">The account ID.</param>
         /// <param name="template">The message template.</param>
-        protected void AssertLastSentMessage(string accountId, MessageTemplate template)
+        protected static void AssertLastSentMessage(string accountId, MessageTemplate template)
         {
             AccountEntity account = new AccountEntity
             {
@@ -146,7 +142,7 @@
         /// </summary>
         /// <param name="context">The operation context</param>
         /// <returns>The checkpoint.</returns>
-        private Checkpoint GetCheckpoint(OperationContext context)
+        private static Checkpoint GetCheckpoint(OperationContext context)
         {
             CheckpointReference checkpointRef = new CheckpointReference
             {
