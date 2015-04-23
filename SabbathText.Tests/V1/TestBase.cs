@@ -121,7 +121,8 @@
         /// </summary>
         /// <param name="accountId">The account ID.</param>
         /// <param name="template">The message template.</param>
-        protected static void AssertLastSentMessage(string accountId, MessageTemplate template)
+        /// <param name="mustContain">The message body must contain the provided string.</param>
+        protected static void AssertLastSentMessage(string accountId, MessageTemplate template, string mustContain = null)
         {
             AccountEntity account = new AccountEntity
             {
@@ -136,6 +137,13 @@
             Assert.AreEqual<MessageDirection>(MessageDirection.Outgoing, lastMessage.Direction);
             Assert.AreEqual<MessageStatus>(MessageStatus.Sent, lastMessage.Status);
             Assert.AreEqual<MessageTemplate>(template, lastMessage.Template);
+
+            if (mustContain != null)
+            {
+                Assert.IsTrue(
+                    lastMessage.Body.Contains(mustContain),
+                    string.Format("The message body must contain '{0}'", mustContain));
+            }
         }
 
         /// <summary>

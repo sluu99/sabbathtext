@@ -26,7 +26,7 @@
             this.ProcessMessage(account, zipMessage);
 
             AssertZipCode(account.AccountId, ZipCode);
-            AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated, mustContain: "Chicago");
             AssertMessageCount(account.PhoneNumber, MessageTemplate.ZipCodeUpdated, 1);
         }
     }
