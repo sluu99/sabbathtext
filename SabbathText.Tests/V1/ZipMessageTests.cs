@@ -27,6 +27,7 @@
 
             AssertZipCode(account.AccountId, ZipCode);
             AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated);
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.ZipCodeUpdated, 1);
         }
     }
 }

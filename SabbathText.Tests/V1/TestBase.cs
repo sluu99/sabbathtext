@@ -1,6 +1,7 @@
 ﻿namespace SabbathText.Tests.V1
 {
     using System;
+    using System.Linq;
     using System.Threading;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SabbathText.Compensation.V1;
@@ -135,6 +136,24 @@
             Assert.AreEqual<MessageDirection>(MessageDirection.Outgoing, lastMessage.Direction);
             Assert.AreEqual<MessageStatus>(MessageStatus.Sent, lastMessage.Status);
             Assert.AreEqual<MessageTemplate>(template, lastMessage.Template);
+        }
+
+        /// <summary>
+        /// Asserts the number of messages with a certain templates went through the message client for a phone number.
+        /// </summary>
+        /// <param name="phoneNumber">The phone number.</param>
+        /// <param name="template">The message template.</param>
+        /// <param name="expectedCount">The expected count</param>
+        protected static void AssertMessageCount(string phoneNumber, MessageTemplate template, int expectedCount)
+        {
+            int count = TestGlobals.MessageClient.Messages.Count(m =>
+                m.Template == template &&
+                (m.Sender == phoneNumber || m.Recipient == phoneNumber));
+
+            Assert.AreEqual(
+                expectedCount,
+                count,
+                string.Format("The phone number {0} is expected to have {1} {2} messages. Actual count: {3}", phoneNumber, expectedCount, template, count));
         }
 
         /// <summary>
