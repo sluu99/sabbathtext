@@ -14,7 +14,7 @@
         /// Tests an incoming "subscribe" message after greeting the users
         /// </summary>
         [TestMethod]
-        public void SubscribeAfterGreetings()
+        public void SubscribeMessage_SubscribeAfterGreetings()
         {
             AccountEntity account = this.CreateAccount();
             this.GreetUser(account);
