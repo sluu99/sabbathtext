@@ -67,7 +67,7 @@
         /// <summary>
         /// Set the clock to use the real system time
         /// </summary>
-        public static void UseSystemClock()
+        internal static void UseSystemClock()
         {
             if (frozen)
             {
@@ -80,7 +80,7 @@
         /// <summary>
         /// Switches to use the fake clock
         /// </summary>
-        public static void UseFakeClock()
+        internal static void UseFakeClock()
         {
             if (frozen)
             {

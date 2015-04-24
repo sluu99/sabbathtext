@@ -9,6 +9,8 @@
     [TestClass]
     public class InMemoryQueueStoreTests : QueueStoreTests
     {
+        private FakeClockScope fakeClockScope;
+
         /// <summary>
         /// This method will be called before every test run
         /// </summary>
@@ -16,8 +18,7 @@
         public override void Init()
         {
             base.Init();
-            Clock.ResetClock();
-            Clock.UseFakeClock();
+            this.fakeClockScope = new FakeClockScope();
         }
 
         /// <summary>
@@ -27,8 +28,7 @@
         public override void CleanUp()
         {
             base.CleanUp();
-            Clock.ResetClock();
-            Clock.UseSystemClock();
+            this.fakeClockScope.Dispose();
         }
 
         /// <summary>
