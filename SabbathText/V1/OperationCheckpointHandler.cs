@@ -17,6 +17,7 @@
         private KeyValueStore<MessageEntity> messageStore;
         private MessageClient messageClient;
         private CompensationClient compensation;
+        private EnvironmentSettings settings;
 
         /// <summary>
         /// Creates a new instance of this handler class.
@@ -25,16 +26,19 @@
         /// <param name="messageStore">The message store.</param>
         /// <param name="messageClient">The message client.</param>
         /// <param name="compensationClient">The compensation client.</param>
+        /// <param name="settings">The environment settings.</param>
         public OperationCheckpointHandler(
             KeyValueStore<AccountEntity> accountStore,
             KeyValueStore<MessageEntity> messageStore,
             MessageClient messageClient,
-            CompensationClient compensationClient)
+            CompensationClient compensationClient,
+            EnvironmentSettings settings)
         {
             this.accountStore = accountStore;
             this.messageStore = messageStore;
             this.messageClient = messageClient;
             this.compensation = compensationClient;
+            this.settings = settings;
         }
 
         /// <summary>
@@ -78,6 +82,7 @@
                 MessageClient = this.messageClient,
                 MessageStore = this.messageStore,
                 TrackingId = checkpoint.TrackingId,
+                Settings = this.settings,
             };
 
             switch (checkpoint.OperationType)

@@ -45,5 +45,10 @@
         /// Gets or sets the message client
         /// </summary>
         public MessageClient MessageClient { get; set; }
+
+        /// <summary>
+        /// Gets or sets the settings
+        /// </summary>
+        public EnvironmentSettings Settings { get; set; }
     }
 }

@@ -112,6 +112,11 @@
         }
 
         /// <summary>
+        /// Gets or sets last time a Sabbath text was sent to this account.
+        /// </summary>
+        public DateTime LastSabbathTextTime { get; set; }
+
+        /// <summary>
         /// Gets the account ID from a phone number
         /// </summary>
         /// <param name="phoneNumber">The phone number</param>

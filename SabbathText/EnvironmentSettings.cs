@@ -34,5 +34,32 @@
         {
             get { return TimeSpan.FromSeconds(60); }
         }
+
+        /// <summary>
+        /// Gets the amount of time gap between two Sabbath text messages.
+        /// We cannot send more than one Sabbath message within this time span.
+        /// </summary>
+        public TimeSpan SabbathTextGap
+        {
+            get { return TimeSpan.FromDays(5); }
+        }
+
+        /// <summary>
+        /// Gets the grace period for sending out Sabbath text.
+        /// With in this time span after Sabbath started,
+        /// we can still send out the Sabbath text.
+        /// </summary>
+        public TimeSpan SabbathTextGracePeriod
+        {
+            get { return TimeSpan.FromHours(22); }
+        }
+
+        /// <summary>
+        /// Gets the number of messages to keep with the account entity before archiving.
+        /// </summary>
+        public int RecentMessageThreshold
+        {
+            get { return 200; }
+        }
     }
 }

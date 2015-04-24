@@ -46,6 +46,7 @@
                 MessageClient = TestGlobals.MessageClient,
                 MessageStore = TestGlobals.MessageStore,
                 AccountStore = TestGlobals.AccountStore,
+                Settings = TestGlobals.Settings,
             };
         }
 
@@ -92,7 +93,8 @@
                 TestGlobals.AccountStore,
                 TestGlobals.MessageStore,
                 TestGlobals.MessageClient,
-                compensation);
+                compensation,
+                context.Settings);
             CancellationTokenSource cts = new CancellationTokenSource(TestGlobals.Settings.OperationTimeout);
             handler.Finish(checkpoint, cts.Token).Wait();
 

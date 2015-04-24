@@ -48,10 +48,15 @@
         /// Cannot find a location for the ZIP code provided.
         /// </summary>
         LocationNotFound,
-        
+
         /// <summary>
         /// The ZIP code is updated.
         /// </summary>
         ZipCodeUpdated,
+
+        /// <summary>
+        /// Sabbath text.
+        /// </summary>
+        SabbathText,
     }
 }
