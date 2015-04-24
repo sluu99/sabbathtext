@@ -94,7 +94,7 @@
                     return null;
                 }
 
-                return this.AccountId[0].ToString().ToUpperInvariant();
+                return this.AccountId.Substring(0, 2).ToString().ToUpperInvariant();
             }
 
             set
