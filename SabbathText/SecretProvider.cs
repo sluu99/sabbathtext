@@ -51,6 +51,11 @@
         /// <returns>The plain text string.</returns>
         public string Decrypt(string encryptedText)
         {
+            if (encryptedText == null)
+            {
+                return null;
+            }
+
             if (this.certificate.HasPrivateKey == false)
             {
                 throw new NotSupportedException("Cannot decrypt without a private key from the certificate.");
