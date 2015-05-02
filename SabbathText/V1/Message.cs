@@ -154,14 +154,17 @@ using SabbathText.Location.V1;
         /// Creates a new text to send out during the Sabbath.
         /// </summary>
         /// <param name="phoneNumber">The phone number.</param>
+        /// <param name="verseContent">The Bible verse number.</param>
+        /// <param name="verseNumber">The Bible verse content.</param>
         /// <returns>The message.</returns>
-        public static Message CreateSabbathText(string phoneNumber)
+        public static Message CreateSabbathText(string phoneNumber, string verseNumber, string verseContent)
         {
-            // TODO: add Bible verse
+            string body = string.Format("Happy Sabbath!\r\n\"{0}\" -- {1}", verseContent, verseNumber);
+            
             return CreateMessage(
                 phoneNumber,
                 MessageTemplate.SabbathText,
-                "Happy Sabbath!");
+                body);
         }
 
         /// <summary>

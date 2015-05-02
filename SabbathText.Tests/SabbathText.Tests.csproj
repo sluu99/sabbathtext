@@ -86,6 +86,7 @@
     <Compile Include="SecretProviderTests.cs" />
     <Compile Include="V1\InMemoryMessageClient.cs" />
     <Compile Include="V1\ProcessMessageOperationTests.cs" />
+    <Compile Include="V1\MessageTests.cs" />
     <Compile Include="V1\ZipMessageTests.cs" />
     <Compile Include="V1\SubscribeMessageTests.cs" />
     <Compile Include="V1\TestBase.cs" />

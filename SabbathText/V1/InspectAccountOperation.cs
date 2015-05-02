@@ -90,7 +90,7 @@
             this.Context.Account.LastSabbathTextTime = Clock.UtcNow;
             await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
-            Message sabbathMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber);
+            Message sabbathMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber, null, null);
             await this.Context.MessageClient.SendMessage(sabbathMessage);
 
             return await this.TransitionToStoreSabbathText(sabbathMessage);
