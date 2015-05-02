@@ -81,7 +81,7 @@
     <Compile Include="CommonErrorCodes.cs" />
     <Compile Include="DomainData.cs" />
     <Compile Include="GoodieBag.cs" />
-    <Compile Include="SecretHelper.cs" />
+    <Compile Include="SecretProvider.cs" />
     <Compile Include="StagingEnvironmentSettings.cs" />
     <Compile Include="DevEnvironmentSettings.cs" />
     <Compile Include="Entities\AccountEntity.cs" />
