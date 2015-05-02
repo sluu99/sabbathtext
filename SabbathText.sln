@@ -39,6 +39,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.Location", "Sab
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.Location.Tests", "SabbathText.Location.Tests\SabbathText.Location.Tests.csproj", "{462B2896-B1CC-4B2F-AA18-E948D3E805BE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Private", "Private", "{5E7A0882-FAE8-4DA1-A487-FCC13971FA98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecretUI", "SecretUI\SecretUI.csproj", "{B0BEEA6B-605D-46CF-A87D-C673868EECFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +109,10 @@ Global
 		{462B2896-B1CC-4B2F-AA18-E948D3E805BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{462B2896-B1CC-4B2F-AA18-E948D3E805BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{462B2896-B1CC-4B2F-AA18-E948D3E805BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0BEEA6B-605D-46CF-A87D-C673868EECFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0BEEA6B-605D-46CF-A87D-C673868EECFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0BEEA6B-605D-46CF-A87D-C673868EECFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0BEEA6B-605D-46CF-A87D-C673868EECFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,5 +128,6 @@ Global
 		{D0B08159-9349-432A-AC58-A59ED369E37A} = {AC4385D0-5F38-4939-8975-84700286B796}
 		{88035141-476B-4625-A5DF-738509B58E99} = {063D6847-37C0-4F25-995C-4C720BAE6321}
 		{462B2896-B1CC-4B2F-AA18-E948D3E805BE} = {AC4385D0-5F38-4939-8975-84700286B796}
+		{B0BEEA6B-605D-46CF-A87D-C673868EECFD} = {5E7A0882-FAE8-4DA1-A487-FCC13971FA98}
 	EndGlobalSection
 EndGlobal

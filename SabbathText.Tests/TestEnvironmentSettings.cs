@@ -9,6 +9,14 @@
     public class TestEnvironmentSettings : EnvironmentSettings
     {
         /// <summary>
+        /// Creates a new instance of test environment settings
+        /// </summary>
+        public TestEnvironmentSettings()
+            : base(null)
+        {
+        }
+
+        /// <summary>
         /// Gets the default operation timeout for the test environment
         /// </summary>
         public override TimeSpan OperationTimeout

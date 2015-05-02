@@ -79,6 +79,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonErrorCodes.cs" />
+    <Compile Include="SecretHelper.cs" />
+    <Compile Include="StagingEnvironmentSettings.cs" />
+    <Compile Include="DevEnvironmentSettings.cs" />
     <Compile Include="Entities\AccountEntity.cs" />
     <Compile Include="Entities\ConversationContext.cs" />
     <Compile Include="Entities\LocationEntity.cs" />
@@ -133,6 +136,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Certs\devcert.pfx">
+      <Link>devcert.pfx</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>

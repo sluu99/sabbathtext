@@ -1,12 +1,24 @@
 ﻿namespace SabbathText
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Environment settings
     /// </summary>
     public class EnvironmentSettings
     {
+        private Dictionary<string, string> secrets;
+        
+        /// <summary>
+        /// Make the constructor private
+        /// </summary>
+        /// <param name="secrets">The environment secrets.</param>
+        protected EnvironmentSettings(Dictionary<string, string> secrets)
+        {
+            this.secrets = secrets;
+        }
+
         /// <summary>
         /// Gets the key value store connection string
         /// </summary>
@@ -14,7 +26,7 @@
         {
             get
             {
-                return Environment.GetEnvironmentVariable("SabbathTextKeyValueStoreConnectionString");
+                return this.secrets["KeyValueStoreConnectionString"];
             }
         }
 
@@ -60,6 +72,32 @@
         public int RecentMessageThreshold
         {
             get { return 200; }
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="EnvironmentSettings"/> based on the environment name.
+        /// </summary>
+        /// <param name="environmentName">
+        /// The environment name. If null is provided, the <c>SabbathTextEnvironment</c>
+        /// environment variable will be used.
+        /// </param>
+        /// <returns>The environment settings.</returns>
+        public static EnvironmentSettings Create(string environmentName = null)
+        {
+            if (environmentName == null)
+            {
+                environmentName = Environment.GetEnvironmentVariable("SabbathTextEnvironment");
+            }
+
+            switch (environmentName)
+            {
+                case "Production":
+                    return new EnvironmentSettings(null);
+                case "Staging":
+                    return new StagingEnvironmentSettings();
+            }
+
+            return new DevEnvironmentSettings();
         }
     }
 }

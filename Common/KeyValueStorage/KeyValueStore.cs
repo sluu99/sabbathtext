@@ -172,7 +172,6 @@
             entity.Timestamp = rawEntity.Timestamp.UtcDateTime;
         }
 
-
         /// <summary>
         /// Deletes an entity
         /// </summary>
