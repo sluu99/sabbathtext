@@ -12,13 +12,13 @@
         /// <summary>
         /// Gets or sets the partition key
         /// </summary>
-        [JsonIgnore]
+        [JsonProperty]
         public abstract string PartitionKey { get; set; }
 
         /// <summary>
         /// Gets or sets the row key
         /// </summary>
-        [JsonIgnore]
+        [JsonProperty]
         public abstract string RowKey { get; set; }
         
         /// <summary>
