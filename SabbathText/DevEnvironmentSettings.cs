@@ -13,7 +13,7 @@
     /// </summary>
     public class DevEnvironmentSettings : EnvironmentSettings
     {
-        private static Dictionary<string, string> secrets = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> Secrets = new Dictionary<string, string>
         {
             {
                 KeyValueStoreConnectionStringKey,
@@ -40,7 +40,7 @@
                 "devcert.pfx");
 
             SecretProvider provider = new SecretProvider(certPath, password: "dev");
-            return secrets.ToDictionary(
+            return Secrets.ToDictionary(
                 kv => kv.Key,
                 kv => provider.Decrypt(kv.Value));
         }
