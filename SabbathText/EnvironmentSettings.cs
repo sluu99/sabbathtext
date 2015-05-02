@@ -13,6 +13,11 @@
         /// </summary>
         protected const string KeyValueStoreConnectionStringKey = "KeyValueStoreConnectionString";
 
+        /// <summary>
+        /// Key for ServicePhoneNumber
+        /// </summary>
+        protected const string ServicePhoneNumberKey = "ServicePhoneNumber";
+
         private Dictionary<string, string> secrets;
         
         /// <summary>
@@ -32,6 +37,17 @@
             get
             {
                 return this.secrets[KeyValueStoreConnectionStringKey];
+            }
+        }
+
+        /// <summary>
+        /// Gets the phone number used by this service
+        /// </summary>
+        public virtual string ServicePhoneNumber
+        {
+            get
+            {
+                return this.secrets[ServicePhoneNumberKey];
             }
         }
 

@@ -18,5 +18,15 @@
             EnvironmentSettings settings = EnvironmentSettings.Create();
             Assert.AreEqual("UseDevelopmentStorage=true", settings.KeyValueStoreConnectionString);
         }
+
+        /// <summary>
+        /// Tests the service phone number
+        /// </summary>
+        [TestMethod]
+        public void Settings_ServicePhoneNumber()
+        {
+            EnvironmentSettings settings = EnvironmentSettings.Create();
+            Assert.AreEqual("+11234567890", settings.ServicePhoneNumber);
+        }
     }
 }
