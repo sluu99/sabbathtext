@@ -38,7 +38,7 @@
                 SubscribeMessageOperation subscribe = new SubscribeMessageOperation(context);
                 return subscribe.Run(message);
             }
-            else if (body.ToLowerInvariant().StartsWith("zip"))
+            else if (body.ToLowerInvariant().StartsWith("zip", StringComparison.OrdinalIgnoreCase))
             {
                 UpdateZipCodeOperation updateZipCode = new UpdateZipCodeOperation(context);
                 return updateZipCode.Run(message);
