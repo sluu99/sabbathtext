@@ -81,7 +81,9 @@
     <Compile Include="CommonErrorCodes.cs" />
     <Compile Include="Entities\AccountEntity.cs" />
     <Compile Include="Entities\ConversationContext.cs" />
+    <Compile Include="Entities\LocationEntity.cs" />
     <Compile Include="Entities\MessageEntity.cs" />
+    <Compile Include="Entities\ZipCodeAccountIdIndex.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="V1\BaseOperation.cs" />
     <Compile Include="V1\CheckpointData.cs" />

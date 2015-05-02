@@ -37,6 +37,16 @@
         public KeyValueStore<MessageEntity> MessageStore { get; set; }
 
         /// <summary>
+        /// Gets or sets the location store
+        /// </summary>
+        public KeyValueStore<LocationEntity> LocationStore { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index store for <see cref="ZipCodeAccountIdIndex"/>
+        /// </summary>
+        public KeyValueStore<ZipCodeAccountIdIndex> ZipCodeAccountIdIndices { get; set; }
+
+        /// <summary>
         /// Gets or sets the compensation client
         /// </summary>
         public CompensationClient Compensation { get; set; }

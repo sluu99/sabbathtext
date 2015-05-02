@@ -46,6 +46,8 @@
                 MessageClient = TestGlobals.MessageClient,
                 MessageStore = TestGlobals.MessageStore,
                 AccountStore = TestGlobals.AccountStore,
+                LocationStore = TestGlobals.LocationStore,
+                ZipCodeAccountIdIndices = TestGlobals.ZipCodeAccountIndices,
                 Settings = TestGlobals.Settings,
             };
         }
@@ -92,6 +94,8 @@
             OperationCheckpointHandler handler = new OperationCheckpointHandler(
                 TestGlobals.AccountStore,
                 TestGlobals.MessageStore,
+                TestGlobals.LocationStore,
+                TestGlobals.ZipCodeAccountIndices,
                 TestGlobals.MessageClient,
                 compensation,
                 context.Settings);

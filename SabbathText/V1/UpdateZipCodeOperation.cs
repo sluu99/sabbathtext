@@ -90,7 +90,8 @@
                 {
                     // the ZIP code has not been updated
                     this.Context.Account.ZipCode = zipCode;
-                    await this.Context.AccountStore.Update(this.Context.Account);
+                    await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+                    await this.IndexZipCode();
 
                     outgoingMessage = Message.CreateZipCodeUpdated(this.Context.Account.PhoneNumber, location);
                 }
@@ -102,6 +103,20 @@
             }
 
             return await this.TranstitionToUpdateAccount(outgoingMessage);
+        }
+
+        private async Task IndexZipCode()
+        {
+            LocationEntity location = new LocationEntity { ZipCode = this.Context.Account.ZipCode };
+            await this.Context.LocationStore.InsertOrGet(location, this.Context.CancellationToken);
+
+            ZipCodeAccountIdIndex index = new ZipCodeAccountIdIndex
+            {
+                ZipCode = this.Context.Account.ZipCode,
+                AccountId = this.Context.Account.AccountId,
+            };
+
+            await this.Context.ZipCodeAccountIdIndices.InsertOrGet(index, this.Context.CancellationToken);
         }
 
         private async Task<OperationResponse<bool>> TranstitionToUpdateAccount(Message outgoingMessage)
@@ -138,7 +153,7 @@
 
             if (incomingMsgAdded || outgoingMsgAdded)
             {
-                await this.Context.AccountStore.Update(this.Context.Account);
+                await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
             }
 
             return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, true);

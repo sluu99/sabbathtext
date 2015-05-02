@@ -18,24 +18,32 @@
         private MessageClient messageClient;
         private CompensationClient compensation;
         private EnvironmentSettings settings;
+        private KeyValueStore<LocationEntity> locationStore;
+        private KeyValueStore<ZipCodeAccountIdIndex> zipCodeAccountIdIndices;
 
         /// <summary>
         /// Creates a new instance of this handler class.
         /// </summary>
         /// <param name="accountStore">The account store.</param>
         /// <param name="messageStore">The message store.</param>
+        /// <param name="locationStore">The location store.</param>
+        /// <param name="zipCodeAccountIdIndices">The store for ZIP code - account ID indices.</param>
         /// <param name="messageClient">The message client.</param>
         /// <param name="compensationClient">The compensation client.</param>
         /// <param name="settings">The environment settings.</param>
         public OperationCheckpointHandler(
             KeyValueStore<AccountEntity> accountStore,
             KeyValueStore<MessageEntity> messageStore,
+            KeyValueStore<LocationEntity> locationStore,
+            KeyValueStore<ZipCodeAccountIdIndex> zipCodeAccountIdIndices,
             MessageClient messageClient,
             CompensationClient compensationClient,
             EnvironmentSettings settings)
         {
             this.accountStore = accountStore;
             this.messageStore = messageStore;
+            this.locationStore = locationStore;
+            this.zipCodeAccountIdIndices = zipCodeAccountIdIndices;
             this.messageClient = messageClient;
             this.compensation = compensationClient;
             this.settings = settings;
@@ -81,6 +89,8 @@
                 Compensation = this.compensation,
                 MessageClient = this.messageClient,
                 MessageStore = this.messageStore,
+                LocationStore = this.locationStore,
+                ZipCodeAccountIdIndices = this.zipCodeAccountIdIndices,
                 TrackingId = checkpoint.TrackingId,
                 Settings = this.settings,
             };

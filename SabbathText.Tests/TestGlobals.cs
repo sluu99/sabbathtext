@@ -34,6 +34,16 @@ using SabbathText.Tests.V1;
         public static InMemoryKeyValueStore<MessageEntity> MessageStore = new InMemoryKeyValueStore<MessageEntity>();
 
         /// <summary>
+        /// The location store
+        /// </summary>
+        public static InMemoryKeyValueStore<LocationEntity> LocationStore = new InMemoryKeyValueStore<LocationEntity>();
+
+        /// <summary>
+        /// The ZIP code - account ID index store
+        /// </summary>
+        public static InMemoryKeyValueStore<ZipCodeAccountIdIndex> ZipCodeAccountIndices = new InMemoryKeyValueStore<ZipCodeAccountIdIndex>();
+
+        /// <summary>
         /// The checkpoint queue
         /// </summary>
         public static InMemoryQueueStore CheckpointQueue = new InMemoryQueueStore();
@@ -50,6 +60,8 @@ using SabbathText.Tests.V1;
         {
             AccountStore.InitMemory();
             MessageStore.InitMemory();
+            LocationStore.InitMemory();
+            ZipCodeAccountIndices.InitMemory();
             CheckpointStore.InitMemory();
             CheckpointQueue.InitMemory();
             MessageClient.InitMemory();
