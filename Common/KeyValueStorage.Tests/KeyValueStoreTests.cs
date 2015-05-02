@@ -1,6 +1,7 @@
 ﻿namespace KeyValueStorage.Tests
 {
     using System;
+    using System.Threading;
     using KeyValueStorage.Tests.Fixtures;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Microsoft.WindowsAzure.Storage;
@@ -61,7 +62,7 @@
                 Weight = 98.4f,
             };
 
-            this.Store.Insert(dog).Wait();
+            this.Store.Insert(dog, CancellationToken.None).Wait();
             Assert.IsNotNull(dog.ETag, "ETag should be populated after insertion");
         }
 
@@ -82,7 +83,7 @@
                 Weight = 98.4f,
             };
 
-            this.Store.Insert(dog).Wait();
+            this.Store.Insert(dog, CancellationToken.None).Wait();
 
             Dog elf = new Dog
             {
@@ -96,7 +97,7 @@
 
             try
             {
-                this.Store.Insert(elf).Wait();
+                this.Store.Insert(elf, CancellationToken.None).Wait();
             }
             catch (AggregateException ae)
             {
@@ -125,9 +126,9 @@
                 Weight = 98.4f,
             };
 
-            this.Store.Insert(dog).Wait();
+            this.Store.Insert(dog, CancellationToken.None).Wait();
 
-            Dog buddy = this.Store.Get("B", "dogs:buddy").Result;
+            Dog buddy = this.Store.Get("B", "dogs:buddy", CancellationToken.None).Result;
 
             Assert.IsNotNull(buddy, "Get should not return null");
             Assert.AreEqual(dog.Birthday, buddy.Birthday.ToUniversalTime());
@@ -146,7 +147,7 @@
         [TestMethod]
         public void GetShouldReturnNullWhenEntityDoesNotExist()
         {
-            Assert.IsNull(this.Store.Get("partitionKey", "rowKey").Result, "Get should return null when entity does not exist");
+            Assert.IsNull(this.Store.Get("partitionKey", "rowKey", CancellationToken.None).Result, "Get should return null when entity does not exist");
         }
 
         /// <summary>
@@ -165,14 +166,14 @@
                 Weight = 98.4f,
             };
 
-            this.Store.Insert(dog).Wait();
+            this.Store.Insert(dog, CancellationToken.None).Wait();
 
-            Dog buddy = this.Store.Get("B", "dogs:buddy").Result;
+            Dog buddy = this.Store.Get("B", "dogs:buddy", CancellationToken.None).Result;
 
             buddy.Weight += 5f;
-            this.Store.Update(buddy).Wait();
+            this.Store.Update(buddy, CancellationToken.None).Wait();
 
-            Dog newBuddyWithNewWeight = this.Store.Get("B", "dogs:buddy").Result;
+            Dog newBuddyWithNewWeight = this.Store.Get("B", "dogs:buddy", CancellationToken.None).Result;
 
             Assert.IsTrue(newBuddyWithNewWeight.Weight > dog.Weight, "Weight is expected to increase");
         }
@@ -194,17 +195,17 @@
                 Weight = 98.4f,
             };
 
-            this.Store.Insert(dog).Wait();
+            this.Store.Insert(dog, CancellationToken.None).Wait();
 
-            Dog buddy = this.Store.Get("B", "dogs:buddy").Result;
+            Dog buddy = this.Store.Get("B", "dogs:buddy", CancellationToken.None).Result;
             buddy.Weight += 5f;
-            this.Store.Update(buddy).Wait();
+            this.Store.Update(buddy, CancellationToken.None).Wait();
 
             dog.Weight += 3f;
 
             try
             {
-                this.Store.Update(dog).Wait();
+                this.Store.Update(dog, CancellationToken.None).Wait();
             }
             catch (AggregateException ae)
             {
@@ -240,7 +241,7 @@
 
             try
             {
-                this.Store.Update(dog).Wait();
+                this.Store.Update(dog, CancellationToken.None).Wait();
             }
             catch (AggregateException ae)
             {
@@ -269,11 +270,11 @@
                 Weight = 98.4f,
             };
 
-            this.Store.Insert(dog).Wait();
-            Assert.IsNotNull(this.Store.Get(dog.PartitionKey, dog.RowKey).Result, "Expected to get an object after insertion");
+            this.Store.Insert(dog, CancellationToken.None).Wait();
+            Assert.IsNotNull(this.Store.Get(dog.PartitionKey, dog.RowKey, CancellationToken.None).Result, "Expected to get an object after insertion");
 
-            this.Store.Delete(dog).Wait();
-            Assert.IsNull(this.Store.Get(dog.PartitionKey, dog.RowKey).Result, "Expected null after the entity had been deleted");
+            this.Store.Delete(dog, CancellationToken.None).Wait();
+            Assert.IsNull(this.Store.Get(dog.PartitionKey, dog.RowKey, CancellationToken.None).Result, "Expected null after the entity had been deleted");
         }
 
         /// <summary>
@@ -293,15 +294,15 @@
                 Weight = 98.4f,
             };
 
-            this.Store.Insert(dog).Wait();
+            this.Store.Insert(dog, CancellationToken.None).Wait();
 
-            Dog buddy = this.Store.Get(dog.PartitionKey, dog.RowKey).Result;
-            
-            this.Store.Update(dog).Wait(); // some other process modified the entity
+            Dog buddy = this.Store.Get(dog.PartitionKey, dog.RowKey, CancellationToken.None).Result;
+
+            this.Store.Update(dog, CancellationToken.None).Wait(); // some other process modified the entity
 
             try
             {
-                this.Store.Delete(buddy).Wait();
+                this.Store.Delete(buddy, CancellationToken.None).Wait();
             }
             catch (AggregateException ae)
             {
@@ -335,7 +336,7 @@
             
             try
             {
-                this.Store.Delete(dog).Wait();
+                this.Store.Delete(dog, CancellationToken.None).Wait();
             }
             catch (AggregateException ae)
             {

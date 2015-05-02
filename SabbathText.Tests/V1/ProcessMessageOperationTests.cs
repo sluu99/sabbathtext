@@ -2,6 +2,7 @@
 {
     using System;
     using System.Net;
+    using System.Threading;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SabbathText.Entities;
     using SabbathText.V1;
@@ -55,7 +56,7 @@
             {
                 AccountId = accountId,
             };
-            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey).Result;
+            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
 
             OperationContext context = CreateContext(account);
             MessageProcessor processor = new MessageProcessor();

@@ -25,7 +25,7 @@
             {
                 AccountId = accountId,
             };
-            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey).Result;
+            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
             Assert.AreEqual<ConversationContext>(expectedContext, account.ConversationContext);
         }
 
@@ -70,14 +70,16 @@
             string phoneNumber = TestHelper.GetUSPhoneNumber();
             string accountId = AccountEntity.GetAccountId(phoneNumber);
 
-            return TestGlobals.AccountStore.InsertOrGet(new AccountEntity
-            {
-                AccountId = accountId,
-                CreationTime = Clock.UtcNow,
-                PhoneNumber = phoneNumber,
-                Status = AccountStatus.BrandNew,
-                ConversationContext = ConversationContext.Unknown,
-            }).Result;
+            return TestGlobals.AccountStore.InsertOrGet(
+                new AccountEntity
+                {
+                    AccountId = accountId,
+                    CreationTime = Clock.UtcNow,
+                    PhoneNumber = phoneNumber,
+                    Status = AccountStatus.BrandNew,
+                    ConversationContext = ConversationContext.Unknown,
+                },
+                CancellationToken.None).Result;
         }
 
         /// <summary>
@@ -118,7 +120,7 @@
             {
                 AccountId = accountId,
             };
-            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey).Result;
+            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
             Assert.AreEqual<string>(expectedZipCode, account.ZipCode);
         }
 
@@ -134,7 +136,7 @@
             {
                 AccountId = accountId,
             };
-            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey).Result;
+            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
             Assert.IsTrue(
                 account.RecentMessages.Count > 0,
                 "Could not find any recent messages");
@@ -183,7 +185,7 @@
                 RowKey = context.TrackingId,
             };
 
-            return context.Compensation.GetCheckpoint(checkpointRef).Result;
+            return context.Compensation.GetCheckpoint(checkpointRef, context.CancellationToken).Result;
         }
     }
 }

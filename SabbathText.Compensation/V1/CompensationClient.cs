@@ -103,10 +103,11 @@
         /// Gets a checkpoint from a checkpoint reference.
         /// </summary>
         /// <param name="checkpointRef">The checkpoint reference.</param>
+        /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The checkpoint, or null if it does not exist.</returns>
-        public Task<Checkpoint> GetCheckpoint(CheckpointReference checkpointRef)
+        public Task<Checkpoint> GetCheckpoint(CheckpointReference checkpointRef, CancellationToken cancellationToken)
         {
-            return this.checkpointStore.Get(checkpointRef.PartitionKey, checkpointRef.RowKey);
+            return this.checkpointStore.Get(checkpointRef.PartitionKey, checkpointRef.RowKey, cancellationToken);
         }
 
         /// <summary>
@@ -123,7 +124,7 @@
             }
 
             CheckpointReference checkpointRef = JsonConvert.DeserializeObject<CheckpointReference>(message.Body);
-            return this.checkpointStore.Get(checkpointRef.PartitionKey, checkpointRef.RowKey);
+            return this.checkpointStore.Get(checkpointRef.PartitionKey, checkpointRef.RowKey, cancellationToken);
         }
 
         /// <summary>

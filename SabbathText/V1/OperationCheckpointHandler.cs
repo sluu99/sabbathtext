@@ -80,7 +80,7 @@
             {
                 AccountId = checkpointData.AccountId,
             };
-            account = await this.accountStore.Get(account.PartitionKey, account.RowKey);
+            account = await this.accountStore.Get(account.PartitionKey, account.RowKey, cancellationToken);
             OperationContext context = new OperationContext
             {
                 Account = account,

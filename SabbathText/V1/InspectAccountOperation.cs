@@ -88,7 +88,7 @@
             // update the account Sabbath text time first
             // so that if the operation fails later, we won't be spamming the user on each retry
             this.Context.Account.LastSabbathTextTime = Clock.UtcNow;
-            await this.Context.AccountStore.Update(this.Context.Account);
+            await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
             Message sabbathMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber);
             await this.Context.MessageClient.SendMessage(sabbathMessage);
@@ -117,7 +117,7 @@
 
             if (TryAddMessageEntity(this.Context.Account, messageEntity))
             {
-                await this.Context.AccountStore.Update(this.Context.Account);
+                await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
             }
 
             return await this.TransitionToArchiveMessages();
@@ -138,14 +138,14 @@
                 this.Context.Account.RecentMessages != null &&
                 this.Context.Account.RecentMessages.Count > this.Context.Settings.RecentMessageThreshold)
             {
-                await this.Context.MessageStore.InsertOrGet(this.Context.Account.RecentMessages[0]);
+                await this.Context.MessageStore.InsertOrGet(this.Context.Account.RecentMessages[0], this.Context.CancellationToken);
                 this.Context.Account.RecentMessages.RemoveAt(0);
                 messagesRemoved = true;
             }
 
             if (messagesRemoved)
             {
-                await this.Context.AccountStore.Update(this.Context.Account);
+                await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
             }
 
             return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.Accepted, true);

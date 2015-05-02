@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Net;
+    using System.Threading;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SabbathText.Entities;
     using SabbathText.V1;
@@ -45,7 +46,7 @@
                 TestGlobals.MessageClient.Messages
                 .FirstOrDefault(m => m.Recipient == context.Account.PhoneNumber && m.Template == MessageTemplate.Greetings);
 
-            AccountEntity account = context.AccountStore.Get(context.Account.PartitionKey, context.Account.RowKey).Result;
+            AccountEntity account = context.AccountStore.Get(context.Account.PartitionKey, context.Account.RowKey, CancellationToken.None).Result;
             Assert.AreEqual<ConversationContext>(
                 ConversationContext.Greetings,
                 account.ConversationContext,

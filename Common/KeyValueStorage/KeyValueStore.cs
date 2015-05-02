@@ -44,18 +44,7 @@
             this.cloudTable = tableClient.GetTableReference(tableName);
             this.cloudTable.CreateIfNotExists();
         }
-
-        /// <summary>
-        /// Gets an entity
-        /// </summary>
-        /// <param name="partitionKey">The partition key</param>
-        /// <param name="rowKey">The row key</param>
-        /// <returns>The entity, or null if not found</returns>
-        public Task<T> Get(string partitionKey, string rowKey)
-        {
-            return this.Get(partitionKey, rowKey, CancellationToken.None);
-        }
-
+        
         /// <summary>
         /// Gets an entity
         /// </summary>
@@ -88,18 +77,7 @@
 
             return entity;
         }
-
-        /// <summary>
-        /// Inserts an entity to the key value store
-        /// </summary>
-        /// <param name="entity">The entity for insertion</param>
-        /// <returns>The insertion Task</returns>
-        /// <exception cref="DuplicateKeyException">Thrown when the partition key and row key already exist</exception>
-        public Task Insert(T entity)
-        {
-            return this.Insert(entity, CancellationToken.None);
-        }
-
+        
         /// <summary>
         /// Insert an entity into the azure table
         /// </summary>
@@ -140,16 +118,6 @@
 
             entity.ETag = rawEntity.ETag;
             entity.Timestamp = rawEntity.Timestamp.UtcDateTime;
-        }
-
-        /// <summary>
-        /// Updates an entity
-        /// </summary>
-        /// <param name="entity">The entity</param>
-        /// <returns>The update task</returns>
-        public Task Update(T entity)
-        {
-            return this.Update(entity, CancellationToken.None);
         }
 
         /// <summary>
@@ -204,15 +172,6 @@
             entity.Timestamp = rawEntity.Timestamp.UtcDateTime;
         }
 
-        /// <summary>
-        /// Deletes an entity
-        /// </summary>
-        /// <param name="entity">The entity</param>
-        /// <returns>The delete task</returns>
-        public Task Delete(T entity)
-        {
-            return this.Delete(entity, CancellationToken.None);
-        }
 
         /// <summary>
         /// Deletes an entity
@@ -261,17 +220,7 @@
                 throw;
             }
         }
-
-        /// <summary>
-        /// Inserts or gets an entity from the store
-        /// </summary>
-        /// <param name="entity">The entity</param>
-        /// <returns>The entity itself</returns>
-        public virtual Task<T> InsertOrGet(T entity)
-        {
-            return this.InsertOrGet(entity, CancellationToken.None);
-        }
-
+        
         /// <summary>
         /// Inserts or gets an entity from the store
         /// </summary>
