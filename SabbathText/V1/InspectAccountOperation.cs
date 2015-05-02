@@ -49,6 +49,7 @@
                 (Clock.UtcNow - this.Context.Account.LastSabbathTextTime) < this.Context.Settings.SabbathTextGap ||
                 string.IsNullOrWhiteSpace(this.Context.Account.ZipCode))
             {
+                // Don't need to check for Sabbath
                 return await this.TransitionToArchiveMessages();
             }
 
@@ -124,6 +125,7 @@
 
         private Task<OperationResponse<bool>> TransitionToArchiveMessages()
         {
+            // This state is idempotent. We don't need to update the checkpoint
             this.checkpointData.State = InspectAccountOperationState.ArchivingMessages;
 
             return this.EnterArchiveMessages();
