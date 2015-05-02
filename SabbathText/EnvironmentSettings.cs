@@ -8,6 +8,11 @@
     /// </summary>
     public class EnvironmentSettings
     {
+        /// <summary>
+        /// Key for KeyValueStoreConnectionString
+        /// </summary>
+        protected const string KeyValueStoreConnectionStringKey = "KeyValueStoreConnectionString";
+
         private Dictionary<string, string> secrets;
         
         /// <summary>
@@ -26,7 +31,7 @@
         {
             get
             {
-                return this.secrets["KeyValueStoreConnectionString"];
+                return this.secrets[KeyValueStoreConnectionStringKey];
             }
         }
 
