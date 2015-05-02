@@ -73,6 +73,8 @@
     <Compile Include="ETagMismatchException.cs" />
     <Compile Include="KeyValueEntity.cs" />
     <Compile Include="InMemoryKeyValueStore.cs" />
+    <Compile Include="KeyValueStoreConfiguration.cs" />
+    <Compile Include="KeyValueStoreType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,9 +1,12 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SabbathText.V1;
-
-namespace SabbathText.Tests.V1
+﻿namespace SabbathText.Tests.V1
 {
+    using System;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using SabbathText.V1;
+
+    /// <summary>
+    /// Contains test cases for messages
+    /// </summary>
     [TestClass]
     public class MessageTests
     {

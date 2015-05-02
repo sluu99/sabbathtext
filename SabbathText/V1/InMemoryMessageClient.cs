@@ -1,11 +1,10 @@
-﻿namespace SabbathText.Tests.V1
+﻿namespace SabbathText.V1
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Newtonsoft.Json;
-    using SabbathText.V1;
 
     /// <summary>
     /// An in-memory implementation of the message client

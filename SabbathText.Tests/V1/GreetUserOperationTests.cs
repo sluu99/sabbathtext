@@ -43,7 +43,7 @@
             AssertOperationFinishes(context);
 
             Message message =
-                TestGlobals.MessageClient.Messages
+                ((InMemoryMessageClient)GoodieBag.Create().MessageClient).Messages
                 .FirstOrDefault(m => m.Recipient == context.Account.PhoneNumber && m.Template == MessageTemplate.Greetings);
 
             AccountEntity account = context.AccountStore.Get(context.Account.PartitionKey, context.Account.RowKey, CancellationToken.None).Result;

@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+using KeyValueStorage;
+using QueueStorage;
 
     /// <summary>
     /// Environment settings
@@ -48,6 +50,110 @@
             get
             {
                 return this.secrets[ServicePhoneNumberKey];
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether to use the in-memory message client.
+        /// </summary>
+        public virtual bool UseInMemoryMessageClient
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// Gets the configuration for the account store.
+        /// </summary>
+        public virtual KeyValueStoreConfiguration AccountStoreConfiguration
+        {
+            get
+            {
+                return new KeyValueStoreConfiguration
+                {
+                    Type = KeyValueStoreType.AzureTable,
+                    ConnectionString = this.KeyValueStoreConnectionString,
+                    AzureTableName = "accounts",
+                };
+            }
+        }
+
+        /// <summary>
+        /// Gets the message store configuration.
+        /// </summary>
+        public virtual KeyValueStoreConfiguration MessageStoreConfiguration
+        {
+            get
+            {
+                return new KeyValueStoreConfiguration
+                {
+                    Type = KeyValueStoreType.AzureTable,
+                    ConnectionString = this.KeyValueStoreConnectionString,
+                    AzureTableName = "messages",
+                };
+            }
+        }
+
+        /// <summary>
+        /// Gets the location store configuration.
+        /// </summary>
+        public virtual KeyValueStoreConfiguration LocationStoreConfiguration
+        {
+            get
+            {
+                return new KeyValueStoreConfiguration
+                {
+                    Type = KeyValueStoreType.AzureTable,
+                    ConnectionString = this.KeyValueStoreConnectionString,
+                    AzureTableName = "locations",
+                };
+            }
+        }
+
+        /// <summary>
+        /// Gets the configuration for the ZIP code - Account ID index store
+        /// </summary>
+        public virtual KeyValueStoreConfiguration ZipCodeAccountIdIndexStoreConfiguration
+        {
+            get
+            {
+                return new KeyValueStoreConfiguration
+                {
+                    Type = KeyValueStoreType.AzureTable,
+                    ConnectionString = this.KeyValueStoreConnectionString,
+                    AzureTableName = "zipcodeaccountidindices",
+                };
+            }
+        }
+
+        /// <summary>
+        /// Gets the configuration for the checkpoint store
+        /// </summary>
+        public virtual KeyValueStoreConfiguration CheckpointStoreConfiguration
+        {
+            get
+            {
+                return new KeyValueStoreConfiguration
+                {
+                    Type = KeyValueStoreType.AzureTable,
+                    ConnectionString = this.KeyValueStoreConnectionString,
+                    AzureTableName = "checkpoints",
+                };
+            }
+        }
+
+        /// <summary>
+        /// Gets the configuration for the checkpoint queue
+        /// </summary>
+        public virtual QueueStoreConfiguration CheckpointQueueConfiguration
+        {
+            get
+            {
+                return new QueueStoreConfiguration
+                {
+                    Type = QueueStoreType.AzureStorageQueue,
+                    ConnectionString = this.KeyValueStoreConnectionString,
+                    AzureQueueName = "checkpointqueue",
+                };
             }
         }
 

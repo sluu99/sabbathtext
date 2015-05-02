@@ -23,6 +23,28 @@
         private CloudTable cloudTable;
 
         /// <summary>
+        /// Creates a new instance of <see cref="KeyValueStore{T}"/> from the specified configuration.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <returns>A new instance of <see cref="KeyValueStore{T}"/>.</returns>
+        public static KeyValueStore<T> Create(KeyValueStoreConfiguration config)
+        {
+            switch (config.Type)
+            {
+                case KeyValueStoreType.InMemory:
+                    InMemoryKeyValueStore<T> inMemoryStore = new InMemoryKeyValueStore<T>();
+                    inMemoryStore.InitMemory();
+                    return inMemoryStore;
+                case KeyValueStoreType.AzureTable:
+                    KeyValueStore<T> azureStore = new KeyValueStore<T>();
+                    azureStore.InitAzureTable(config.ConnectionString, config.AzureTableName);
+                    return azureStore;
+                default:
+                    throw new NotSupportedException(string.Format("Cannot create a KeyValueStore of type {0}", config.Type));
+            }
+        }
+
+        /// <summary>
         /// Initializes the underlying Azure storage
         /// </summary>
         /// <param name="connectionString">The connection string</param>

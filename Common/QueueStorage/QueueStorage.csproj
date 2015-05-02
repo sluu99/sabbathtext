@@ -79,6 +79,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueueMessage.cs" />
     <Compile Include="InMemoryQueueStore.cs" />
+    <Compile Include="QueueStoreConfiguration.cs" />
+    <Compile Include="QueueStoreType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

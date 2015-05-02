@@ -14,6 +14,28 @@
         private CloudQueue cloudQueue;
 
         /// <summary>
+        /// Creates a new queue store from the configuration.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <returns>A new instance of <see cref="QueueStore"/>.</returns>
+        public static QueueStore Create(QueueStoreConfiguration config)
+        {
+            switch (config.Type)
+            {
+                case QueueStoreType.InMemory:
+                    InMemoryQueueStore inMemoryStore = new InMemoryQueueStore();
+                    inMemoryStore.InitMemory();
+                    return inMemoryStore;
+                case QueueStoreType.AzureStorageQueue:
+                    QueueStore queueStore = new QueueStore();
+                    queueStore.InitAzureQueue(config.ConnectionString, config.AzureQueueName);
+                    return queueStore;
+                default:
+                    throw new NotSupportedException(string.Format("Cannot create a new queue of type {0}", config.Type));
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of this class
         /// </summary>
         /// <param name="connectionString">The connection string</param>

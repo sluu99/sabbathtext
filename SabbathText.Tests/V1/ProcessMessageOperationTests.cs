@@ -56,7 +56,7 @@
             {
                 AccountId = accountId,
             };
-            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
+            account = GoodieBag.Create().AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
 
             OperationContext context = CreateContext(account);
             MessageProcessor processor = new MessageProcessor();

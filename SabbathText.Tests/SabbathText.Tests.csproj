@@ -79,12 +79,11 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestAssembly.cs" />
     <Compile Include="TestEnvironmentSettings.cs" />
-    <Compile Include="TestGlobals.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="SecretSettingTests.cs" />
     <Compile Include="SecretProviderTests.cs" />
-    <Compile Include="V1\InMemoryMessageClient.cs" />
     <Compile Include="V1\ProcessMessageOperationTests.cs" />
     <Compile Include="V1\MessageTests.cs" />
     <Compile Include="V1\ZipMessageTests.cs" />

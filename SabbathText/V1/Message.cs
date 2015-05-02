@@ -154,8 +154,8 @@ using SabbathText.Location.V1;
         /// Creates a new text to send out during the Sabbath.
         /// </summary>
         /// <param name="phoneNumber">The phone number.</param>
-        /// <param name="verseContent">The Bible verse number.</param>
-        /// <param name="verseNumber">The Bible verse content.</param>
+        /// <param name="verseNumber">The Bible verse number.</param>
+        /// <param name="verseContent">The Bible verse content.</param>
         /// <returns>The message.</returns>
         public static Message CreateSabbathText(string phoneNumber, string verseNumber, string verseContent)
         {

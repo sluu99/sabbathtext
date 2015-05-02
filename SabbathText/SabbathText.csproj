@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="CommonErrorCodes.cs" />
     <Compile Include="DomainData.cs" />
+    <Compile Include="GoodieBag.cs" />
     <Compile Include="SecretHelper.cs" />
     <Compile Include="StagingEnvironmentSettings.cs" />
     <Compile Include="DevEnvironmentSettings.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="V1\BaseOperation.cs" />
     <Compile Include="V1\CheckpointData.cs" />
+    <Compile Include="V1\InMemoryMessageClient.cs" />
     <Compile Include="V1\InspectAccountOperation.cs" />
     <Compile Include="V1\InspectAccountOperationCheckpointData.cs" />
     <Compile Include="V1\InspectAccountOperationState.cs" />

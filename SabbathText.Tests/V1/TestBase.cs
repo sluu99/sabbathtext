@@ -25,7 +25,9 @@
             {
                 AccountId = accountId,
             };
-            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
+
+            GoodieBag bag = GoodieBag.Create();
+            account = bag.AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
             Assert.AreEqual<ConversationContext>(expectedContext, account.ConversationContext);
         }
 
@@ -36,19 +38,20 @@
         /// <returns>An Operation context instance.</returns>
         protected static OperationContext CreateContext(AccountEntity account)
         {
+            GoodieBag goodieBag = GoodieBag.Create();
+
             return new OperationContext
             {
                 TrackingId = Guid.NewGuid().ToString(),
                 Account = account,
-                CancellationToken = new CancellationTokenSource(TestGlobals.Settings.OperationTimeout).Token,
-                Compensation = new CompensationClient(
-                    TestGlobals.CheckpointStore, TestGlobals.CheckpointQueue, TestGlobals.Settings.CheckpointVisibilityTimeout),
-                MessageClient = TestGlobals.MessageClient,
-                MessageStore = TestGlobals.MessageStore,
-                AccountStore = TestGlobals.AccountStore,
-                LocationStore = TestGlobals.LocationStore,
-                ZipCodeAccountIdIndices = TestGlobals.ZipCodeAccountIndices,
-                Settings = TestGlobals.Settings,
+                CancellationToken = new CancellationTokenSource(goodieBag.Settings.OperationTimeout).Token,
+                Compensation = goodieBag.CompensationClient,
+                MessageClient = goodieBag.MessageClient,
+                MessageStore = goodieBag.MessageStore,
+                AccountStore = goodieBag.AccountStore,
+                LocationStore = goodieBag.LocationStore,
+                ZipCodeAccountIdIndices = goodieBag.ZipCodeAccountIdIndices,
+                Settings = goodieBag.Settings,
             };
         }
 
@@ -70,7 +73,7 @@
             string phoneNumber = TestHelper.GetUSPhoneNumber();
             string accountId = AccountEntity.GetAccountId(phoneNumber);
 
-            return TestGlobals.AccountStore.InsertOrGet(
+            return GoodieBag.Create().AccountStore.InsertOrGet(
                 new AccountEntity
                 {
                     AccountId = accountId,
@@ -90,18 +93,18 @@
         {
             Checkpoint checkpoint = GetCheckpoint(context);
             Assert.IsNotNull(checkpoint, "Cannot find a checkpoint for this operation.");
-            
-            CompensationClient compensation = new CompensationClient(
-                TestGlobals.CheckpointStore, TestGlobals.CheckpointQueue, TestGlobals.Settings.CheckpointVisibilityTimeout);
+
+            GoodieBag bag = GoodieBag.Create();
+
             OperationCheckpointHandler handler = new OperationCheckpointHandler(
-                TestGlobals.AccountStore,
-                TestGlobals.MessageStore,
-                TestGlobals.LocationStore,
-                TestGlobals.ZipCodeAccountIndices,
-                TestGlobals.MessageClient,
-                compensation,
-                context.Settings);
-            CancellationTokenSource cts = new CancellationTokenSource(TestGlobals.Settings.OperationTimeout);
+                bag.AccountStore,
+                bag.MessageStore,
+                bag.LocationStore,
+                bag.ZipCodeAccountIdIndices,
+                bag.MessageClient,
+                bag.CompensationClient,
+                bag.Settings);
+            CancellationTokenSource cts = new CancellationTokenSource(bag.Settings.OperationTimeout);
             handler.Finish(checkpoint, cts.Token).Wait();
 
             Assert.IsTrue(
@@ -120,7 +123,7 @@
             {
                 AccountId = accountId,
             };
-            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
+            account = GoodieBag.Create().AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
             Assert.AreEqual<string>(expectedZipCode, account.ZipCode);
         }
 
@@ -136,7 +139,7 @@
             {
                 AccountId = accountId,
             };
-            account = TestGlobals.AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
+            account = GoodieBag.Create().AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
             Assert.IsTrue(
                 account.RecentMessages.Count > 0,
                 "Could not find any recent messages");
@@ -162,7 +165,7 @@
         /// <param name="expectedCount">The expected count</param>
         protected static void AssertMessageCount(string phoneNumber, MessageTemplate template, int expectedCount)
         {
-            int count = TestGlobals.MessageClient.Messages.Count(m =>
+            int count = ((InMemoryMessageClient)GoodieBag.Create().MessageClient).Messages.Count(m =>
                 m.Template == template &&
                 (m.Sender == phoneNumber || m.Recipient == phoneNumber));
 
