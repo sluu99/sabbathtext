@@ -52,11 +52,8 @@
         /// <param name="incomingMessage">The incoming message.</param>
         protected static void ProcessMessage(string accountId, Message incomingMessage)
         {
-            AccountEntity account = new AccountEntity
-            {
-                AccountId = accountId,
-            };
-            account = GoodieBag.Create().AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
+            AccountEntity account =
+                GoodieBag.Create().AccountStore.Get(AccountEntity.GetReferenceById(accountId), CancellationToken.None).Result;
 
             OperationContext context = CreateContext(account);
             MessageProcessor processor = new MessageProcessor();

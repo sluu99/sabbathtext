@@ -24,13 +24,8 @@
         /// <param name="expectedContext">The expected conversation context.</param>
         protected static void AssertConversationContext(string accountId, ConversationContext expectedContext)
         {
-            AccountEntity account = new AccountEntity
-            {
-                AccountId = accountId,
-            };
-
             GoodieBag bag = GoodieBag.Create();
-            account = bag.AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
+            AccountEntity account = bag.AccountStore.Get(AccountEntity.GetReferenceById(accountId), CancellationToken.None).Result;
             Assert.AreEqual<ConversationContext>(expectedContext, account.ConversationContext);
         }
 
@@ -134,11 +129,8 @@
         /// <param name="expectedZipCode">The expected ZIP code.</param>
         protected static void AssertZipCode(string accountId, string expectedZipCode)
         {
-            AccountEntity account = new AccountEntity
-            {
-                AccountId = accountId,
-            };
-            account = GoodieBag.Create().AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
+            AccountEntity account =
+                GoodieBag.Create().AccountStore.Get(AccountEntity.GetReferenceById(accountId), CancellationToken.None).Result;
             Assert.AreEqual<string>(expectedZipCode, account.ZipCode);
         }
 
@@ -150,11 +142,8 @@
         /// <param name="mustContain">The message body must contain the provided string.</param>
         protected static void AssertLastSentMessage(string accountId, MessageTemplate template, string mustContain = null)
         {
-            AccountEntity account = new AccountEntity
-            {
-                AccountId = accountId,
-            };
-            account = GoodieBag.Create().AccountStore.Get(account.PartitionKey, account.RowKey, CancellationToken.None).Result;
+            AccountEntity account =
+                GoodieBag.Create().AccountStore.Get(AccountEntity.GetReferenceById(accountId), CancellationToken.None).Result;
             Assert.IsTrue(
                 account.RecentMessages.Count > 0,
                 "Could not find any recent messages");

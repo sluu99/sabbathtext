@@ -21,7 +21,7 @@
         /// The account has subscribed
         /// </summary>
         Subscribed,
-        
+
         /// <summary>
         /// The account has unsubscribed
         /// </summary>
@@ -49,18 +49,18 @@
         /// <summary>
         /// Gets or sets the account creation time
         /// </summary>
-        public DateTime CreationTime { get; set; }        
-        
+        public DateTime CreationTime { get; set; }
+
         /// <summary>
         /// Gets or sets the phone number
         /// </summary>
         public string PhoneNumber { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the zip code
         /// </summary>
         public string ZipCode { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the account status
         /// </summary>
@@ -89,12 +89,7 @@
         {
             get
             {
-                if (this.AccountId == null)
-                {
-                    return null;
-                }
-
-                return this.AccountId.Substring(0, 2).ToString().ToUpperInvariant();
+                return GetPartitionKey(this.AccountId);
             }
         }
 
@@ -103,7 +98,7 @@
         /// </summary>
         public override string RowKey
         {
-            get { return this.AccountId; }
+            get { return GetRowKey(this.AccountId); }
         }
 
         /// <summary>
@@ -119,6 +114,40 @@
         public static string GetAccountId(string phoneNumber)
         {
             return ("PhoneNumber:" + phoneNumber).Sha256();
+        }
+
+        /// <summary>
+        /// Gets the reference to an account entity.
+        /// </summary>
+        /// <param name="phoneNumber">The phone number.</param>
+        /// <returns>The entity reference.</returns>
+        public static EntityReference GetReferenceByPhoneNumber(string phoneNumber)
+        {
+            return GetReferenceById(GetAccountId(phoneNumber));
+        }
+
+        /// <summary>
+        /// Gets the reference to an account entity.
+        /// </summary>
+        /// <param name="accountId">The account ID.</param>
+        /// <returns>The entity reference.</returns>
+        public static EntityReference GetReferenceById(string accountId)
+        {
+            return new EntityReference
+            {
+                PartitionKey = GetPartitionKey(accountId),
+                RowKey = GetRowKey(accountId),
+            };
+        }
+
+        private static string GetPartitionKey(string accountId)
+        {
+            return accountId;
+        }
+
+        private static string GetRowKey(string accountId)
+        {
+            return accountId;
         }
     }
 }

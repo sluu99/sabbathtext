@@ -76,11 +76,8 @@
             }
 
             CheckpointData checkpointData = JsonConvert.DeserializeObject<CheckpointData>(checkpoint.CheckpointData);
-            AccountEntity account = new AccountEntity
-            {
-                AccountId = checkpointData.AccountId,
-            };
-            account = await this.accountStore.Get(account.PartitionKey, account.RowKey, cancellationToken);
+            AccountEntity account =
+                await this.accountStore.Get(AccountEntity.GetReferenceById(checkpoint.AccountId), cancellationToken);
             OperationContext context = new OperationContext
             {
                 Account = account,
