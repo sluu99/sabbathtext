@@ -36,7 +36,7 @@
         private static Dictionary<string, string> DecryptSecrets()
         {
             string certPath = Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                Assembly.GetExecutingAssembly().GetDirectory(),
                 "devcert.pfx");
 
             SecretProvider provider = new SecretProvider(certPath, password: "dev");

@@ -1,5 +1,6 @@
 ﻿namespace SabbathText.Compensation.V1
 {
+    using System.Globalization;
     using KeyValueStorage;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
@@ -80,7 +81,7 @@
         /// </summary>
         public override string RowKey
         {
-            get { return this.TrackingId; }
+            get { return string.Format(CultureInfo.InvariantCulture, "{0}.{1}", this.OperationType, this.TrackingId); }
             set { }
         }
     }

@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="CommonErrorCodes.cs" />
     <Compile Include="DomainData.cs" />
+    <Compile Include="Extensions\AssemblyExtension.cs" />
     <Compile Include="GoodieBag.cs" />
     <Compile Include="SecretProvider.cs" />
     <Compile Include="StagingEnvironmentSettings.cs" />

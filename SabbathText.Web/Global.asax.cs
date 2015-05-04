@@ -18,6 +18,7 @@ namespace SabbathText.Web
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             SabbathText.Core.Common.Setup();
             SabbathText.Core.Common.SetupStorage();
+            GoodieBag.Initialize(EnvironmentSettings.Create());
         }
     }
 }

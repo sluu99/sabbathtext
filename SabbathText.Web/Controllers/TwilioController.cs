@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace SabbathText.Web.Controllers
 {
-    public class TwilioController : Controller
+    public class TwilioController : BaseController
     {
         public TwilioController()
         {
