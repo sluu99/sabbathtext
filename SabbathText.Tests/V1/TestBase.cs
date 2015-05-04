@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Threading;
+    using KeyValueStorage;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
     using QueueStorage;
@@ -100,7 +101,7 @@
                 QueueMessage checkpointMessage = bag.CompensationClient.GetCheckpointMessage(context.CancellationToken).Result;
                 Assert.IsNotNull(checkpointMessage, "Cannot find any checkpoint in the queue");
 
-                CheckpointReference checkpointRef = JsonConvert.DeserializeObject<CheckpointReference>(checkpointMessage.Body);
+                EntityReference checkpointRef = JsonConvert.DeserializeObject<EntityReference>(checkpointMessage.Body);
                 Checkpoint checkpoint = bag.CompensationClient.GetCheckpoint(checkpointRef, context.CancellationToken).Result;
                 Assert.IsNotNull(checkpoint, string.Format("Cannot find the checkpoint {0}/{1}", checkpointRef.PartitionKey, checkpointRef.RowKey));
 

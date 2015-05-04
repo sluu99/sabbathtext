@@ -41,7 +41,7 @@
         {
             checkpoint = await this.checkpointStore.InsertOrGet(checkpoint, cancellationToken);
 
-            CheckpointReference checkpointRef = new CheckpointReference
+            EntityReference checkpointRef = new EntityReference
             {
                 PartitionKey = checkpoint.PartitionKey,
                 RowKey = checkpoint.RowKey,
@@ -65,7 +65,7 @@
         /// <returns>The operation task</returns>
         public Task QueueCheckpoint(Checkpoint checkpoint, TimeSpan visibilityDelay, CancellationToken cancellationToken)
         {
-            CheckpointReference checkpointRef = new CheckpointReference
+            EntityReference checkpointRef = new EntityReference
             {
                 PartitionKey = checkpoint.PartitionKey,
                 RowKey = checkpoint.RowKey,
@@ -105,7 +105,7 @@
         /// <param name="checkpointRef">The checkpoint reference.</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The checkpoint, or null if it does not exist.</returns>
-        public Task<Checkpoint> GetCheckpoint(CheckpointReference checkpointRef, CancellationToken cancellationToken)
+        public Task<Checkpoint> GetCheckpoint(EntityReference checkpointRef, CancellationToken cancellationToken)
         {
             return this.checkpointStore.Get(checkpointRef.PartitionKey, checkpointRef.RowKey, cancellationToken);
         }
@@ -123,7 +123,7 @@
                 throw new ArgumentException("message");
             }
 
-            CheckpointReference checkpointRef = JsonConvert.DeserializeObject<CheckpointReference>(message.Body);
+            EntityReference checkpointRef = JsonConvert.DeserializeObject<EntityReference>(message.Body);
             return this.checkpointStore.Get(checkpointRef.PartitionKey, checkpointRef.RowKey, cancellationToken);
         }
 

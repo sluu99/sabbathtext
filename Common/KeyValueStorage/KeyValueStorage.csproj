@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureTableKeyValueEntity.cs" />
+    <Compile Include="EntityReference.cs" />
     <Compile Include="KeyValueStore.cs" />
     <Compile Include="DuplicateKeyException.cs" />
     <Compile Include="EntityNotFoundException.cs" />

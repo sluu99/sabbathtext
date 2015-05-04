@@ -66,7 +66,18 @@
             this.cloudTable = tableClient.GetTableReference(tableName);
             this.cloudTable.CreateIfNotExists();
         }
-        
+
+        /// <summary>
+        /// Gets an entity
+        /// </summary>
+        /// <param name="entityRef">The entity reference</param>
+        /// <param name="cancellationToken">The cancellation token</param>
+        /// <returns>The entity, or null if it does not exist</returns>
+        public Task<T> Get(EntityReference entityRef, CancellationToken cancellationToken)
+        {
+            return this.Get(entityRef.PartitionKey, entityRef.RowKey, cancellationToken);
+        }
+
         /// <summary>
         /// Gets an entity
         /// </summary>
