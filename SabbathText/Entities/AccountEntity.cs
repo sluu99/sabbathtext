@@ -96,10 +96,6 @@
 
                 return this.AccountId.Substring(0, 2).ToString().ToUpperInvariant();
             }
-
-            set
-            {
-            }
         }
 
         /// <summary>
@@ -108,7 +104,6 @@
         public override string RowKey
         {
             get { return this.AccountId; }
-            set { }
         }
 
         /// <summary>

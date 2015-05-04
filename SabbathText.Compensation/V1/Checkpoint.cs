@@ -73,7 +73,6 @@
         public override string PartitionKey
         {
             get { return this.AccountId; }
-            set { }
         }
 
         /// <summary>
@@ -82,7 +81,6 @@
         public override string RowKey
         {
             get { return string.Format(CultureInfo.InvariantCulture, "{0}.{1}", this.OperationType, this.TrackingId); }
-            set { }
         }
     }
 }

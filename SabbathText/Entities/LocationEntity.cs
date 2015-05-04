@@ -26,10 +26,6 @@
             {
                 return this.ZipCode;
             }
-
-            set
-            {
-            }
         }
 
         /// <summary>
@@ -40,10 +36,6 @@
             get
             {
                 return this.ZipCode;
-            }
-
-            set
-            {
             }
         }
     }

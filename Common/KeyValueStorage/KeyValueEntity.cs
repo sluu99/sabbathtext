@@ -10,16 +10,16 @@
     public abstract class KeyValueEntity
     {
         /// <summary>
-        /// Gets or sets the partition key
+        /// Gets the partition key
         /// </summary>
-        [JsonProperty]
-        public abstract string PartitionKey { get; set; }
+        [JsonIgnore]
+        public abstract string PartitionKey { get; }
 
         /// <summary>
-        /// Gets or sets the row key
+        /// Gets the row key
         /// </summary>
-        [JsonProperty]
-        public abstract string RowKey { get; set; }
+        [JsonIgnore]
+        public abstract string RowKey { get; }
         
         /// <summary>
         /// Gets or sets the e-tag

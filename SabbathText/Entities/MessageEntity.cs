@@ -64,7 +64,6 @@
         public override string PartitionKey
         {
             get { return this.AccountId; }
-            set { }
         }
 
         /// <summary>
@@ -73,7 +72,6 @@
         public override string RowKey
         {
             get { return this.MessageId; }
-            set { }
         }
     }
 }

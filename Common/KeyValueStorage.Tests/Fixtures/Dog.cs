@@ -50,21 +50,29 @@ using Newtonsoft.Json.Converters;
         public float Weight { get; set; }
 
         /// <summary>
-        /// Gets or sets the partition key.
+        /// Gets or sets the partition key
+        /// </summary>
+        public string PK { get; set; }
+
+        /// <summary>
+        /// Gets or sets the row key
+        /// </summary>
+        public string RK { get; set; }
+
+        /// <summary>
+        /// Gets the partition key.
         /// </summary>
         public override string PartitionKey
         {
-            get;
-            set;
+            get { return this.PK; }
         }
 
         /// <summary>
-        /// Gets or sets the row key.
+        /// Gets the row key.
         /// </summary>
         public override string RowKey
         {
-            get;
-            set;
+            get { return this.RK; }
         }
     }
 }

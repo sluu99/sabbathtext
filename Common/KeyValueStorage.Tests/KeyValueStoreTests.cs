@@ -57,8 +57,8 @@
                 Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
-                PartitionKey = "B",
-                RowKey = "dogs:buddy",
+                PK = "B",
+                RK = "dogs:buddy",
                 Weight = 98.4f,
             };
 
@@ -78,8 +78,8 @@
                 Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
-                PartitionKey = "B",
-                RowKey = "dogs:buddy",
+                PK = "B",
+                RK = "dogs:buddy",
                 Weight = 98.4f,
             };
 
@@ -90,8 +90,8 @@
                 Birthday = Clock.UtcNow.AddYears(-1),
                 Breed = DogBreed.GermanShepherd,
                 Name = "Elf",
-                PartitionKey = "B",
-                RowKey = "dogs:buddy",
+                PK = "B",
+                RK = "dogs:buddy",
                 Weight = 60f,
             };
 
@@ -121,8 +121,8 @@
                 Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
-                PartitionKey = "B",
-                RowKey = "dogs:buddy",
+                PK = "B",
+                RK = "dogs:buddy",
                 Weight = 98.4f,
             };
 
@@ -161,8 +161,8 @@
                 Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
-                PartitionKey = "B",
-                RowKey = "dogs:buddy",
+                PK = "B",
+                RK = "dogs:buddy",
                 Weight = 98.4f,
             };
 
@@ -190,8 +190,8 @@
                 Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
-                PartitionKey = "B",
-                RowKey = "dogs:buddy",
+                PK = "B",
+                RK = "dogs:buddy",
                 Weight = 98.4f,
             };
 
@@ -230,8 +230,8 @@
                 Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
-                PartitionKey = "B",
-                RowKey = "dogs:buddy",
+                PK = "B",
+                RK = "dogs:buddy",
                 Weight = 98.4f,
                 ETag = "*",
                 Timestamp = Clock.UtcNow,
@@ -265,8 +265,8 @@
                 Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
-                PartitionKey = "B",
-                RowKey = "dogs:buddy",
+                PK = "B",
+                RK = "dogs:buddy",
                 Weight = 98.4f,
             };
 
@@ -289,8 +289,8 @@
                 Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
-                PartitionKey = "B",
-                RowKey = "dogs:buddy",
+                PK = "B",
+                RK = "dogs:buddy",
                 Weight = 98.4f,
             };
 
@@ -327,8 +327,8 @@
                 Birthday = Clock.UtcNow.AddYears(-2),
                 Breed = DogBreed.Labrador,
                 Name = "Buddy",
-                PartitionKey = "B",
-                RowKey = "dogs:buddy",
+                PK = "B",
+                RK = "dogs:buddy",
                 Weight = 98.4f,
                 ETag = "*",
                 Timestamp = Clock.UtcNow,

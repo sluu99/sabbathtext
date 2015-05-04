@@ -31,10 +31,6 @@
             {
                 return this.ZipCode;
             }
-
-            set
-            {
-            }
         }
 
         /// <summary>
@@ -45,10 +41,6 @@
             get
             {
                 return this.AccountId;
-            }
-
-            set
-            {
             }
         }
     }

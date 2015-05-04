@@ -4,6 +4,8 @@
     using System.Linq;
     using System.Threading;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Newtonsoft.Json;
+    using QueueStorage;
     using SabbathText.Compensation.V1;
     using SabbathText.Entities;
     using SabbathText.V1;
@@ -91,25 +93,37 @@
         /// <param name="context">The operation context.</param>
         protected static void AssertOperationFinishes(OperationContext context)
         {
-            Checkpoint checkpoint = GetCheckpoint(context);
-            Assert.IsNotNull(checkpoint, "Cannot find a checkpoint for this operation.");
-
             GoodieBag bag = GoodieBag.Create();
 
-            OperationCheckpointHandler handler = new OperationCheckpointHandler(
-                bag.AccountStore,
-                bag.MessageStore,
-                bag.LocationStore,
-                bag.ZipCodeAccountIdIndices,
-                bag.MessageClient,
-                bag.CompensationClient,
-                bag.Settings);
-            CancellationTokenSource cts = new CancellationTokenSource(bag.Settings.OperationTimeout);
-            handler.Finish(checkpoint, cts.Token).Wait();
+            while (true)
+            {
+                QueueMessage checkpointMessage = bag.CompensationClient.GetCheckpointMessage(context.CancellationToken).Result;
+                Assert.IsNotNull(checkpointMessage, "Cannot find any checkpoint in the queue");
 
-            Assert.IsTrue(
-                checkpoint.Status == CheckpointStatus.Completed || checkpoint.Status == CheckpointStatus.Cancelled,
-                string.Format("Expected the checkpoint status to be Completed or Cancelled, but is actually {0}", checkpoint.Status));
+                CheckpointReference checkpointRef = JsonConvert.DeserializeObject<CheckpointReference>(checkpointMessage.Body);
+                Checkpoint checkpoint = bag.CompensationClient.GetCheckpoint(checkpointRef, context.CancellationToken).Result;
+                Assert.IsNotNull(checkpoint, string.Format("Cannot find the checkpoint {0}/{1}", checkpointRef.PartitionKey, checkpointRef.RowKey));
+
+                OperationCheckpointHandler handler = new OperationCheckpointHandler(
+                    bag.AccountStore,
+                    bag.MessageStore,
+                    bag.LocationStore,
+                    bag.ZipCodeAccountIdIndices,
+                    bag.MessageClient,
+                    bag.CompensationClient,
+                    bag.Settings);
+                CancellationTokenSource cts = new CancellationTokenSource(bag.Settings.OperationTimeout);
+                handler.Finish(checkpoint, cts.Token).Wait();
+
+                Assert.IsTrue(
+                    checkpoint.Status == CheckpointStatus.Completed || checkpoint.Status == CheckpointStatus.Cancelled,
+                    string.Format("Expected the checkpoint status to be Completed or Cancelled, but is actually {0}", checkpoint.Status));
+
+                if (checkpoint.TrackingId == context.TrackingId)
+                {
+                    break;
+                }
+            }
         }
 
         /// <summary>
@@ -173,22 +187,6 @@
                 expectedCount,
                 count,
                 string.Format("The phone number {0} is expected to have {1} {2} messages. Actual count: {3}", phoneNumber, expectedCount, template, count));
-        }
-
-        /// <summary>
-        /// Gets a checkpoint from the operation context.
-        /// </summary>
-        /// <param name="context">The operation context</param>
-        /// <returns>The checkpoint.</returns>
-        private static Checkpoint GetCheckpoint(OperationContext context)
-        {
-            CheckpointReference checkpointRef = new CheckpointReference
-            {
-                PartitionKey = context.Account.AccountId,
-                RowKey = context.TrackingId,
-            };
-
-            return context.Compensation.GetCheckpoint(checkpointRef, context.CancellationToken).Result;
         }
     }
 }
