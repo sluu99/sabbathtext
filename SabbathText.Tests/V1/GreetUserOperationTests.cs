@@ -40,7 +40,7 @@
 
             Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
 
-            AssertOperationFinishes(context);
+            RunCheckpointWorker();
 
             Message message =
                 ((InMemoryMessageClient)GoodieBag.Create().MessageClient).Messages
@@ -76,7 +76,7 @@
             OperationResponse<bool> response = operation.Run().Result;
 
             Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
-            AssertOperationFinishes(context);
+            RunCheckpointWorker();
 
             OperationContext context2 = CreateContext(GetAccount(account.AccountId));
             GreetUserOperation operation2 = new GreetUserOperation(context2);

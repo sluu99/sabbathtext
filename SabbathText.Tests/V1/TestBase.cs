@@ -18,6 +18,16 @@
     public abstract class TestBase
     {
         /// <summary>
+        /// Runs before each test case begins
+        /// </summary>
+        [TestInitialize]
+        public void TestInit()
+        {
+            GoodieBag bag = GoodieBag.Create();
+            ((InMemoryQueueStore)bag.CheckpointQueue).Clear();
+        }
+
+        /// <summary>
         /// Ensures that the account has the expected conversation context.
         /// </summary>
         /// <param name="accountId">The account ID.</param>
@@ -93,32 +103,12 @@
         /// Ensures an operation is finished base on the checkpoint.
         /// </summary>
         /// <param name="context">The operation context.</param>
-        protected static void AssertOperationFinishes(OperationContext context)
+        protected static void RunCheckpointWorker()
         {
             GoodieBag bag = GoodieBag.Create();
 
-            while (true)
-            {
-                QueueMessage checkpointMessage = bag.CompensationClient.GetCheckpointMessage(context.CancellationToken).Result;
-                Assert.IsNotNull(checkpointMessage, "Cannot find any checkpoint in the queue");
-
-                EntityReference checkpointRef = JsonConvert.DeserializeObject<EntityReference>(checkpointMessage.Body);
-                Checkpoint checkpoint = bag.CompensationClient.GetCheckpoint(checkpointRef, context.CancellationToken).Result;
-                Assert.IsNotNull(checkpoint, string.Format("Cannot find the checkpoint {0}/{1}", checkpointRef.PartitionKey, checkpointRef.RowKey));
-
-                OperationCheckpointHandler handler = new OperationCheckpointHandler();
-                CancellationTokenSource cts = new CancellationTokenSource(bag.Settings.OperationTimeout);
-                handler.Finish(checkpoint, cts.Token).Wait();
-
-                Assert.IsTrue(
-                    checkpoint.Status == CheckpointStatus.Completed || checkpoint.Status == CheckpointStatus.Cancelled,
-                    string.Format("Expected the checkpoint status to be Completed or Cancelled, but is actually {0}", checkpoint.Status));
-
-                if (checkpoint.TrackingId == context.TrackingId)
-                {
-                    break;
-                }
-            }
+            CheckpointWorker worker = new CheckpointWorker();
+            worker.RunIteration(CancellationToken.None).Wait();
         }
 
         /// <summary>

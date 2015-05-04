@@ -149,5 +149,13 @@
 
             return Task.FromResult<object>(null);
         }
+
+        /// <summary>
+        /// Clears the queue
+        /// </summary>
+        public void Clear()
+        {
+            this.queue.Clear();
+        }
     }
 }

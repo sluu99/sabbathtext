@@ -42,7 +42,7 @@
             GreetUserOperation operation = new GreetUserOperation(context);
             OperationResponse<bool> response = operation.Run().Result;
             Assert.AreEqual<HttpStatusCode>(HttpStatusCode.Accepted, response.StatusCode);
-            AssertOperationFinishes(context);
+            RunCheckpointWorker();
         }
 
         /// <summary>
@@ -58,7 +58,7 @@
             OperationContext context = CreateContext(account);
             MessageProcessor processor = new MessageProcessor();
             processor.Process(context, incomingMessage).Wait();
-            AssertOperationFinishes(context);
+            RunCheckpointWorker();
         }
     }
 }
