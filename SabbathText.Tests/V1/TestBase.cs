@@ -108,7 +108,7 @@
             GoodieBag bag = GoodieBag.Create();
 
             CheckpointWorker worker = new CheckpointWorker();
-            worker.RunIteration(CancellationToken.None).Wait();
+            Assert.AreEqual(TimeSpan.Zero, worker.RunIteration(CancellationToken.None).Result);
         }
 
         /// <summary>
