@@ -1,13 +1,8 @@
 ﻿namespace SabbathText.V1
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using KeyValueStorage;
-    using Newtonsoft.Json;
     using QueueStorage;
     using SabbathText.Compensation.V1;
 
@@ -33,6 +28,12 @@
             }
 
             Checkpoint checkpoint = await bag.CompensationClient.GetCheckpoint(queueMessage, cancellationToken);
+            
+            OperationCheckpointHandler handler = new OperationCheckpointHandler();
+            await handler.Finish(checkpoint, cancellationToken);
+
+            await bag.CompensationClient.DeleteCheckpointMessge(queueMessage, cancellationToken);
+
             return TimeSpan.Zero;
         }
     }
