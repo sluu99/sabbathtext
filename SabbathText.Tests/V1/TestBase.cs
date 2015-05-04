@@ -43,13 +43,6 @@
                 TrackingId = Guid.NewGuid().ToString(),
                 Account = account,
                 CancellationToken = new CancellationTokenSource(goodieBag.Settings.OperationTimeout).Token,
-                Compensation = goodieBag.CompensationClient,
-                MessageClient = goodieBag.MessageClient,
-                MessageStore = goodieBag.MessageStore,
-                AccountStore = goodieBag.AccountStore,
-                LocationStore = goodieBag.LocationStore,
-                ZipCodeAccountIdIndices = goodieBag.ZipCodeAccountIdIndices,
-                Settings = goodieBag.Settings,
             };
         }
 
@@ -113,14 +106,7 @@
                 Checkpoint checkpoint = bag.CompensationClient.GetCheckpoint(checkpointRef, context.CancellationToken).Result;
                 Assert.IsNotNull(checkpoint, string.Format("Cannot find the checkpoint {0}/{1}", checkpointRef.PartitionKey, checkpointRef.RowKey));
 
-                OperationCheckpointHandler handler = new OperationCheckpointHandler(
-                    bag.AccountStore,
-                    bag.MessageStore,
-                    bag.LocationStore,
-                    bag.ZipCodeAccountIdIndices,
-                    bag.MessageClient,
-                    bag.CompensationClient,
-                    bag.Settings);
+                OperationCheckpointHandler handler = new OperationCheckpointHandler();
                 CancellationTokenSource cts = new CancellationTokenSource(bag.Settings.OperationTimeout);
                 handler.Finish(checkpoint, cts.Token).Wait();
 

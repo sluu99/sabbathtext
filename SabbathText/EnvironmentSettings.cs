@@ -194,6 +194,15 @@ using QueueStorage;
         }
 
         /// <summary>
+        /// Gets the amount of time to way before trying again,
+        /// if the checkpoint worker did not find any message.
+        /// </summary>
+        public TimeSpan CheckpointWorkerIdleDelay
+        {
+            get { return TimeSpan.FromSeconds(3); }
+        }
+
+        /// <summary>
         /// Gets the number of messages to keep with the account entity before archiving.
         /// </summary>
         public int RecentMessageThreshold

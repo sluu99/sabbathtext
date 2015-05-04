@@ -46,7 +46,8 @@
                 ((InMemoryMessageClient)GoodieBag.Create().MessageClient).Messages
                 .FirstOrDefault(m => m.Recipient == context.Account.PhoneNumber && m.Template == MessageTemplate.Greetings);
 
-            AccountEntity account = context.AccountStore.Get(context.Account.PartitionKey, context.Account.RowKey, CancellationToken.None).Result;
+            AccountEntity account = 
+                GoodieBag.Create().AccountStore.Get(context.Account.PartitionKey, context.Account.RowKey, CancellationToken.None).Result;
             Assert.AreEqual<ConversationContext>(
                 ConversationContext.Greetings,
                 account.ConversationContext,

@@ -83,7 +83,7 @@
         public ConversationContext ConversationContext { get; set; }
 
         /// <summary>
-        /// Gets or sets a indicating whether the user has been greeted.
+        /// Gets or sets a value indicating whether the user has been greeted.
         /// </summary>
         public bool HasBeenGreeted { get; set; }
 

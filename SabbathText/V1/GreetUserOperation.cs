@@ -82,7 +82,7 @@
         private async Task<OperationResponse<bool>> EnterSendingMessage()
         {
             Message message = Message.CreateGreetingMessage(this.Context.Account.PhoneNumber);
-            await this.Context.MessageClient.SendMessage(message);
+            await this.Bag.MessageClient.SendMessage(message);
 
             return await this.TransitionToUpdatingAccount(message);
         }
@@ -118,7 +118,7 @@
             }
 
             this.Context.Account.HasBeenGreeted = true;
-            await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+            await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
             return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, responseData: true);
         }

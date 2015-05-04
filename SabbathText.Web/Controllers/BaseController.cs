@@ -38,15 +38,8 @@
             return new OperationContext
             {
                 Account = account,
-                AccountStore = bag.AccountStore,
                 CancellationToken = token,
-                Compensation = bag.CompensationClient,
-                LocationStore = bag.LocationStore,
-                MessageClient = bag.MessageClient,
-                MessageStore = bag.MessageStore,
-                Settings = bag.Settings,
                 TrackingId = Guid.NewGuid().ToString(),
-                ZipCodeAccountIdIndices = bag.ZipCodeAccountIdIndices,
             };
         }
     }

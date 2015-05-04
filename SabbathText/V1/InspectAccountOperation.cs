@@ -46,7 +46,7 @@
         private async Task<OperationResponse<bool>> EnterCheckSabbath()
         {
             if (this.Context.Account.Status != Entities.AccountStatus.Subscribed ||
-                (Clock.UtcNow - this.Context.Account.LastSabbathTextTime) < this.Context.Settings.SabbathTextGap ||
+                (Clock.UtcNow - this.Context.Account.LastSabbathTextTime) < this.Bag.Settings.SabbathTextGap ||
                 string.IsNullOrWhiteSpace(this.Context.Account.ZipCode))
             {
                 // Don't need to check for Sabbath
@@ -79,7 +79,7 @@
                 return await this.TransitionToArchiveMessages();
             }
 
-            if (timeInfo.SunSetUtc + this.Context.Settings.SabbathTextGracePeriod < Clock.UtcNow)
+            if (timeInfo.SunSetUtc + this.Bag.Settings.SabbathTextGracePeriod < Clock.UtcNow)
             {
                 // we have passed the Sabbath text grace period
                 return await this.TransitionToArchiveMessages();
@@ -88,10 +88,10 @@
             // update the account Sabbath text time first
             // so that if the operation fails later, we won't be spamming the user on each retry
             this.Context.Account.LastSabbathTextTime = Clock.UtcNow;
-            await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+            await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
             Message sabbathMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber, null, null);
-            await this.Context.MessageClient.SendMessage(sabbathMessage);
+            await this.Bag.MessageClient.SendMessage(sabbathMessage);
 
             return await this.TransitionToStoreSabbathText(sabbathMessage);
         }
@@ -117,7 +117,7 @@
 
             if (TryAddMessageEntity(this.Context.Account, messageEntity))
             {
-                await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
             }
 
             return await this.TransitionToArchiveMessages();
@@ -136,16 +136,16 @@
             bool messagesRemoved = false;
             while (
                 this.Context.Account.RecentMessages != null &&
-                this.Context.Account.RecentMessages.Count > this.Context.Settings.RecentMessageThreshold)
+                this.Context.Account.RecentMessages.Count > this.Bag.Settings.RecentMessageThreshold)
             {
-                await this.Context.MessageStore.InsertOrGet(this.Context.Account.RecentMessages[0], this.Context.CancellationToken);
+                await this.Bag.MessageStore.InsertOrGet(this.Context.Account.RecentMessages[0], this.Context.CancellationToken);
                 this.Context.Account.RecentMessages.RemoveAt(0);
                 messagesRemoved = true;
             }
 
             if (messagesRemoved)
             {
-                await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
             }
 
             return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.Accepted, true);

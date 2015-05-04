@@ -81,7 +81,7 @@
                     Message.CreateSubscriptionConfirmed(this.Context.Account.PhoneNumber);
             }
 
-            await this.Context.MessageClient.SendMessage(outgoingMessage);
+            await this.Bag.MessageClient.SendMessage(outgoingMessage);
             return await this.TransitionToUpdateAccount(outgoingMessage, alreadySubscribed);
         }
 
@@ -124,7 +124,7 @@
                     MessageStatus.Sent);
                 TryAddMessageEntity(this.Context.Account, outgoingEntity);
 
-                await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
             }
 
             return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, true);

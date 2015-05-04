@@ -56,12 +56,18 @@
 
             this.operationType = operationType;
             this.Context = context;
+            this.Bag = GoodieBag.Create();
         }
 
         /// <summary>
-        /// Gets the operation context
+        /// Gets the operation context.
         /// </summary>
         protected OperationContext Context { get; private set; }
+
+        /// <summary>
+        /// Gets the goodie bag.
+        /// </summary>
+        protected GoodieBag Bag { get; private set; }
 
         /// <summary>
         /// Try adding a message to the account.
@@ -174,7 +180,7 @@
             };
 
             await this.CreateOrUpdateCheckpoint(checkpointData, CheckpointStatus.DelayedProcessing);
-            await this.Context.Compensation.QueueCheckpoint(
+            await this.Bag.CompensationClient.QueueCheckpoint(
                 this.checkpoint,
                 DelayProcessingCheckpointVisibilityDelay,
                 this.Context.CancellationToken);
@@ -216,7 +222,7 @@
                     CheckpointData = checkpointData == null ? null : JsonConvert.SerializeObject(checkpointData),
                 };
 
-                this.checkpoint = await this.Context.Compensation.InsertOrGetCheckpoint(this.checkpoint, this.Context.CancellationToken);
+                this.checkpoint = await this.Bag.CompensationClient.InsertOrGetCheckpoint(this.checkpoint, this.Context.CancellationToken);
 
                 if (this.checkpoint.Status == CheckpointStatus.Completed || this.checkpoint.Status == CheckpointStatus.Cancelled)
                 {
@@ -240,7 +246,7 @@
 
             this.checkpoint.CheckpointData = JsonConvert.SerializeObject(checkpointData);
             this.checkpoint.Status = checkpointStatus;
-            await this.Context.Compensation.UpdateCheckpoint(this.checkpoint, this.Context.CancellationToken);
+            await this.Bag.CompensationClient.UpdateCheckpoint(this.checkpoint, this.Context.CancellationToken);
 
             return null;
         }

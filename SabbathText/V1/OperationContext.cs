@@ -25,40 +25,5 @@
         /// Gets or sets the account of the operation
         /// </summary>
         public AccountEntity Account { get; set; }
-
-        /// <summary>
-        /// Gets or sets the account store
-        /// </summary>
-        public KeyValueStore<AccountEntity> AccountStore { get; set; }
-
-        /// <summary>
-        /// Gets or sets the message store
-        /// </summary>
-        public KeyValueStore<MessageEntity> MessageStore { get; set; }
-
-        /// <summary>
-        /// Gets or sets the location store
-        /// </summary>
-        public KeyValueStore<LocationEntity> LocationStore { get; set; }
-
-        /// <summary>
-        /// Gets or sets the index store for <see cref="ZipCodeAccountIdIndex"/>
-        /// </summary>
-        public KeyValueStore<ZipCodeAccountIdIndex> ZipCodeAccountIdIndices { get; set; }
-
-        /// <summary>
-        /// Gets or sets the compensation client
-        /// </summary>
-        public CompensationClient Compensation { get; set; }
-
-        /// <summary>
-        /// Gets or sets the message client
-        /// </summary>
-        public MessageClient MessageClient { get; set; }
-
-        /// <summary>
-        /// Gets or sets the settings
-        /// </summary>
-        public EnvironmentSettings Settings { get; set; }
     }
 }
