@@ -60,5 +60,29 @@
 
             Assert.IsNotNull(messageEntity, "Cannot find the message entity from the recent messages");
         }
+
+        /// <summary>
+        /// We can only send the user a greeting message once.
+        /// We don't want to spam the user.
+        /// </summary>
+        [TestMethod]
+        public void GreetUserOperation_CanOnlyMessageUserOnce()
+        {
+            AccountEntity account = CreateAccount();
+
+            OperationContext context = CreateContext(account);
+            GreetUserOperation operation = new GreetUserOperation(context);
+            OperationResponse<bool> response = operation.Run().Result;
+
+            Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
+            AssertOperationFinishes(context);
+
+            OperationContext context2 = CreateContext(GetAccount(account.AccountId));
+            GreetUserOperation operation2 = new GreetUserOperation(context2);
+            OperationResponse<bool> response2 = operation2.Run().Result;
+
+            Assert.AreEqual(HttpStatusCode.Forbidden, response2.StatusCode);
+            Assert.AreEqual(GreetUserOperation.UserHasBeenGreetedError, response2.ErrorCode);
+        }
     }
 }

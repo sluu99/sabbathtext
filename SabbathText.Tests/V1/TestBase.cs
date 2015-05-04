@@ -84,6 +84,19 @@
         }
 
         /// <summary>
+        /// Gets an account
+        /// </summary>
+        /// <param name="accountId">The account Id.</param>
+        /// <returns>The account.</returns>
+        protected static AccountEntity GetAccount(string accountId)
+        {
+            return GoodieBag.Create().AccountStore.Get(
+                AccountEntity.GetReferenceById(accountId),
+                CancellationToken.None)
+                .Result;
+        }
+
+        /// <summary>
         /// Ensures an operation is finished base on the checkpoint.
         /// </summary>
         /// <param name="context">The operation context.</param>

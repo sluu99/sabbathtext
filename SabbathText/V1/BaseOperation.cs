@@ -69,7 +69,7 @@
         /// <param name="account">The account.</param>
         /// <param name="message">The message.</param>
         /// <returns>True if the message is added, false otherwise.</returns>
-        protected bool TryAddMessageEntity(AccountEntity account, MessageEntity message)
+        protected static bool TryAddMessageEntity(AccountEntity account, MessageEntity message)
         {
             if (!account.RecentMessages.Any(m => m.MessageId == message.MessageId))
             {

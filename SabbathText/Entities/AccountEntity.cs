@@ -83,6 +83,11 @@
         public ConversationContext ConversationContext { get; set; }
 
         /// <summary>
+        /// Gets or sets a indicating whether the user has been greeted.
+        /// </summary>
+        public bool HasBeenGreeted { get; set; }
+
+        /// <summary>
         /// Gets the partition key.
         /// </summary>
         public override string PartitionKey

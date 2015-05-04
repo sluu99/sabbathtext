@@ -13,6 +13,11 @@
     /// </summary>
     public class GreetUserOperation : BaseOperation<bool>
     {
+        /// <summary>
+        /// All ready greeted user
+        /// </summary>
+        public const string UserHasBeenGreetedError = "AlradyGreetedUser";
+
         private GreetUserOperationCheckpointData checkpointData;
 
         /// <summary>
@@ -54,9 +59,19 @@
 
             throw new NotImplementedException();
         }
-        
+
         private Task<OperationResponse<bool>> TransitionToSendingMessage()
         {
+            if (this.Context.Account.HasBeenGreeted)
+            {
+                return Task.FromResult(new OperationResponse<bool>
+                {
+                    StatusCode = HttpStatusCode.Forbidden,
+                    Data = false,
+                    ErrorCode = UserHasBeenGreetedError,
+                });
+            }
+
             this.checkpointData.OperationState = GreetUserOperationState.SendingMessage;
             return this.DelayProcessingCheckpoint(
                 this.checkpointData,
@@ -69,12 +84,12 @@
             Message message = Message.CreateGreetingMessage(this.Context.Account.PhoneNumber);
             await this.Context.MessageClient.SendMessage(message);
 
-            this.checkpointData.Message = message;
-            return await this.TransitionToUpdatingAccount();
+            return await this.TransitionToUpdatingAccount(message);
         }
 
-        private async Task<OperationResponse<bool>> TransitionToUpdatingAccount()
+        private async Task<OperationResponse<bool>> TransitionToUpdatingAccount(Message message)
         {
+            this.checkpointData.Message = message;
             this.checkpointData.OperationState = GreetUserOperationState.UpdatingAccountContext;
             this.checkpointData.MessageEntityId = Guid.NewGuid().ToString();
 
@@ -85,27 +100,25 @@
 
         private async Task<OperationResponse<bool>> EnterUpdatingAccount()
         {
-            if (!this.Context.Account.RecentMessages.Any(
-                    m => string.Equals(m.MessageId, this.checkpointData.MessageEntityId, StringComparison.InvariantCulture)))
+            MessageEntity messageEntity = new MessageEntity
             {
-                // the account does not contain this entity
-                MessageEntity messageEntity = new MessageEntity
-                {
-                    AccountId = this.Context.Account.AccountId,
-                    Body = this.checkpointData.Message.Body,
-                    Direction = MessageDirection.Outgoing,
-                    MessageId = this.checkpointData.MessageEntityId,
-                    MessageTimestamp = this.checkpointData.Message.Timestamp,
-                    Recipient = this.Context.Account.PhoneNumber,
-                    Status = MessageStatus.Sent,
-                    Template = MessageTemplate.Greetings,
-                };
+                AccountId = this.Context.Account.AccountId,
+                Body = this.checkpointData.Message.Body,
+                Direction = MessageDirection.Outgoing,
+                MessageId = this.checkpointData.MessageEntityId,
+                MessageTimestamp = this.checkpointData.Message.Timestamp,
+                Recipient = this.Context.Account.PhoneNumber,
+                Status = MessageStatus.Sent,
+                Template = MessageTemplate.Greetings,
+            };
 
-                this.Context.Account.RecentMessages.Add(messageEntity);
+            if (TryAddMessageEntity(this.Context.Account, messageEntity))
+            {
                 this.Context.Account.ConversationContext = ConversationContext.Greetings;
-
-                await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
             }
+
+            this.Context.Account.HasBeenGreeted = true;
+            await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
             return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, responseData: true);
         }

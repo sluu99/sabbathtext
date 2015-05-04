@@ -138,7 +138,7 @@
                 this.checkpointData.IncomingMessageId,
                 MessageDirection.Incoming,
                 this.checkpointData.OutgoingMessage == null ? MessageStatus.Received : MessageStatus.Responded);
-            bool incomingMsgAdded = this.TryAddMessageEntity(this.Context.Account, incomingMessageEntity);
+            bool incomingMsgAdded = TryAddMessageEntity(this.Context.Account, incomingMessageEntity);
 
             bool outgoingMsgAdded = false;
             if (this.checkpointData.OutgoingMessage != null)
@@ -148,7 +148,7 @@
                     this.checkpointData.OutgoingMessageId,
                     MessageDirection.Outgoing,
                     MessageStatus.Sent);
-                outgoingMsgAdded = this.TryAddMessageEntity(this.Context.Account, outgoingMessageEntity);
+                outgoingMsgAdded = TryAddMessageEntity(this.Context.Account, outgoingMessageEntity);
             }
 
             if (incomingMsgAdded || outgoingMsgAdded)

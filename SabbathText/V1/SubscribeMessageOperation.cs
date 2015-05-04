@@ -115,14 +115,14 @@
                     this.checkpointData.IncomingMessageId,
                     MessageDirection.Incoming,
                     MessageStatus.Responded);
-                this.TryAddMessageEntity(this.Context.Account, incomingEntity);
+                TryAddMessageEntity(this.Context.Account, incomingEntity);
 
                 MessageEntity outgoingEntity = this.checkpointData.OutgoingMessage.ToEntity(
                     this.Context.Account.AccountId,
                     this.checkpointData.OutgoingMessageId,
                     MessageDirection.Outgoing,
                     MessageStatus.Sent);
-                this.TryAddMessageEntity(this.Context.Account, outgoingEntity);
+                TryAddMessageEntity(this.Context.Account, outgoingEntity);
 
                 await this.Context.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
             }
