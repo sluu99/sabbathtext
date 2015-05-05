@@ -64,7 +64,7 @@
                 false /* valid only */);
 
             X509Certificate2 cert = null;
-            if (certCollection.Count > 0)
+            if (certCollection != null && certCollection.Count > 0)
             {
                 cert = certCollection[0];
             }
