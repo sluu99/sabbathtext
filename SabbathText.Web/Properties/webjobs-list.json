@@ -2,7 +2,7 @@
   "$schema": "http://schemastore.org/schemas/json/webjobs-list.json",
   "WebJobs": [
     {
-      "filePath": "../Workers/SabbathText.CompensationAgent/SabbathText.CompensationAgent.csproj"
+      "filePath": "../SabbathText.CompensationAgent/SabbathText.CompensationAgent.csproj"
     }
   ]
 }
