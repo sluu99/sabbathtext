@@ -16,8 +16,6 @@ namespace SabbathText.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            SabbathText.Core.Common.Setup();
-            SabbathText.Core.Common.SetupStorage();
             GoodieBag.Initialize(EnvironmentSettings.Create());
         }
     }
