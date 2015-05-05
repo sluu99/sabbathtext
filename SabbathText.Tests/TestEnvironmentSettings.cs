@@ -133,5 +133,16 @@
                 };
             }
         }
+
+        /// <summary>
+        /// Gets the message client type
+        /// </summary>
+        public override SabbathText.V1.MessageClientType MessageClientType
+        {
+            get
+            {
+                return SabbathText.V1.MessageClientType.InMemory;
+            }
+        }
     }
 }

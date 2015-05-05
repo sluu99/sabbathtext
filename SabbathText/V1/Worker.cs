@@ -28,6 +28,8 @@
         /// <returns>An asynchronous task.</returns>
         public async Task Run(TimeSpan defaultDelay, CancellationToken cancellationToken)
         {
+            Trace.TraceInformation("Worker started");
+
             while (cancellationToken.IsCancellationRequested == false)
             {
                 try
@@ -37,11 +39,16 @@
                 }
                 catch (Exception ex)
                 {
-                    Trace.TraceError(ex.Message);
-                    Trace.TraceError(ex.StackTrace);
-                    Clock.Sleep(defaultDelay);
+                    if (cancellationToken.IsCancellationRequested == false && ex is TaskCanceledException)
+                    {
+                        Trace.TraceError(ex.Message);
+                        Trace.TraceError(ex.StackTrace);
+                        Clock.Sleep(defaultDelay);
+                    }                    
                 }
             }
+
+            Trace.TraceInformation("Worker stopped");
         }
     }
 }

@@ -102,7 +102,6 @@
         /// <summary>
         /// Ensures an operation is finished base on the checkpoint.
         /// </summary>
-        /// <param name="context">The operation context.</param>
         protected static void RunCheckpointWorker()
         {
             GoodieBag bag = GoodieBag.Create();

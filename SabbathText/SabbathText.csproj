@@ -98,6 +98,7 @@
     <Compile Include="V1\InspectAccountOperation.cs" />
     <Compile Include="V1\InspectAccountOperationCheckpointData.cs" />
     <Compile Include="V1\InspectAccountOperationState.cs" />
+    <Compile Include="V1\MessageClientType.cs" />
     <Compile Include="V1\MessageProcessor.cs" />
     <Compile Include="V1\GreetUserOperationCheckpointData.cs" />
     <Compile Include="V1\GreetUserOperation.cs" />

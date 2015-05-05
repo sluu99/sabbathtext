@@ -4,6 +4,7 @@
     using System.Collections.Generic;
 using KeyValueStorage;
 using QueueStorage;
+using SabbathText.V1;
 
     /// <summary>
     /// Environment settings
@@ -54,11 +55,11 @@ using QueueStorage;
         }
 
         /// <summary>
-        /// Gets a value indicating whether to use the in-memory message client.
+        /// Gets the message client type
         /// </summary>
-        public virtual bool UseInMemoryMessageClient
+        public virtual MessageClientType MessageClientType
         {
-            get { return true; }
+            get { return MessageClientType.Twilio; }
         }
 
         /// <summary>

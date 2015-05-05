@@ -1,6 +1,7 @@
 ﻿namespace SabbathText.V1
 {
     using System;
+    using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
     using QueueStorage;
@@ -26,11 +27,18 @@
             {
                 return bag.Settings.CheckpointWorkerIdleDelay;
             }
-
+                        
             Checkpoint checkpoint = await bag.CompensationClient.GetCheckpoint(queueMessage, cancellationToken);
-            
-            OperationCheckpointHandler handler = new OperationCheckpointHandler();
-            await handler.Finish(checkpoint, cancellationToken);
+
+            if (checkpoint != null)
+            {
+                Trace.TraceInformation("Checkpoint {0}/{1} found".InvariantFormat(checkpoint.PartitionKey, checkpoint.RowKey));
+                
+                OperationCheckpointHandler handler = new OperationCheckpointHandler();
+                await handler.Finish(checkpoint, cancellationToken);
+
+                Trace.TraceInformation("Checkpoint {0}/{1} completed".InvariantFormat(checkpoint.PartitionKey, checkpoint.RowKey));
+            }
 
             await bag.CompensationClient.DeleteCheckpointMessge(queueMessage, cancellationToken);
 
