@@ -26,30 +26,30 @@ if ($args.Count -gt 0) {
 }
 
 if (($command -like "all") -or ($command -like "clean")) {
-    Write-Host("Cleaning the solution...")
+    Write-Output("Cleaning the solution...")
     & $msbuild $solution /t:Clean /p:Configuration=Release /p:Platform="Any CPU" /clp:Verbosity=minimal
 }
 
 if (($command -like "all") -or ($command -like "build")) {
 
     # NuGet restore 
-    Write-Host("Restoring NuGet packages")
+    Write-Output("Restoring NuGet packages")
     & "$root\nuget\Nuget.exe" restore $solution
 
-    Write-Host("Rebuilding the solution")
+    Write-Output("Rebuilding the solution")
     & $msbuild $solution /t:Rebuild /p:Configuration=Release /p:Platform="Any CPU" /clp:Verbosity=minimal
 }
 
 if ($command -like "test") {
     foreach ($ta in $testAssemblies) {
-        Write-Host("Running test assembly " + $ta)
+        Write-Output("Running test assembly " + $ta)
         & $vstest $ta
         
         if ($lastexitcode -ne 0) {
             throw "Test execution failed"
         }
         
-        Write-Host("Completed!")
-        Write-Host("")
+        Write-Output("Completed!")
+        Write-Output("")
     }
 }
