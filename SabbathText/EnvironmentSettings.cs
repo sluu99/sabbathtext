@@ -21,6 +21,16 @@ using SabbathText.V1;
         /// </summary>
         protected const string ServicePhoneNumberKey = "ServicePhoneNumber";
 
+        /// <summary>
+        /// Key for <see cref="TwilioAccount"/>
+        /// </summary>
+        protected const string TwilioAccountKey = "TwilioAccount";
+
+        /// <summary>
+        /// Key for <see cref="TwilioToken"/>
+        /// </summary>
+        protected const string TwilioTokenKey = "TwilioToken";
+
         private Dictionary<string, string> secrets;
         
         /// <summary>
@@ -51,6 +61,28 @@ using SabbathText.V1;
             get
             {
                 return this.secrets[ServicePhoneNumberKey];
+            }
+        }
+
+        /// <summary>
+        /// Gets the <c>Twilio</c> account
+        /// </summary>
+        public virtual string TwilioAccount
+        {
+            get
+            {
+                return this.secrets[TwilioAccountKey];
+            }
+        }
+
+        /// <summary>
+        /// Gets the <c>Twilio</c> token
+        /// </summary>
+        public virtual string TwilioToken
+        {
+            get
+            {
+                return this.secrets[TwilioTokenKey];
             }
         }
 
