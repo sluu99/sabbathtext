@@ -61,7 +61,7 @@
             X509Certificate2Collection certCollection = certStore.Certificates.Find(
                 X509FindType.FindByThumbprint,
                 thumbprint,
-                false);
+                false /* valid only */);
 
             X509Certificate2 cert = null;
             if (certCollection.Count > 0)
