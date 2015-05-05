@@ -20,7 +20,7 @@
         private static EnvironmentSettings environmentSettings;
         private static CompensationClient compensationClient;
         private static QueueStore checkpointQueue;
-        private static InMemoryMessageClient messageClient;
+        private static MessageClient messageClient;
 
         /// <summary>
         /// Hides the constructor
@@ -93,8 +93,7 @@
             checkpointStore = KeyValueStore<Checkpoint>.Create(settings.CheckpointStoreConfiguration);
             checkpointQueue = QueueStore.Create(settings.CheckpointQueueConfiguration);
             compensationClient = new CompensationClient(checkpointStore, checkpointQueue, settings.CheckpointVisibilityTimeout);
-            messageClient = new InMemoryMessageClient();
-            messageClient.InitMemory();
+            messageClient = CreateMessageClient(settings);
         }
 
         /// <summary>
@@ -123,6 +122,21 @@
             }
 
             return CreateFunc(bag);
+        }
+
+        private static MessageClient CreateMessageClient(EnvironmentSettings settings)
+        {
+            switch (settings.MessageClientType)
+            {
+                case MessageClientType.Twilio:
+                    MessageClient msgClient = new MessageClient();
+                    msgClient.InitTwilio(settings.TwilioAccount, settings.TwilioToken, settings.ServicePhoneNumber);
+                    return msgClient;
+                default:
+                    InMemoryMessageClient inMemoryClient = new InMemoryMessageClient();
+                    inMemoryClient.InitMemory();
+                    return inMemoryClient;
+            }
         }
     }
 }
