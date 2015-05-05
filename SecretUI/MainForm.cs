@@ -24,9 +24,9 @@ namespace SecretUI
         {
             /*
              To make a cert use the following commands:
-             C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Bin>makecert.exe -sv devcert.pvk -n "CN=Development Certificate" devcert.cer -b 01/01/2015 -e 01/01/2115 -r -sky Exchange -len 2048 -a sha256
-              
-             
+             C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Bin>
+             * makecert.exe -sv devcert.pvk -n "CN=Development Certificate" devcert.cer -b 01/01/2015 -e 01/01/2115 -r -sky Exchange -len 2048 -a sha256
+             * pvk2pfx.exe -pvk devcert.pvk -spc devcert.cer -pfx devcert.pfx -po dev
              */
         }
 

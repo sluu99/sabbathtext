@@ -21,8 +21,56 @@
         /// <param name="pfxPath">The path to the PFX certificate file.</param>
         /// <param name="password">The password for the certificate.</param>
         public SecretProvider(string pfxPath, string password)
+            : this(new X509Certificate2(pfxPath, password))
         {
-            this.certificate = new X509Certificate2(pfxPath, password);
+        }
+
+        /// <summary>
+        /// Creates a new instance of the secret provider using the certificate
+        /// </summary>
+        /// <param name="certificate">The certificate.</param>
+        public SecretProvider(X509Certificate2 certificate)
+        {
+            if (certificate == null)
+            {
+                throw new ArgumentNullException("certificate");
+            }
+
+            this.certificate = certificate;
+        }
+
+        /// <summary>
+        /// Creates a new instance of the secret provider using a certificate thumbprint.
+        /// The certificate will be loaded from the store using the thumbprint.
+        /// </summary>
+        /// <param name="thumbprint">The certificate thumbprint.</param>
+        public SecretProvider(string thumbprint)
+            : this(GetCertificate(thumbprint))
+        {
+        }
+
+        /// <summary>
+        /// Gets a certificate from the certificate store based on the provided thumbprint.
+        /// </summary>
+        /// <param name="thumbprint">The thumbprint.</param>
+        /// <returns>A certificate, or null.</returns>
+        private static X509Certificate2 GetCertificate(string thumbprint)
+        {
+            X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+            certStore.Open(OpenFlags.ReadOnly);
+            X509Certificate2Collection certCollection = certStore.Certificates.Find(
+                X509FindType.FindByThumbprint,
+                thumbprint,
+                false);
+
+            X509Certificate2 cert = null;
+            if (certCollection.Count > 0)
+            {
+                cert = certCollection[0];
+            }
+
+            certStore.Close();
+            return cert;
         }
 
         /// <summary>
