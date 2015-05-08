@@ -2,9 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-using KeyValueStorage;
-using QueueStorage;
-using SabbathText.V1;
+    using KeyValueStorage;
+    using QueueStorage;
+    using SabbathText.V1;
 
     /// <summary>
     /// Environment settings
@@ -31,8 +31,18 @@ using SabbathText.V1;
         /// </summary>
         protected const string TwilioTokenKey = "TwilioToken";
 
+        /// <summary>
+        /// Key for <see cref="IncomingMessagePrimaryToken"/>
+        /// </summary>
+        protected const string IncomingMessagePrimaryTokenKey = "IncomingMessagePrimaryToken";
+
+        /// <summary>
+        /// Key for <see cref="IncomingMessageSecondaryToken"/>
+        /// </summary>
+        protected const string IncomingMessageSecondaryTokenKey = "IncomingMessageSecondaryToken";
+
         private Dictionary<string, string> secrets;
-        
+
         /// <summary>
         /// Make the constructor private
         /// </summary>
@@ -83,6 +93,28 @@ using SabbathText.V1;
             get
             {
                 return this.secrets[TwilioTokenKey];
+            }
+        }
+
+        /// <summary>
+        /// Gets the primary token for incoming message
+        /// </summary>
+        public virtual string IncomingMessagePrimaryToken
+        {
+            get
+            {
+                return this.secrets[IncomingMessagePrimaryTokenKey];
+            }
+        }
+
+        /// <summary>
+        /// Gets the secondary token for incoming message
+        /// </summary>
+        public virtual string IncomingMessageSecondaryToken
+        {
+            get
+            {
+                return this.secrets[IncomingMessageSecondaryTokenKey];
             }
         }
 

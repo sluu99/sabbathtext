@@ -35,6 +35,7 @@ namespace SecretUI
             if (this.secretProvider == null)
             {
                 MessageBox.Show("Please select a certificate!");
+                return;
             }
 
             this.txtEncryptedText.Text = this.secretProvider.Encrypt(
@@ -47,6 +48,7 @@ namespace SecretUI
             if (this.secretProvider == null)
             {
                 MessageBox.Show("Please select a certificate!");
+                return;
             }
 
             this.txtPlainText.Text = this.secretProvider.Decrypt(

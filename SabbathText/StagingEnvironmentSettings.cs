@@ -29,6 +29,14 @@
                 TwilioTokenKey,
                 "ACpQcXcDybxFOE/5HtZTis3tVI+w/ZCRBTqwAcaX4oYpgNPpvP2hey44Rk9PEiU+FcPSKXVEbvRyoLUgEG3wdFIJA86LLzDoL0eYgozrt8yuy9vm/IiRoEPA6oKOc3dX17DWH7uekJNo6SwMsFlkbw25Pv6gONpN2G6akp0AASlkABzxZzUE6X7hEkfiU7UzVEf8wekSdGoXJ+H6DHlDoW6N0zOXvTuYlneigm5h/hzmhKO/6FU5HzSLFda+nbivxx7DGNQlV4/CtmCu19SrleVwC3DFoAcEzDwp9dCS+0+2WRHBF94VxUodSSPjllmiH5Eqau+804WwU//82wLqFg=="
             },
+            {
+                IncomingMessagePrimaryTokenKey,
+                "ZMTsZ9Vu8YBIAP5ZEkiEgt3L2yOh/4Tp1Jtrcwpul0B9Tywo4Nr8UhXIH3+ppidpoLJDblbAIT0e8wbGXZPNPcwQj2JRFvn+350LqWfQ1N2ctDqH/OGNGUjpCvdZJ9MSIaNxc+owAjSNJGEQdv8HJiQxxwb6k4qCtbMMST3qrUw6ixt+WUtMdrUQO/ZI+LzZS+YEjVQCipFpGo5ukUlrOpom1NiOWb1MabiLzZ+fggPto7TiZ3AzzzaRFOuDYxsm1vyxxCg8mNGzRPyX0RQiuYBWIb6OEb/Z1DmMXOtLfQuzNCIy/JhAmcfcV/ejQX/hw6h294X6KsbFwf8bcijAeQ=="
+            },
+            {
+                IncomingMessageSecondaryTokenKey,
+                "QNAnX+wp3wSKqwU1zvrSOX5dQ+3O6lmIknn2lqyJat+Y8iXYoxCjvv6ceENkj9cxTF8/WarJK627M2k88rgmgy2ZeDgggiIKw1cm6VHSEWnhBQANZZtKTlWhT2qW6vlOHCGO0C8WWBFOavXEs0N95ovhDPJ+YYNRsE/R8D42JRMnD83b9Rm1xLtrk0npoT7Vof9gKX+LLcglAiU92m3MF2zzeDpHOdzr1ZIoxk6rYI82YUcLCDvc6DnwnXkPM/NBU/XpWvgHS2e11K1obyD1kcuD4q0iTFlzPFAdjKrO+vjnZOI8aTHjnSz+j/such8UUDS9lhR/360hAy8Q8N7RUw=="
+            }
         };
 
         /// <summary>
