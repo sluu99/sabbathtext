@@ -103,5 +103,20 @@
                 AssertMessageCount(account.PhoneNumber, MessageTemplate.ZipCodeUpdated, count);
             }            
         }
+
+        /// <summary>
+        /// Tests sending a ZIP message to a brand new account
+        /// </summary>
+        [TestMethod]
+        public void ZipMessage_SubscriptionRequired()
+        {
+            AccountEntity account = CreateAccount();
+
+            Message zipMessage = CreateIncomingMessage(account.PhoneNumber, "zip 98052");
+            ProcessMessage(account.AccountId, zipMessage);
+
+            AssertLastSentMessage(account.AccountId, MessageTemplate.SubscriptionRequired);
+            AssertZipCode(account.AccountId, null);
+        }
     }
 }

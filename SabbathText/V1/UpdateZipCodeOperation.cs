@@ -66,6 +66,13 @@
 
         private async Task<OperationResponse<bool>> EnterProcessMessage()
         {
+            if (this.Context.Account.Status != AccountStatus.Subscribed)
+            {
+                Message msg = Message.CreateSubscriptionRequired(this.Context.Account.PhoneNumber);
+                await this.Bag.MessageClient.SendMessage(msg);
+                return await this.TranstitionToUpdateAccount(msg);
+            }
+
             Message outgoingMessage = null;
             string body = this.checkpointData.IncomingMessage.Body.ExtractAlphaNumericSpace().Trim();
             
