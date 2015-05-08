@@ -1,8 +1,10 @@
 ﻿namespace SabbathText.V1
 {
     using System;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
+    using Newtonsoft.Json;
     using Twilio;
 
     /// <summary>
@@ -39,6 +41,9 @@
                 TwilioRestClient client = new TwilioRestClient(this.twilioAccount, this.twilioToken);
                 Twilio.Message twilioMessage = client.SendMessage(this.twilioPhoneNumber, message.Recipient, message.Body);
                 message.ExternalId = twilioMessage.Sid;
+
+                Trace.TraceInformation("Message sent: {0}".InvariantFormat(
+                    JsonConvert.SerializeObject(message, Formatting.Indented)));
             });
         }
     }
