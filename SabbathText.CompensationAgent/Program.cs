@@ -15,7 +15,7 @@
     /// </summary>
     public class Program
     {
-        private string ShutdownFileEnvironmentKey = "WEBJOBS_SHUTDOWN_FILE";
+        private const string ShutdownFileEnvironmentKey = "WEBJOBS_SHUTDOWN_FILE";
 
         private CancellationTokenSource cancellationToken;
 
@@ -47,6 +47,7 @@
                 {
                     Trace.Listeners.Add(traceListener);
                 }
+
                 this.StartWatchingShutdownFile();
 
                 CheckpointWorker worker = new CheckpointWorker();
@@ -69,6 +70,7 @@
             e.Cancel = true;
             Trace.TraceInformation("Stop requested. Waiting for the process to finish...");
         }
+
         private void StartWatchingShutdownFile()
         {
             string shutdownFile = Environment.GetEnvironmentVariable(ShutdownFileEnvironmentKey);
@@ -86,7 +88,6 @@
             watcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.FileName | NotifyFilters.LastWrite;
             watcher.IncludeSubdirectories = false;
             watcher.EnableRaisingEvents = true;
-
         }
 
         private void ShutdownDirectoryChanged(object sender, FileSystemEventArgs e)
