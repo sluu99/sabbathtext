@@ -19,9 +19,12 @@
             AccountEntity account = CreateAccount();
             GreetUser(account);
             AssertConversationContext(account.AccountId, ConversationContext.Greetings);
+            AssertAccountStatus(account.AccountId, AccountStatus.BrandNew);
 
             Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
             ProcessMessage(account.AccountId, subscribeMessage);
+
+            AssertAccountStatus(account.AccountId, AccountStatus.Subscribed);
             AssertConversationContext(account.AccountId, ConversationContext.SubscriptionConfirmed);
             AssertLastSentMessage(account.AccountId, MessageTemplate.SubscriptionConfirmed);
             AssertMessageCount(account.PhoneNumber, MessageTemplate.SubscriptionConfirmed, 1);

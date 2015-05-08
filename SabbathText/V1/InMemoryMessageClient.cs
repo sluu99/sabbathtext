@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
     using Newtonsoft.Json;
@@ -37,7 +38,10 @@
         public override Task SendMessage(Message message)
         {
             message.ExternalId = Guid.NewGuid().ToString();
-            this.messages.Add(JsonConvert.SerializeObject(message));
+            string messageStr = JsonConvert.SerializeObject(message, Formatting.Indented);
+            this.messages.Add(messageStr);
+
+            Trace.TraceInformation("Sending message :" + Environment.NewLine + messageStr);
 
             return Task.FromResult<object>(null);
         }

@@ -1,29 +1,23 @@
-﻿using SabbathText.Core;
-using SabbathText.Core.Entities;
-using SabbathText.Web.Models;
-using System;
-using System.Net;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-
-namespace SabbathText.Web.Controllers
+﻿namespace SabbathText.Web.Controllers
 {
+    using System.Net;
+    using System.Threading.Tasks;
+    using System.Web.Mvc;
+    using SabbathText.Core;
+    using SabbathText.V1;
+    using SabbathText.Web.Models;
+
     public class TwilioController : BaseController
     {
-        public TwilioController()
-        {
-            this.TwilioInboundKeyPrimary = Environment.GetEnvironmentVariable("ST_TWILIO_INBOUND_KEY_PRIMARY") ?? Guid.NewGuid().ToString();
-            this.TwilioInboundKeySecondary = Environment.GetEnvironmentVariable("ST_TWILIO_INBOUND_KEY_SECONDARY") ?? Guid.NewGuid().ToString();
-        }
-
-        public string TwilioInboundKeyPrimary { get; set; }
-        public string TwilioInboundKeySecondary { get; set; }
-        
         [HttpPost, ValidateInput(false)]
         public async Task<ActionResult> Sms(string key, TwilioInboundSmsModel model)
         {
+            GoodieBag bag = GoodieBag.Create();
+            string incomingMessagePrimaryToken = bag.Settings.IncomingMessagePrimaryToken;
+            string incomingMessageSecondaryToken = bag.Settings.IncomingMessageSecondaryToken;
+
             if (string.IsNullOrWhiteSpace(key) ||
-                !(string.Equals(this.TwilioInboundKeyPrimary, key) || string.Equals(this.TwilioInboundKeySecondary, key)))
+                (string.Equals(incomingMessagePrimaryToken, key) == false && string.Equals(incomingMessageSecondaryToken, key) == false))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden, "Cannot verify access key");
             }
@@ -40,18 +34,24 @@ namespace SabbathText.Web.Controllers
                 return new HttpStatusCodeResult(501 /* not supported */, "Only US numbers are supported");
             }
 
-            Message message = new Message
+            Message incomingMessage = new Message
             {
-                MessageId = Guid.NewGuid().ToString(),
-                ExternalId = model.MessageSid,
-                Sender = model.From,
-                Recipient = model.To,
                 Body = model.Body,
-                CreationTime = Clock.UtcNow,
+                Sender = phoneNumber,
+                ExternalId = model.MessageSid,
+                Recipient = bag.Settings.ServicePhoneNumber,
+                Template = Entities.MessageTemplate.FreeForm,
             };
-            
-            MessageQueue queue = new MessageQueue(MessageQueue.InboundMessageQueue);
-            await queue.AddMessage(message);
+
+            OperationContext context = await this.CreateContext(phoneNumber);
+            if (string.IsNullOrWhiteSpace(model.MessageSid) == false)
+            {
+                // use the external message ID as tracking ID
+                context.TrackingId = model.MessageSid;
+            }
+
+            MessageProcessor processor = new MessageProcessor();
+            OperationResponse<bool> response = await processor.Process(context, incomingMessage);
 
             string content = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><Response></Response>";
             return this.Content(content, "text/xml");

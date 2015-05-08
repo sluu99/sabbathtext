@@ -127,6 +127,14 @@
         }
 
         /// <summary>
+        /// Gets a value indicating whether workers will add the console trace listener
+        /// </summary>
+        public virtual bool WorkersUseConsoleTrace
+        {
+            get { return false; }
+        }
+
+        /// <summary>
         /// Gets the configuration for the account store.
         /// </summary>
         public virtual KeyValueStoreConfiguration AccountStoreConfiguration

@@ -28,6 +28,18 @@
         }
 
         /// <summary>
+        /// Ensures that the account has a certain status
+        /// </summary>
+        /// <param name="accountId">The account ID.</param>
+        /// <param name="expectedStatus">The expected account status.</param>
+        protected static void AssertAccountStatus(string accountId, AccountStatus expectedStatus)
+        {
+            GoodieBag bag = GoodieBag.Create();
+            AccountEntity account = bag.AccountStore.Get(AccountEntity.GetReferenceById(accountId), CancellationToken.None).Result;
+            Assert.AreEqual<AccountStatus>(expectedStatus, account.Status);
+        }
+
+        /// <summary>
         /// Ensures that the account has the expected conversation context.
         /// </summary>
         /// <param name="accountId">The account ID.</param>
