@@ -118,7 +118,7 @@
         /// <returns>The account ID</returns>
         public static string GetAccountId(string phoneNumber)
         {
-            return ("PhoneNumber:" + phoneNumber).Sha256();
+            return ("PhoneNumber:" + phoneNumber).Sha1();
         }
 
         /// <summary>

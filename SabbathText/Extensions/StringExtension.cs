@@ -60,6 +60,28 @@ public static class StringExtension
     }
 
     /// <summary>
+    /// Hash a string using SHA1
+    /// </summary>
+    /// <param name="str">The string</param>
+    /// <returns>The hex representation of the hash</returns>
+    public static string Sha1(this string str)
+    {
+        if (str == null)
+        {
+            return null;
+        }
+
+        byte[] data = Encoding.UTF8.GetBytes(str);
+
+        using (SHA1Managed sha = new SHA1Managed())
+        {
+            byte[] hashBytes = sha.ComputeHash(data);
+
+            return BitConverter.ToString(hashBytes).Replace("-", string.Empty).ToLowerInvariant();
+        }
+    }
+
+    /// <summary>
     /// Extract alpha numeric and white spaces from a string
     /// </summary>
     /// <param name="str">The string</param>
