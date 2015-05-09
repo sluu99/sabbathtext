@@ -24,7 +24,7 @@
         {
             SecretProvider provider = new SecretProvider(CertPath, password: "dev");
             
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 100; i++)
             {
                 string str = Guid.NewGuid().ToString();
                 Assert.AreEqual(str, provider.Decrypt(provider.Encrypt(str)));

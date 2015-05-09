@@ -8,6 +8,7 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using SabbathText.Compensation.V1;
     using SabbathText.V1;
 
     /// <summary>
@@ -50,7 +51,10 @@
 
                 this.StartWatchingShutdownFile();
 
-                CheckpointWorker worker = new CheckpointWorker();
+                CheckpointWorker worker = new CheckpointWorker(
+                    bag.CompensationClient,
+                    bag.Settings.CheckpointWorkerIdleDelay,
+                    new OperationCheckpointHandler());
                 worker.Run(bag.Settings.CheckpointWorkerIdleDelay, this.cancellationToken.Token).Wait();
             }
             finally

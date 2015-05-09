@@ -1,4 +1,4 @@
-﻿namespace SabbathText.V1
+﻿namespace SabbathText.Compensation.V1
 {
     using System;
     using System.Collections.Generic;
@@ -32,19 +32,23 @@
 
             while (cancellationToken.IsCancellationRequested == false)
             {
+                bool exceptionCaught = false;
+
                 try
                 {
                     TimeSpan delay = await this.RunIteration(cancellationToken);
-                    Clock.Sleep(delay);
+                    await Clock.Delay(delay);
                 }
                 catch (Exception ex)
                 {
-                    if (cancellationToken.IsCancellationRequested == false && ex is TaskCanceledException)
-                    {
-                        Trace.TraceError(ex.Message);
-                        Trace.TraceError(ex.StackTrace);
-                        Clock.Sleep(defaultDelay);
-                    }                    
+                    Trace.TraceError(ex.Message);
+                    Trace.TraceError(ex.StackTrace);
+                    exceptionCaught = true;
+                }
+
+                if (exceptionCaught)
+                {
+                    await Clock.Delay(defaultDelay);
                 }
             }
 

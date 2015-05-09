@@ -1,6 +1,7 @@
 ﻿namespace System
 {
     using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// This class provides a way to get time, which allows test cases to manipulate the time
@@ -49,18 +50,20 @@
         }
 
         /// <summary>
-        /// Sleep for an amount of time.
+        /// Delay for an amount of time.
         /// </summary>
         /// <param name="timeout">The amount of time to sleep.</param>
-        public static void Sleep(TimeSpan timeout)
+        /// <returns>The async task</returns>
+        public static Task Delay(TimeSpan timeout)
         {
             if (fakeClock)
             {
                 RollClock(timeout);
+                return Task.FromResult<object>(null);
             }
             else
             {
-                Thread.Sleep(timeout);
+                return Task.Delay(timeout);
             }
         }
 

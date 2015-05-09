@@ -118,7 +118,10 @@
         {
             GoodieBag bag = GoodieBag.Create();
 
-            CheckpointWorker worker = new CheckpointWorker();
+            CheckpointWorker worker = new CheckpointWorker(
+                bag.CompensationClient,
+                bag.Settings.CheckpointWorkerIdleDelay,
+                new OperationCheckpointHandler());
             Assert.AreEqual(TimeSpan.Zero, worker.RunIteration(CancellationToken.None).Result);
         }
 

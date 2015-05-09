@@ -1,5 +1,6 @@
 ﻿namespace SabbathText.Web.Controllers
 {
+    using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
     using System.Web.Mvc;
@@ -13,11 +14,13 @@
         public async Task<ActionResult> Sms(string key, TwilioInboundSmsModel model)
         {
             GoodieBag bag = GoodieBag.Create();
-            string incomingMessagePrimaryToken = bag.Settings.IncomingMessagePrimaryToken;
-            string incomingMessageSecondaryToken = bag.Settings.IncomingMessageSecondaryToken;
-
-            if (string.IsNullOrWhiteSpace(key) ||
-                (string.Equals(incomingMessagePrimaryToken, key) == false && string.Equals(incomingMessageSecondaryToken, key) == false))
+            string[] acceptedTokens = 
+            {
+                bag.Settings.IncomingMessagePrimaryToken,
+                bag.Settings.IncomingMessageSecondaryToken,
+            };
+            
+            if (string.IsNullOrWhiteSpace(key) || acceptedTokens.Contains(key) == false)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden, "Cannot verify access key");
             }
