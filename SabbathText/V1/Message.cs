@@ -75,7 +75,7 @@ using SabbathText.Location.V1;
             return CreateMessage(
                 phoneNumber,
                 MessageTemplate.SubscriptionConfirmed,
-                "Thanks for subscribing! Just one more thing. Text us your ZIP code to calculate the sunset time.");
+                "Just one more thing! Text us your ZIP code to calculate the sunset time. For example: \"Zip 12345\".");
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ using SabbathText.Location.V1;
             return CreateMessage(
                 phoneNumber,
                 MessageTemplate.SubscriptionRequired,
-                "A subscription is required before we can proceed. Do you want to subscribe?");
+                "A subscription is required before we can proceed. Do you want to subscribe? (Text \"subscribe\")");
         }
 
         /// <summary>
