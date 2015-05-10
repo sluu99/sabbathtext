@@ -94,7 +94,7 @@
         /// </summary>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>A queue message</returns>
-        public Task<QueueMessage> GetCheckpointMessage(CancellationToken cancellationToken)
+        public Task<QueueMessage> GetMessage(CancellationToken cancellationToken)
         {
             return this.checkpointQueue.GetMessage(this.checkpointTimeout, cancellationToken);
         }
@@ -133,9 +133,21 @@
         /// <param name="message">The checkpoint message</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The delete task</returns>
-        public Task DeleteCheckpointMessge(QueueMessage message, CancellationToken cancellationToken)
+        public Task DeleteMessge(QueueMessage message, CancellationToken cancellationToken)
         {
             return this.checkpointQueue.DeleteMessage(message, cancellationToken);
+        }
+
+        /// <summary>
+        /// Extends a message's visibility timeout
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="timeout">The timeout</param>
+        /// <param name="cancellationToken">the cancellation token.</param>
+        /// <returns>A TPL task</returns>
+        public Task ExtendMessageTimeout(QueueMessage message, TimeSpan timeout, CancellationToken cancellationToken)
+        {
+            return this.checkpointQueue.ExtendTimeout(message, timeout, cancellationToken);
         }
     }
 }

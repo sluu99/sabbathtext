@@ -61,7 +61,11 @@
             this.checkpointData.State = GenericOperationState.ProcessingMessage;
             this.checkpointData.CurrentZipCode = this.Context.Account.ZipCode;
 
-            return this.DelayProcessingCheckpoint(this.checkpointData, HttpStatusCode.Accepted, true);
+            return this.DelayProcessingCheckpoint(
+                TimeSpan.Zero,
+                this.checkpointData,
+                HttpStatusCode.Accepted,
+                true);
         }
 
         private async Task<OperationResponse<bool>> EnterProcessMessage()

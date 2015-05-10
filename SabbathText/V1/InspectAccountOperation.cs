@@ -40,7 +40,11 @@
         private Task<OperationResponse<bool>> TransitionToCheckSabbath()
         {
             this.checkpointData.State = InspectAccountOperationState.CheckingSabbath;
-            return this.DelayProcessingCheckpoint(this.checkpointData, HttpStatusCode.Accepted, true);
+            return this.DelayProcessingCheckpoint(
+                TimeSpan.Zero,
+                this.checkpointData,
+                HttpStatusCode.Accepted,
+                true);
         }
 
         private async Task<OperationResponse<bool>> EnterCheckSabbath()

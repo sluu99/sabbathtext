@@ -74,6 +74,7 @@
 
             this.checkpointData.OperationState = GreetUserOperationState.SendingMessage;
             return this.DelayProcessingCheckpoint(
+                TimeSpan.Zero,
                 this.checkpointData,
                 HttpStatusCode.Accepted,
                 responseData: true);

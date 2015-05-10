@@ -1,9 +1,10 @@
 ﻿namespace SabbathText.Compensation.V1
 {
-    using System.Globalization;
-    using KeyValueStorage;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
+    using System;
+using System.Globalization;
+using KeyValueStorage;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
     /// <summary>
     /// Checkpoint status
@@ -66,6 +67,11 @@
         /// Gets or sets the checkpoint data
         /// </summary>
         public string CheckpointData { get; set; }
+
+        /// <summary>
+        /// Gets or sets the time when the checkpoint can be processed
+        /// </summary>
+        public DateTime? ProcessAfter { get; set; }
 
         /// <summary>
         /// Gets the partition key.

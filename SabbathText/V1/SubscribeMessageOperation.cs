@@ -60,7 +60,11 @@
         {
             this.checkpointData.State = GenericOperationState.ProcessingMessage;
             this.checkpointData.IncomingMessage = incomingMessage;
-            return this.DelayProcessingCheckpoint(this.checkpointData, HttpStatusCode.Accepted, true);
+            return this.DelayProcessingCheckpoint(
+                TimeSpan.Zero,
+                this.checkpointData,
+                HttpStatusCode.Accepted,
+                true);
         }
 
         private async Task<OperationResponse<bool>> EnterProcessMessage()

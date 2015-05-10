@@ -18,11 +18,6 @@
     public abstract class BaseOperation<TResponse>
     {
         /// <summary>
-        /// The timeout before a delay processing checkpoint could be picked up
-        /// </summary>
-        private static readonly TimeSpan DelayProcessingCheckpointVisibilityDelay = TimeSpan.Zero;
-
-        /// <summary>
         /// The checkpoint for this operation
         /// </summary>
         private Checkpoint checkpoint;
@@ -130,7 +125,7 @@
                 Data = responseData,
             };
 
-            await this.CreateOrUpdateCheckpoint(checkpointData, CheckpointStatus.Completed);
+            await this.CreateOrUpdateCheckpoint(checkpointData, CheckpointStatus.Completed, processAfter: null);
 
             return checkpointData.Response;
         }
@@ -156,7 +151,7 @@
                 ErrorDescription = errorDescription,
             };
 
-            await this.CreateOrUpdateCheckpoint(checkpointData, CheckpointStatus.Completed);
+            await this.CreateOrUpdateCheckpoint(checkpointData, CheckpointStatus.Completed, processAfter: null);
 
             return checkpointData.Response;
         }
@@ -164,12 +159,14 @@
         /// <summary>
         /// Mark a checkpoint for delay processing
         /// </summary>
+        /// <param name="delay">The timeout before a delay processing checkpoint could be picked up.</param>
         /// <param name="checkpointData">The checkpoint data</param>
         /// <param name="status">The operation response status</param>
         /// <param name="responseData">The operation response data</param>
         /// <returns>The operation response</returns>
         protected async Task<OperationResponse<TResponse>> DelayProcessingCheckpoint(
-            CheckpointData<TResponse> checkpointData,
+            TimeSpan delay,
+            CheckpointData<TResponse> checkpointData,            
             HttpStatusCode status,
             TResponse responseData)
         {
@@ -179,10 +176,13 @@
                 Data = responseData,
             };
 
-            await this.CreateOrUpdateCheckpoint(checkpointData, CheckpointStatus.DelayedProcessing);
+            await this.CreateOrUpdateCheckpoint(
+                checkpointData,
+                CheckpointStatus.DelayedProcessing,
+                processAfter: Clock.UtcNow + delay);
             await this.Bag.CompensationClient.QueueCheckpoint(
                 this.checkpoint,
-                DelayProcessingCheckpointVisibilityDelay,
+                delay,
                 this.Context.CancellationToken);
 
             return checkpointData.Response;
@@ -195,7 +195,7 @@
         /// <returns>The response if it was already completed before, or null</returns>
         protected Task<OperationResponse<TResponse>> CreateOrUpdateCheckpoint(CheckpointData<TResponse> checkpointData)
         {
-            return this.CreateOrUpdateCheckpoint(checkpointData, CheckpointStatus.InProgress);
+            return this.CreateOrUpdateCheckpoint(checkpointData, CheckpointStatus.InProgress, processAfter: null);
         }
 
         /// <summary>
@@ -244,7 +244,10 @@
         /// <param name="checkpointData">The checkpoint data</param>
         /// <param name="checkpointStatus">The checkpoint status</param>
         /// <returns>The response if it was already completed before, or null</returns>
-        private async Task<OperationResponse<TResponse>> CreateOrUpdateCheckpoint(CheckpointData<TResponse> checkpointData, CheckpointStatus checkpointStatus)
+        private async Task<OperationResponse<TResponse>> CreateOrUpdateCheckpoint(
+            CheckpointData<TResponse> checkpointData,
+            CheckpointStatus checkpointStatus,
+            DateTime? processAfter)
         {
             if (this.Context == null || string.IsNullOrWhiteSpace(this.Context.Account.AccountId))
             {
@@ -259,6 +262,7 @@
                     TrackingId = this.Context.TrackingId,
                     OperationType = this.operationType,
                     Status = checkpointStatus,
+                    ProcessAfter = processAfter,
                     CheckpointData = checkpointData == null ? null : JsonConvert.SerializeObject(checkpointData),
                 };
 
@@ -286,6 +290,7 @@
 
             this.checkpoint.CheckpointData = JsonConvert.SerializeObject(checkpointData);
             this.checkpoint.Status = checkpointStatus;
+            this.checkpoint.ProcessAfter = processAfter;
             await this.Bag.CompensationClient.UpdateCheckpoint(this.checkpoint, this.Context.CancellationToken);
 
             return null;
