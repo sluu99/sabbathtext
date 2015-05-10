@@ -4,7 +4,6 @@
     using System.Net;
     using System.Threading.Tasks;
     using System.Web.Mvc;
-    using SabbathText.Core;
     using SabbathText.V1;
     using SabbathText.Web.Models;
 
@@ -30,7 +29,7 @@
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid inbound message");
             }
 
-            string phoneNumber = PhoneUtility.ExtractUSPhoneNumber(model.From);
+            string phoneNumber = model.From.ExtractUSPhoneNumber();
 
             if (string.IsNullOrWhiteSpace(phoneNumber))
             {

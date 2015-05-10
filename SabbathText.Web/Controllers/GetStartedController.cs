@@ -1,6 +1,4 @@
-﻿using SabbathText.Core;
-using SabbathText.Core.Entities;
-using SabbathText.Web.Models;
+﻿using SabbathText.Web.Models;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using SabbathText.V1;

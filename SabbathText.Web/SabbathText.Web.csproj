@@ -218,13 +218,17 @@
       <Project>{c6cc3315-77e5-48f0-beae-e4ae8c584983}</Project>
       <Name>QueueStorage</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Common\System2\System2.csproj">
+      <Project>{88035141-476b-4625-a5df-738509b58e99}</Project>
+      <Name>System2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SabbathText.Compensation\SabbathText.Compensation.csproj">
       <Project>{89227b2c-ebc6-4235-a5a8-e28ee4e034e9}</Project>
       <Name>SabbathText.Compensation</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SabbathText.Core\SabbathText.Core.csproj">
-      <Project>{b45ea451-a493-4e23-a7a6-a496838edc00}</Project>
-      <Name>SabbathText.Core</Name>
+    <ProjectReference Include="..\SabbathText.Location\SabbathText.Location.csproj">
+      <Project>{8434442e-36ae-4b1e-b37f-4cc89b4839dd}</Project>
+      <Name>SabbathText.Location</Name>
     </ProjectReference>
     <ProjectReference Include="..\SabbathText\SabbathText.csproj">
       <Project>{ab2bf8a3-020e-4cf6-b47a-e2a2c91de503}</Project>
