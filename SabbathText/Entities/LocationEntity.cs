@@ -24,7 +24,8 @@
         {
             get
             {
-                return this.ZipCode;
+                // the first two digits of the zip code
+                return this.ZipCode.Substring(0, 2);
             }
         }
 
