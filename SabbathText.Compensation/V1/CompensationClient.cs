@@ -47,9 +47,15 @@
                 RowKey = checkpoint.RowKey,
             };
 
+            TimeSpan timeout = this.checkpointTimeout;
+            if (checkpoint.ProcessAfter != null)
+            {
+                timeout = (checkpoint.ProcessAfter.Value - Clock.UtcNow) + TimeSpan.FromSeconds(1);
+            }
+
             await this.checkpointQueue.AddMessage(
                 JsonConvert.SerializeObject(checkpointRef),
-                this.checkpointTimeout,
+                timeout,
                 this.checkpointLifespan,
                 cancellationToken);
 
