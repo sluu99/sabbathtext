@@ -64,7 +64,7 @@
                         checkpoint.ProcessAfter));
                     await this.compensationClient.ExtendMessageTimeout(
                         queueMessage,
-                        (checkpoint.ProcessAfter.Value - Clock.UtcNow),
+                        checkpoint.ProcessAfter.Value - Clock.UtcNow,
                         cancellationToken);
                 }
             }

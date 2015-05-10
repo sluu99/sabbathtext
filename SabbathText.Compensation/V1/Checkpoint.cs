@@ -75,7 +75,7 @@ using QueueStorage;
         public DateTime? ProcessAfter { get; set; }
 
         /// <summary>
-        /// Gets or sets the queue message associated with the checkpoint
+        /// Gets the queue message associated with the checkpoint
         /// </summary>
         [JsonIgnore]
         public QueueMessage QueueMessage { get; internal set; }
