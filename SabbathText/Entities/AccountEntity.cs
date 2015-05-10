@@ -83,6 +83,16 @@
         public ConversationContext ConversationContext { get; set; }
 
         /// <summary>
+        /// Gets or sets the authentication key for this account.
+        /// </summary>
+        public string AuthKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets when the authentication key expires
+        /// </summary>
+        public DateTime AuthKeyExpiration { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the user has been greeted.
         /// </summary>
         public bool HasBeenGreeted { get; set; }
@@ -116,7 +126,7 @@
         /// </summary>
         /// <param name="phoneNumber">The phone number</param>
         /// <returns>The account ID</returns>
-        public static string GetAccountId(string phoneNumber)
+        public static string GetAccountIdByPhoneNumber(string phoneNumber)
         {
             return ("PhoneNumber:" + phoneNumber).Sha1();
         }
@@ -128,7 +138,7 @@
         /// <returns>The entity reference.</returns>
         public static EntityReference GetReferenceByPhoneNumber(string phoneNumber)
         {
-            return GetReferenceById(GetAccountId(phoneNumber));
+            return GetReferenceById(GetAccountIdByPhoneNumber(phoneNumber));
         }
 
         /// <summary>

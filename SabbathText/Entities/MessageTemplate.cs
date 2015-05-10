@@ -58,5 +58,10 @@
         /// Sabbath text.
         /// </summary>
         SabbathText,
+
+        /// <summary>
+        /// Authentication key created.
+        /// </summary>
+        AuthKeyCreated,
     }
 }

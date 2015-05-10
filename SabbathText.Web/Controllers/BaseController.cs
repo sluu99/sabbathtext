@@ -25,7 +25,7 @@
         {
             AccountEntity account = new AccountEntity
             {
-                AccountId = AccountEntity.GetAccountId(phoneNumber),
+                AccountId = AccountEntity.GetAccountIdByPhoneNumber(phoneNumber),
                 CreationTime = Clock.UtcNow,
                 PhoneNumber = phoneNumber,
                 Status = AccountStatus.BrandNew,

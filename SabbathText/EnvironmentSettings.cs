@@ -119,6 +119,14 @@
         }
 
         /// <summary>
+        /// Gets the life span for an authentication key
+        /// </summary>
+        public virtual TimeSpan AuthKeyLifeSpan
+        {
+            get { return TimeSpan.FromMinutes(5); }
+        }
+
+        /// <summary>
         /// Gets the message client type
         /// </summary>
         public virtual MessageClientType MessageClientType

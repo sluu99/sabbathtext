@@ -1,6 +1,7 @@
 ﻿namespace SabbathText.Tests.V1
 {
     using System.Collections.Generic;
+    using System.Threading;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SabbathText.Entities;
     using SabbathText.V1;
@@ -117,6 +118,19 @@
 
             AssertLastSentMessage(account.AccountId, MessageTemplate.SubscriptionRequired);
             AssertZipCode(account.AccountId, null);
+        }
+
+
+        /// <summary>
+        /// Ensures that the account has a certain ZIP code.
+        /// </summary>
+        /// <param name="accountId">The account ID.</param>
+        /// <param name="expectedZipCode">The expected ZIP code.</param>
+        private static void AssertZipCode(string accountId, string expectedZipCode)
+        {
+            AccountEntity account =
+                GoodieBag.Create().AccountStore.Get(AccountEntity.GetReferenceById(accountId), CancellationToken.None).Result;
+            Assert.AreEqual<string>(expectedZipCode, account.ZipCode);
         }
     }
 }

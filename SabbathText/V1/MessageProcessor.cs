@@ -43,6 +43,11 @@
                 UpdateZipCodeOperation updateZipCode = new UpdateZipCodeOperation(context);
                 return updateZipCode.Run(message);
             }
+            else if ("auth".OicEquals(body))
+            {
+                BeginAuthOperation beginAuth = new BeginAuthOperation(context);
+                return beginAuth.Run(message);
+            }
 
             return Task.FromResult<OperationResponse<bool>>(null);
         }

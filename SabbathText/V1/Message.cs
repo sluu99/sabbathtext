@@ -168,6 +168,25 @@ using SabbathText.Location.V1;
         }
 
         /// <summary>
+        /// Creates a message with authentication key information.
+        /// </summary>
+        /// <param name="phoneNumber">The account phone number.</param>
+        /// <param name="authKey">The authentication key.</param>
+        /// <param name="authKeyExpirationMinutes">The number of minutes until the authentication key expires.</param>
+        /// <returns>The message.</returns>
+        public static Message CreateAuthKeyCreated(string phoneNumber, string authKey, int authKeyExpirationMinutes)
+        {
+            string body = "Your authentication key is {0}. It will expire in approximately {1} minutes.".InvariantFormat(
+                authKey,
+                authKeyExpirationMinutes);
+
+            return CreateMessage(
+                phoneNumber,
+                MessageTemplate.AuthKeyCreated,
+                body);
+        }
+
+        /// <summary>
         /// Creates new message
         /// </summary>
         /// <param name="phoneNumber">The recipient</param>

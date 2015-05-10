@@ -84,7 +84,7 @@
         protected static AccountEntity CreateAccount()
         {
             string phoneNumber = TestHelper.GetUSPhoneNumber();
-            string accountId = AccountEntity.GetAccountId(phoneNumber);
+            string accountId = AccountEntity.GetAccountIdByPhoneNumber(phoneNumber);
 
             return GoodieBag.Create().AccountStore.InsertOrGet(
                 new AccountEntity
@@ -124,19 +124,7 @@
                 new OperationCheckpointHandler());
             Assert.AreEqual(TimeSpan.Zero, worker.RunIteration(CancellationToken.None).Result);
         }
-
-        /// <summary>
-        /// Ensures that the account has a certain ZIP code.
-        /// </summary>
-        /// <param name="accountId">The account ID.</param>
-        /// <param name="expectedZipCode">The expected ZIP code.</param>
-        protected static void AssertZipCode(string accountId, string expectedZipCode)
-        {
-            AccountEntity account =
-                GoodieBag.Create().AccountStore.Get(AccountEntity.GetReferenceById(accountId), CancellationToken.None).Result;
-            Assert.AreEqual<string>(expectedZipCode, account.ZipCode);
-        }
-
+        
         /// <summary>
         /// Ensures that the last message sent to the user has a particular template.
         /// </summary>

@@ -199,6 +199,46 @@
         }
 
         /// <summary>
+        /// Add processed messages to an account
+        /// </summary>
+        /// <param name="incomingMessageId">The message ID for the incoming message entity.</param>
+        /// <param name="incomingMessage">The incoming message.</param>
+        /// <param name="outgoingMessageId">The message ID for the outgoing message entity.</param>
+        /// <param name="outgoingMessage">The outgoing message.</param>
+        /// <returns>A TPL task</returns>
+        protected Task AddProcessedMessages(
+            string incomingMessageId,
+            Message incomingMessage,
+            string outgoingMessageId,
+            Message outgoingMessage)
+        {
+            MessageEntity incomingMessageEntity = incomingMessage.ToEntity(
+                this.Context.Account.AccountId,
+                incomingMessageId,
+                MessageDirection.Incoming,
+                outgoingMessage == null ? MessageStatus.Received : MessageStatus.Responded);
+            bool incomingMessageAdded = TryAddMessageEntity(this.Context.Account, incomingMessageEntity);
+
+            bool outgoingMessageAdded = false;
+            if (outgoingMessage != null)
+            {
+                MessageEntity outgoingMessageEntity = outgoingMessage.ToEntity(
+                    this.Context.Account.AccountId,
+                    outgoingMessageId,
+                    MessageDirection.Outgoing,
+                    MessageStatus.Sent);
+                outgoingMessageAdded = TryAddMessageEntity(this.Context.Account, outgoingMessageEntity);
+            }
+
+            if (incomingMessageAdded || outgoingMessageAdded)
+            {
+                return this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+            }
+
+            return Task.FromResult<object>(null);
+        }
+
+        /// <summary>
         /// Creates or updates a checkpoint
         /// </summary>
         /// <param name="checkpointData">The checkpoint data</param>
