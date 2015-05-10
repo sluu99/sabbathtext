@@ -289,6 +289,11 @@
                     visibilityTimeout = this.checkpoint.ProcessAfter.Value - Clock.UtcNow;
                 }
 
+                if (visibilityTimeout < TimeSpan.Zero)
+                {
+                    visibilityTimeout = TimeSpan.Zero;
+                }
+
                 await this.Bag.CompensationClient.QueueCheckpoint(
                     this.checkpoint,
                     visibilityTimeout,
@@ -306,6 +311,10 @@
             {
                 // delay process checkpoint
                 TimeSpan visibilityTimeout = this.checkpoint.ProcessAfter.Value - Clock.UtcNow;
+                if (visibilityTimeout < TimeSpan.Zero)
+                {
+                    visibilityTimeout = TimeSpan.Zero;
+                }
                 
                 if (this.checkpoint.QueueMessage == null)
                 {

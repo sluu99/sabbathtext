@@ -59,6 +59,11 @@
         /// <returns>The operation task</returns>
         public Task QueueCheckpoint(Checkpoint checkpoint, TimeSpan visibilityDelay, CancellationToken cancellationToken)
         {
+            if (visibilityDelay < TimeSpan.Zero)
+            {
+                throw new ArgumentException("Visibility delay cannot be less than zero", "visibilityDelay");
+            }
+
             EntityReference checkpointRef = new EntityReference
             {
                 PartitionKey = checkpoint.PartitionKey,
