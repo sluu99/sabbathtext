@@ -7,8 +7,17 @@
     using SabbathText.V1;
     using SabbathText.Web.Models;
 
+    /// <summary>
+    /// A controller to communicate with the <c>Twilio</c> service.
+    /// </summary>
     public class TwilioController : BaseController
     {
+        /// <summary>
+        /// The method will be the callback when <c>Twilio</c> receives a text message.
+        /// </summary>
+        /// <param name="key">The authentication key.</param>
+        /// <param name="model">The message model.</param>
+        /// <returns>An action result.</returns>
         [HttpPost, ValidateInput(false)]
         public async Task<ActionResult> Sms(string key, TwilioInboundSmsModel model)
         {

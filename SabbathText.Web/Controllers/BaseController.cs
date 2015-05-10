@@ -15,6 +15,12 @@
     /// </summary>
     public abstract class BaseController : Controller
     {
+        /// <summary>
+        /// Gets or creates an account
+        /// </summary>
+        /// <param name="phoneNumber">The account phone number</param>
+        /// <param name="token">The cancellation token</param>
+        /// <returns>The account</returns>
         protected Task<AccountEntity> GetOrCreateAccount(string phoneNumber, CancellationToken token)
         {
             AccountEntity account = new AccountEntity
@@ -29,6 +35,11 @@
             return bag.AccountStore.InsertOrGet(account, token);
         }
 
+        /// <summary>
+        /// Creates an operation context, with the account identified by a phone number.
+        /// </summary>
+        /// <param name="phoneNumber">The account phone number.</param>
+        /// <returns>An operation context instance.</returns>
         protected async Task<OperationContext> CreateContext(string phoneNumber)
         {
             GoodieBag bag = GoodieBag.Create();

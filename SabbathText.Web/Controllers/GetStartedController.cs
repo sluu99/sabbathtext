@@ -1,13 +1,21 @@
-﻿using SabbathText.Web.Models;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using SabbathText.V1;
-using System.Net;
-
-namespace SabbathText.Web.Controllers
+﻿namespace SabbathText.Web.Controllers
 {
+    using System.Net;
+    using System.Threading.Tasks;
+    using System.Web.Mvc;
+    using SabbathText.V1;
+    using SabbathText.Web.Models;
+
+    /// <summary>
+    /// The controller for the get started page
+    /// </summary>
     public class GetStartedController : BaseController
     {
+        /// <summary>
+        /// The index action
+        /// </summary>
+        /// <param name="model">The get started model</param>
+        /// <returns>An action result.</returns>
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<ActionResult> Index(GetStartedModel model)
         {
