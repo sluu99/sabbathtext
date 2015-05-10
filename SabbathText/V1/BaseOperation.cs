@@ -166,7 +166,7 @@
         /// <returns>The operation response</returns>
         protected async Task<OperationResponse<TResponse>> DelayProcessingCheckpoint(
             TimeSpan delay,
-            CheckpointData<TResponse> checkpointData,            
+            CheckpointData<TResponse> checkpointData,
             HttpStatusCode status,
             TResponse responseData)
         {
@@ -180,10 +180,6 @@
                 checkpointData,
                 CheckpointStatus.DelayedProcessing,
                 processAfter: Clock.UtcNow + delay);
-            await this.Bag.CompensationClient.QueueCheckpoint(
-                this.checkpoint,
-                delay,
-                this.Context.CancellationToken);
 
             return checkpointData.Response;
         }
@@ -243,6 +239,7 @@
         /// </summary>
         /// <param name="checkpointData">The checkpoint data</param>
         /// <param name="checkpointStatus">The checkpoint status</param>
+        /// <param name="processAfter">When the checkpoint should be processed</param>
         /// <returns>The response if it was already completed before, or null</returns>
         private async Task<OperationResponse<TResponse>> CreateOrUpdateCheckpoint(
             CheckpointData<TResponse> checkpointData,
@@ -276,9 +273,8 @@
 
                     return existingCheckpointData.Response;
                 }
-                else
+                else if (this.checkpoint.Status == CheckpointStatus.InProgress)
                 {
-                    // the checkpoint is in progress
                     return new OperationResponse<TResponse>
                     {
                         StatusCode = HttpStatusCode.Conflict,
@@ -286,12 +282,46 @@
                         ErrorDescription = "The operation is in progress",
                     };
                 }
+
+                TimeSpan visibilityTimeout = this.Bag.Settings.CheckpointVisibilityTimeout;
+                if (this.checkpoint.ProcessAfter != null)
+                {
+                    visibilityTimeout = this.checkpoint.ProcessAfter.Value - Clock.UtcNow;
+                }
+
+                await this.Bag.CompensationClient.QueueCheckpoint(
+                    this.checkpoint,
+                    visibilityTimeout,
+                    this.Context.CancellationToken);
+
+                return null;
             }
 
             this.checkpoint.CheckpointData = JsonConvert.SerializeObject(checkpointData);
             this.checkpoint.Status = checkpointStatus;
             this.checkpoint.ProcessAfter = processAfter;
             await this.Bag.CompensationClient.UpdateCheckpoint(this.checkpoint, this.Context.CancellationToken);
+
+            if (this.checkpoint.ProcessAfter != null)
+            {
+                // delay process checkpoint
+                TimeSpan visibilityTimeout = this.checkpoint.ProcessAfter.Value - Clock.UtcNow;
+                
+                if (this.checkpoint.QueueMessage == null)
+                {
+                    await this.Bag.CompensationClient.QueueCheckpoint(
+                        this.checkpoint,
+                        visibilityTimeout,
+                        this.Context.CancellationToken);
+                }
+                else
+                {
+                    await this.Bag.CompensationClient.ExtendMessageTimeout(
+                        this.checkpoint.QueueMessage,
+                        visibilityTimeout,
+                        this.Context.CancellationToken);
+                }
+            }
 
             return null;
         }

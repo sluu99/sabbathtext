@@ -46,19 +46,7 @@
                 PartitionKey = checkpoint.PartitionKey,
                 RowKey = checkpoint.RowKey,
             };
-
-            TimeSpan timeout = this.checkpointTimeout;
-            if (checkpoint.ProcessAfter != null)
-            {
-                timeout = (checkpoint.ProcessAfter.Value - Clock.UtcNow) + TimeSpan.FromSeconds(1);
-            }
-
-            await this.checkpointQueue.AddMessage(
-                JsonConvert.SerializeObject(checkpointRef),
-                timeout,
-                this.checkpointLifespan,
-                cancellationToken);
-
+            
             return checkpoint;
         }
 
@@ -111,7 +99,7 @@
         /// <param name="checkpointRef">The checkpoint reference.</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The checkpoint, or null if it does not exist.</returns>
-        public Task<Checkpoint> GetCheckpoint(EntityReference checkpointRef, CancellationToken cancellationToken)
+        private Task<Checkpoint> GetCheckpoint(EntityReference checkpointRef, CancellationToken cancellationToken)
         {
             return this.checkpointStore.Get(checkpointRef.PartitionKey, checkpointRef.RowKey, cancellationToken);
         }
@@ -122,7 +110,7 @@
         /// <param name="message">The queue message</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>A checkpoint</returns>
-        public Task<Checkpoint> GetCheckpoint(QueueMessage message, CancellationToken cancellationToken)
+        public async Task<Checkpoint> GetCheckpoint(QueueMessage message, CancellationToken cancellationToken)
         {
             if (message == null)
             {
@@ -130,7 +118,10 @@
             }
 
             EntityReference checkpointRef = JsonConvert.DeserializeObject<EntityReference>(message.Body);
-            return this.checkpointStore.Get(checkpointRef.PartitionKey, checkpointRef.RowKey, cancellationToken);
+            Checkpoint checkpoint = await this.checkpointStore.Get(checkpointRef.PartitionKey, checkpointRef.RowKey, cancellationToken);
+            checkpoint.QueueMessage = message;
+
+            return checkpoint;
         }
 
         /// <summary>

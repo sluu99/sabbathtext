@@ -5,6 +5,7 @@ using System.Globalization;
 using KeyValueStorage;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using QueueStorage;
 
     /// <summary>
     /// Checkpoint status
@@ -72,6 +73,12 @@ using Newtonsoft.Json.Converters;
         /// Gets or sets the time when the checkpoint can be processed
         /// </summary>
         public DateTime? ProcessAfter { get; set; }
+
+        /// <summary>
+        /// Gets or sets the queue message associated with the checkpoint
+        /// </summary>
+        [JsonIgnore]
+        public QueueMessage QueueMessage { get; internal set; }
 
         /// <summary>
         /// Gets the partition key.

@@ -46,7 +46,7 @@
 
             if (checkpoint != null)
             {
-                if (checkpoint.ProcessAfter == null || checkpoint.ProcessAfter.Value < Clock.UtcNow)
+                if (checkpoint.ProcessAfter == null || checkpoint.ProcessAfter.Value <= Clock.UtcNow)
                 {
                     Trace.TraceInformation(string.Format("Checkpoint {0}/{1} found", checkpoint.PartitionKey, checkpoint.RowKey));
                     await this.handler.Finish(checkpoint, cancellationToken);
@@ -64,7 +64,7 @@
                         checkpoint.ProcessAfter));
                     await this.compensationClient.ExtendMessageTimeout(
                         queueMessage,
-                        (checkpoint.ProcessAfter.Value - Clock.UtcNow) + TimeSpan.FromSeconds(1),
+                        (checkpoint.ProcessAfter.Value - Clock.UtcNow),
                         cancellationToken);
                 }
             }
@@ -73,6 +73,7 @@
                 Trace.TraceInformation(string.Format("Checkpoint not found, deleting queue message"));
                 await this.compensationClient.DeleteMessge(queueMessage, cancellationToken);
             }
+
             return TimeSpan.Zero;
         }
     }

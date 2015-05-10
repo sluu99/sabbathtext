@@ -120,7 +120,6 @@
             AssertZipCode(account.AccountId, null);
         }
 
-
         /// <summary>
         /// Ensures that the account has a certain ZIP code.
         /// </summary>
