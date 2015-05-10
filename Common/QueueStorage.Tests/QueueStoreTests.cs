@@ -157,7 +157,7 @@
         /// Tests deleting a message that does not exist
         /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(DeleteMessageException))]
+        [ExpectedException(typeof(MessageNotFoundException))]
         public void DeleteMessage_ShouldThrowExceptionWhenMessgeDoesNotExist()
         {
             this.Store.AddMessage(
@@ -190,7 +190,7 @@
         /// Tests deleting a message that got checked out by others
         /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(DeleteMessageException))]
+        [ExpectedException(typeof(MessageNotFoundException))]
         public void DeleteMessage_ShouldThrowExceptionWhenCheckedOutByOthers()
         {
             this.Store.AddMessage(
@@ -201,13 +201,105 @@
 
             // checkout the message twice
             QueueMessage msg1 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
-            Clock.Delay(TimeSpan.FromSeconds(1)).Wait();
+            Clock.Delay(TimeSpan.FromSeconds(2)).Wait();
             QueueMessage msg2 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
 
             try
             {
                 // this should throw an exception, since the same message is checked out by someone else (msg2)
                 this.Store.DeleteMessage(msg1, CancellationToken.None).Wait();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    throw ex.InnerException;
+                }
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Test that the queue does not return any message with timeout extended
+        /// </summary>
+        [TestMethod]
+        public void ExtendTimeout_ShouldNotReturnAnyMessage()
+        {
+            this.Store.AddMessage(
+                "hello",
+                visibilityDelay: TimeSpan.Zero,
+                messageLifeSpan: TimeSpan.FromDays(7),
+                cancellationToken: CancellationToken.None).Wait();
+
+            QueueMessage msg = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
+            this.Store.ExtendTimeout(msg, TimeSpan.FromSeconds(3), CancellationToken.None).Wait();
+
+            Clock.Delay(TimeSpan.FromSeconds(1.5)).Wait();
+            Assert.IsNull(
+                this.Store.GetMessage(TimeSpan.FromSeconds(1), CancellationToken.None).Result,
+                "The queue should not return any message");
+
+            Clock.Delay(TimeSpan.FromSeconds(2)).Wait(); // wait until the lock extension expires
+            Assert.IsNotNull(
+                this.Store.GetMessage(TimeSpan.FromSeconds(1), CancellationToken.None).Result,
+                "The queue should returns the message after the lock extention expires");
+        }
+
+        /// <summary>
+        /// Test that the queue throws an exception when trying to extends the time out of a non-existing message
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(MessageNotFoundException))]
+        public void ExtendTimeout_ShouldThrownWhenMessageDoesNotExist()
+        {
+            this.Store.AddMessage(
+                "hello",
+                visibilityDelay: TimeSpan.Zero,
+                messageLifeSpan: TimeSpan.FromDays(7),
+                cancellationToken: CancellationToken.None).Wait();
+
+            QueueMessage msg = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
+            this.Store.DeleteMessage(msg, CancellationToken.None).Wait();
+
+            try
+            {
+                this.Store.ExtendTimeout(msg, TimeSpan.FromSeconds(3), CancellationToken.None).Wait();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    throw ex.InnerException;
+                }
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Test that the queue throws an exception when trying to extends the time out of a message
+        /// checked out by a different process
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(MessageNotFoundException))]
+        public void ExtendTimeout_ShouldThrownWhenMessageCheckedOutByOthers()
+        {
+            this.Store.AddMessage(
+                "hello",
+                visibilityDelay: TimeSpan.Zero,
+                messageLifeSpan: TimeSpan.FromDays(7),
+                cancellationToken: CancellationToken.None).Wait();
+
+            QueueMessage msg1 = this.Store.GetMessage(TimeSpan.FromSeconds(1), CancellationToken.None).Result;
+            Clock.Delay(TimeSpan.FromSeconds(2)).Wait();
+            QueueMessage msg2 = this.Store.GetMessage(TimeSpan.FromSeconds(1), CancellationToken.None).Result;
+
+            Assert.IsNotNull(msg2, "Could not check out message");
+
+            try
+            {
+                this.Store.ExtendTimeout(msg1, TimeSpan.FromSeconds(3), CancellationToken.None).Wait();
             }
             catch (Exception ex)
             {

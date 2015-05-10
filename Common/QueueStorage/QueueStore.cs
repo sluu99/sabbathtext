@@ -119,7 +119,7 @@
 
             if (cloudMessage.NextVisibleTime != null)
             {
-                msg.ExpirationTime = cloudMessage.NextVisibleTime.Value.UtcDateTime;
+                msg.NextVisibleTime = cloudMessage.NextVisibleTime.Value.UtcDateTime;
             }
 
             return msg;
@@ -155,7 +155,51 @@
                 if (ex.RequestInformation.HttpStatusCode == 404 &&
                     "MessageNotFound".Equals(ex.RequestInformation.ExtendedErrorInformation.ErrorCode, StringComparison.InvariantCulture))
                 {
-                    throw new DeleteMessageException();
+                    throw new MessageNotFoundException();
+                }
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Extends the visibility timeout of a message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="timeout">The timeout to be extended.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A TPL task.</returns>
+        public virtual async Task ExtendTimeout(QueueMessage message, TimeSpan timeout, CancellationToken cancellationToken)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+
+            if (string.IsNullOrWhiteSpace(message.MessageId))
+            {
+                throw new ArgumentException("The message ID is required");
+            }
+
+            try
+            {
+                CloudQueueMessage cloudQueueMessage = new CloudQueueMessage(
+                    message.MessageId,
+                    popReceipt: message.ImplementationData);
+                await this.cloudQueue.UpdateMessageAsync(
+                    cloudQueueMessage,
+                    timeout,
+                    MessageUpdateFields.Visibility,
+                    cancellationToken);
+
+                message.NextVisibleTime = cloudQueueMessage.NextVisibleTime.Value.UtcDateTime;
+            }
+            catch (StorageException ex)
+            {
+                if (ex.RequestInformation.HttpStatusCode == 404 &&
+                    "MessageNotFound".Equals(ex.RequestInformation.ExtendedErrorInformation.ErrorCode, StringComparison.InvariantCulture))
+                {
+                    throw new MessageNotFoundException();
                 }
 
                 throw;

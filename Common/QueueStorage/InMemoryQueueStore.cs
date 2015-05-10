@@ -11,10 +11,8 @@
     /// </summary>
     public class InMemoryQueueStore : QueueStore
     {
-        /// <summary>
-        /// The internal storage
-        /// </summary>
         private LinkedList<QueueMessage> queue;
+        private Dictionary<string, QueueMessage> messageIdMapping;
 
         /// <summary>
         /// Initializes the in-memory queue
@@ -22,6 +20,7 @@
         public void InitMemory()
         {
             this.queue = new LinkedList<QueueMessage>();
+            this.messageIdMapping = new Dictionary<string, QueueMessage>();
         }
 
         /// <summary>
@@ -48,6 +47,7 @@
             lock (this.queue)
             {
                 this.queue.AddLast(message);
+                this.messageIdMapping.Add(message.MessageId, message);
             }
 
             return Task.FromResult<object>(null);
@@ -125,17 +125,14 @@
                 {
                     LinkedListNode<QueueMessage> nextNode = node.Next;
 
-                    if (node.Value.ExpirationTime <= Clock.UtcNow || 
-                        (node.Value.MessageId == message.MessageId && node.Value.ImplementationData == message.ImplementationData /* etag */))
+                    if (node.Value.MessageId == message.MessageId &&
+                        node.Value.ImplementationData == message.ImplementationData /* etag */)
                     {
                         // remove messages that have expired
+                        this.messageIdMapping.Remove(node.Value.MessageId);
                         this.queue.Remove(node); // O(1)
-
-                        if (node.Value.MessageId == message.MessageId && node.Value.ImplementationData == message.ImplementationData /* etag */)
-                        {
-                            messageFound = true;
-                            break;
-                        }
+                        messageFound = true;
+                        break;
                     }
 
                     node = nextNode;
@@ -144,9 +141,47 @@
 
             if (!messageFound)
             {
-                throw new DeleteMessageException();
+                throw new MessageNotFoundException();
             }
 
+            return Task.FromResult<object>(null);
+        }
+
+        /// <summary>
+        /// Extends the visibility timeout of a message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="timeout">The timeout to be extended.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A TPL task.</returns>
+        public override Task ExtendTimeout(QueueMessage message, TimeSpan timeout, CancellationToken cancellationToken)
+        {
+            if (message == null)
+            {
+                throw new ArgumentNullException("message");
+            }
+
+            if (string.IsNullOrWhiteSpace(message.MessageId))
+            {
+                throw new ArgumentException("The message ID is required");
+            }
+
+            QueueMessage backingMessage = null;
+            lock (this.queue)
+            {
+                if (this.messageIdMapping.ContainsKey(message.MessageId))
+                {
+                    backingMessage = this.messageIdMapping[message.MessageId];
+                }
+            }
+
+            if (backingMessage == null || backingMessage.ImplementationData != message.ImplementationData)
+            {
+                throw new MessageNotFoundException();
+            }
+
+            backingMessage.NextVisibleTime = Clock.UtcNow + timeout;
+            message.NextVisibleTime = backingMessage.NextVisibleTime;
             return Task.FromResult<object>(null);
         }
 
