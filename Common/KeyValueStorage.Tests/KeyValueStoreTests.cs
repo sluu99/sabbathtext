@@ -333,7 +333,7 @@
                 ETag = "*",
                 Timestamp = Clock.UtcNow,
             };
-            
+
             try
             {
                 this.Store.Delete(dog, CancellationToken.None).Wait();
@@ -447,12 +447,13 @@
                 }
 
                 continuationToken = page.ContinuationToken;
-            } while (continuationToken != null);
+            }
+            while (continuationToken != null);
 
             Assert.AreEqual(6, pageCount);
             Assert.IsNull(continuationToken);
         }
-        
+
         /// <summary>
         /// Reset the Azure table store
         /// </summary>
