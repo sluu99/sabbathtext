@@ -53,8 +53,8 @@
 
                 while (this.cancellationToken.IsCancellationRequested == false)
                 {
-                    Console.WriteLine("Hello " + Clock.UtcNow);
-                    Thread.Sleep(2000);
+                    Trace.TraceInformation("Hello from runner" + Clock.UtcNow);
+                    Thread.Sleep(10000);
                 }
             }
             finally
