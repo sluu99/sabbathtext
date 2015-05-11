@@ -1,4 +1,4 @@
-﻿namespace SabbathText.Compensation.V1
+﻿namespace SabbathText.V1
 {
     using System;
     using System.Collections.Generic;

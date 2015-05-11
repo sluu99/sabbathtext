@@ -96,6 +96,7 @@
     <Compile Include="V1\BaseOperation.cs" />
     <Compile Include="V1\BeginAuthOperationCheckpointData.cs" />
     <Compile Include="V1\CheckpointData.cs" />
+    <Compile Include="V1\CheckpointWorker.cs" />
     <Compile Include="V1\InMemoryMessageClient.cs" />
     <Compile Include="V1\InspectAccountOperation.cs" />
     <Compile Include="V1\InspectAccountOperationCheckpointData.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="V1\UpdateZipCodeOperation.cs" />
     <Compile Include="V1\UpdateZipCodeOperationCheckpointData.cs" />
     <Compile Include="V1\GenericOperationState.cs" />
+    <Compile Include="V1\Worker.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\common\KeyValueStorage\KeyValueStorage.csproj">

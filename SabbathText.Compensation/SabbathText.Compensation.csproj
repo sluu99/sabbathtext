@@ -47,9 +47,7 @@
     <Compile Include="V1\CheckpointHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="V1\Checkpoint.cs" />
-    <Compile Include="V1\CheckpointWorker.cs" />
     <Compile Include="V1\CompensationClient.cs" />
-    <Compile Include="V1\Worker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
