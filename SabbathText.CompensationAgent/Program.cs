@@ -26,7 +26,6 @@
         /// <param name="args">The application argument</param>
         public static void Main(string[] args)
         {
-            Trace.TraceInformation("Compensation Agent started on " + Environment.MachineName);
             new Program().Run();
         }
 
@@ -40,9 +39,8 @@
             GoodieBag bag = GoodieBag.Create();
 
             Console.CancelKeyPress += this.CancelKeyPress;
-
             TraceListener traceListener = new ConsoleTraceListener();
-
+            
             try
             {
                 if (bag.Settings.WorkersUseConsoleTrace)
@@ -51,6 +49,8 @@
                 }
 
                 this.StartWatchingShutdownFile();
+
+                Trace.TraceInformation("Compensation Agent started on " + Environment.MachineName);
 
                 CheckpointWorker worker = new CheckpointWorker(
                     bag.CompensationClient,

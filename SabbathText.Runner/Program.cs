@@ -26,7 +26,6 @@
         /// <param name="args">The application argument</param>
         public static void Main(string[] args)
         {
-            Trace.TraceInformation("Runner started on " + Environment.MachineName);
             new Program().Run();
         }
 
@@ -40,17 +39,18 @@
             GoodieBag bag = GoodieBag.Create();
 
             Console.CancelKeyPress += this.CancelKeyPress;
-
             TraceListener traceListener = new ConsoleTraceListener();
-
+            
             try
             {
                 if (bag.Settings.WorkersUseConsoleTrace)
                 {
                     Trace.Listeners.Add(traceListener);
-                }
+                }                
 
                 this.StartWatchingShutdownFile();
+
+                Trace.TraceInformation("Runner started on " + Environment.MachineName);
 
                 while (this.cancellationToken.IsCancellationRequested == false)
                 {
