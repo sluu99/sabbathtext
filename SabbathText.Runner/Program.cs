@@ -51,11 +51,11 @@
 
                 this.StartWatchingShutdownFile();
 
-                CheckpointWorker worker = new CheckpointWorker(
-                    bag.CompensationClient,
-                    bag.Settings.CheckpointWorkerIdleDelay,
-                    new OperationCheckpointHandler());
-                worker.Run(bag.Settings.CheckpointWorkerIdleDelay, this.cancellationToken.Token).Wait();
+                while (this.cancellationToken.IsCancellationRequested == false)
+                {
+                    Console.WriteLine("Hello " + Clock.UtcNow);
+                    Thread.Sleep(2000);
+                }
             }
             finally
             {
