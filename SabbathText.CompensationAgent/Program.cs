@@ -26,6 +26,7 @@
         /// <param name="args">The application argument</param>
         public static void Main(string[] args)
         {
+            Trace.TraceInformation("Compensation Agent started on " + Environment.MachineName);
             new Program().Run();
         }
 
