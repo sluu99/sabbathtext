@@ -3,8 +3,10 @@
     using System;
     using System.IO;
     using System.IO.Compression;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Xml;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Table;
     using Newtonsoft.Json;
@@ -104,13 +106,69 @@
                 return null;
             }
 
-            T entity = this.Deserialize<T>(rawEntity.EntityData);
+            T entity = Deserialize<T>(rawEntity.EntityData);
             entity.Timestamp = rawEntity.Timestamp.UtcDateTime;
             entity.ETag = rawEntity.ETag;
 
             return entity;
         }
-        
+
+        /// <summary>
+        /// Reads the entities from a particular partition.
+        /// </summary>
+        /// <param name="partitionKey">The partition key.</param>
+        /// <param name="take">The number of entities to read.</param>
+        /// <param name="continuationToken">The continuation token. Specify null for the first time.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The paged result.</returns>
+        public virtual async Task<PagedResult<T>> ReadPartition(string partitionKey, int take, string continuationToken, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(partitionKey))
+            {
+                throw new ArgumentException("The partition key is required", "partitionKey");
+            }
+
+            if (take < 1 || take > 100)
+            {
+                throw new ArgumentException("Take must be between 1 and 100, inclusive", "take");
+            }
+
+            string condition = TableQuery.GenerateFilterCondition(
+                "PartitionKey",
+                QueryComparisons.Equal,
+                partitionKey);
+            TableQuery<AzureTableKeyValueEntity> tableQuery = new TableQuery<AzureTableKeyValueEntity>().Where(condition).Take(take);
+
+            TableContinuationToken tableContinuationToken = GetContinuationToken(continuationToken);
+            
+            TableQuerySegment<AzureTableKeyValueEntity> tableQueryResult =
+                await this.cloudTable.ExecuteQuerySegmentedAsync(tableQuery, tableContinuationToken, cancellationToken);
+            
+            PagedResult<T> pagedResult;
+
+            if (tableQueryResult.Results != null && tableQueryResult.Results.Count > 0)
+            {
+                pagedResult = new PagedResult<T>(take);
+                pagedResult.Entities.AddRange(tableQueryResult.Results.Select(
+                    rawEntity =>
+                    {
+                        T entity = Deserialize<T>(rawEntity.EntityData);
+                        entity.Timestamp = rawEntity.Timestamp.UtcDateTime;
+                        entity.ETag = rawEntity.ETag;
+
+                        return entity;
+                    }));
+            }
+            else
+            {
+                pagedResult = new PagedResult<T>(0);
+            }
+
+            pagedResult.ContinuationToken = GetContinuationTokenString(tableQueryResult.ContinuationToken);
+
+            return pagedResult;
+        }
+
         /// <summary>
         /// Insert an entity into the azure table
         /// </summary>
@@ -130,7 +188,7 @@
             {
                 PartitionKey = entity.PartitionKey,
                 RowKey = entity.RowKey,
-                EntityData = this.Serialize(entity),
+                EntityData = Serialize(entity),
             };
 
             TableOperation insertOperation = TableOperation.Insert(rawEntity);
@@ -172,7 +230,7 @@
             {
                 PartitionKey = entity.PartitionKey,
                 RowKey = entity.RowKey,
-                EntityData = this.Serialize(entity),
+                EntityData = Serialize(entity),
                 ETag = entity.ETag,
                 Timestamp = entity.Timestamp,
             };
@@ -252,7 +310,7 @@
                 throw;
             }
         }
-        
+
         /// <summary>
         /// Inserts or gets an entity from the store
         /// </summary>
@@ -297,7 +355,7 @@
             }
         }
 
-        private byte[] Serialize(object obj)
+        private static byte[] Serialize(object obj)
         {
             using (MemoryStream stream = new MemoryStream())
             using (StreamWriter writer = new StreamWriter(stream))
@@ -310,11 +368,11 @@
                 stream.Flush();
                 stream.Position = 0;
 
-                return this.Compress(stream);
+                return Compress(stream);
             }
         }
 
-        private byte[] Compress(MemoryStream uncompressedStream)
+        private static byte[] Compress(MemoryStream uncompressedStream)
         {
             uncompressedStream.Position = 0;
 
@@ -329,7 +387,7 @@
             }
         }
 
-        private void Decompressed(MemoryStream compressedStream, MemoryStream outStream)
+        private static void Decompressed(MemoryStream compressedStream, MemoryStream outStream)
         {
             compressedStream.Position = 0;
             using (GZipStream gzip = new GZipStream(compressedStream, CompressionMode.Decompress, true))
@@ -338,18 +396,54 @@
             }
         }
 
-        private TData Deserialize<TData>(byte[] data)
+        private static TData Deserialize<TData>(byte[] data)
         {
             using (MemoryStream compressedStream = new MemoryStream(data))
             using (MemoryStream stream = new MemoryStream())
             using (StreamReader reader = new StreamReader(stream))
             using (JsonTextReader jsonReader = new JsonTextReader(reader))
             {
-                this.Decompressed(compressedStream, stream);
+                Decompressed(compressedStream, stream);
                 stream.Position = 0;
 
                 JsonSerializer serializer = new JsonSerializer();
                 return serializer.Deserialize<TData>(jsonReader);
+            }
+        }
+
+        private static string GetContinuationTokenString(TableContinuationToken token)
+        {
+            if (token == null)
+            {
+                return null;
+            }
+
+            using (StringWriter strWriter = new StringWriter())
+            {
+                using (XmlWriter xmlWriter = XmlWriter.Create(strWriter))
+                {
+                    token.WriteXml(xmlWriter);
+                }
+
+                strWriter.Flush();
+                return strWriter.ToString();
+            }
+        }
+
+        private static TableContinuationToken GetContinuationToken(string tokenString)
+        {
+            if (tokenString == null)
+            {
+                return null;
+            }
+            
+            using (StringReader strReader = new StringReader(tokenString))
+            using (XmlReader xmlReader = XmlReader.Create(strReader))
+            {
+                TableContinuationToken contToken = new TableContinuationToken();
+                contToken.ReadXml(xmlReader);
+                
+                return contToken;
             }
         }
     }

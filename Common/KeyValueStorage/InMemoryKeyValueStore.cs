@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
     using System.Threading;
@@ -19,7 +20,7 @@
         /// <summary>
         /// The internal storage
         /// </summary>
-        private Dictionary<string, string> entities;
+        private SortedDictionary<string, string> entities;
 
         /// <summary>
         /// The SHA265 hashing provider
@@ -51,6 +52,50 @@
 
                 return Task.FromResult(JsonConvert.DeserializeObject<T>(this.entities[key]));
             }
+        }
+
+        /// <summary>
+        /// Reads the entities from a particular partition.
+        /// </summary>
+        /// <param name="partitionKey">The partition key.</param>
+        /// <param name="take">The number of entities to read.</param>
+        /// <param name="continuationToken">The continuation token. Specify null for the first time.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The paged result.</returns>
+        public override Task<PagedResult<T>> ReadPartition(string partitionKey, int take, string continuationToken, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(partitionKey))
+            {
+                throw new ArgumentException("The partition key is required", "partitionKey");
+            }
+
+            if (take < 1 || take > 100)
+            {
+                throw new ArgumentException("Take must be between 1 and 100, inclusive", "take");
+            }
+
+            string partitionKeyPrefix = this.Hash(partitionKey) + "::";
+
+            int skip = 0;
+            if (continuationToken != null && int.TryParse(continuationToken, out skip) == false)
+            {
+                throw new ArgumentException("Invalid continuation token", "continuationToken");
+            }
+
+            PagedResult<T> pagedResult = new PagedResult<T>(take);
+            pagedResult.Entities.AddRange(
+                this.entities
+                .Where(kv => kv.Key.StartsWith(partitionKeyPrefix))
+                .Skip(skip)
+                .Take(take)
+                .Select(kv => JsonConvert.DeserializeObject<T>(kv.Value)));
+
+            if (pagedResult.Entities.Count == take)
+            {
+                pagedResult.ContinuationToken = (skip + pagedResult.Entities.Count).ToString();
+            }            
+
+            return Task.FromResult(pagedResult);
         }
 
         /// <summary>
@@ -178,13 +223,13 @@
         /// </summary>
         public void InitMemory()
         {
-            this.entities = new Dictionary<string, string>();
+            this.entities = new SortedDictionary<string, string>();
             this.sha256 = SHA256CryptoServiceProvider.Create();
         }
 
         /// <summary>
         /// Hash the entity keys with the following scheme:
-        /// SHA256(SHA256(partitionKey) + "_" + SHA256(rowKey))
+        /// SHA256(partitionKey) + "::" + SHA256(rowKey)
         /// </summary>
         /// <param name="partitionKey">The partition key</param>
         /// <param name="rowKey">The row key</param>
@@ -193,16 +238,13 @@
         {
             this.ThrowIfNullKeys(partitionKey, rowKey);
 
-            byte[] buffer = UTF8Encoding.UTF8.GetBytes(partitionKey);
+            return this.Hash(partitionKey) + "::" + this.Hash(rowKey);
+        }
+
+        private string Hash(string str)
+        {
+            byte[] buffer = UTF8Encoding.UTF8.GetBytes(str);
             byte[] hash = this.sha256.ComputeHash(buffer);
-            string partitionKeyHex = Convert.ToBase64String(hash);
-
-            buffer = UTF8Encoding.UTF8.GetBytes(rowKey);
-            hash = this.sha256.ComputeHash(buffer);
-            string rowKeyHex = Convert.ToBase64String(hash);
-
-            buffer = UTF8Encoding.UTF8.GetBytes(partitionKeyHex + "_" + rowKeyHex);
-            hash = this.sha256.ComputeHash(buffer);
             return Convert.ToBase64String(hash);
         }
     }

@@ -76,6 +76,7 @@
     <Compile Include="InMemoryKeyValueStore.cs" />
     <Compile Include="KeyValueStoreConfiguration.cs" />
     <Compile Include="KeyValueStoreType.cs" />
+    <Compile Include="PagedResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
