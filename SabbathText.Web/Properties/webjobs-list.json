@@ -3,6 +3,9 @@
   "WebJobs": [
     {
       "filePath": "../SabbathText.CompensationAgent/SabbathText.CompensationAgent.csproj"
+    },
+    {
+      "filePath": "../SabbathText.Runner/SabbathText.Runner.csproj"
     }
   ]
 }
