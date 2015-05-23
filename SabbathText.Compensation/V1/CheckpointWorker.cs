@@ -1,11 +1,10 @@
-﻿namespace SabbathText.V1
+﻿namespace SabbathText.Compensation.V1
 {
     using System;
     using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
     using QueueStorage;
-    using SabbathText.Compensation.V1;
 
     /// <summary>
     /// A worker that processes the pending checkpoints
