@@ -14,8 +14,6 @@
     {
         private static KeyValueStore<AccountEntity> accountStore;
         private static KeyValueStore<MessageEntity> messageStore;
-        private static KeyValueStore<LocationEntity> locationStore;
-        private static KeyValueStore<ZipCodeAccountIdIndex> zipCodeAccountIdIndices;
         private static KeyValueStore<Checkpoint> checkpointStore;
         private static EnvironmentSettings environmentSettings;
         private static CompensationClient compensationClient;
@@ -43,17 +41,7 @@
         /// Gets or sets the message store.
         /// </summary>
         public KeyValueStore<MessageEntity> MessageStore { get; set; }
-
-        /// <summary>
-        /// Gets or sets the location store.
-        /// </summary>
-        public KeyValueStore<LocationEntity> LocationStore { get; set; }
-
-        /// <summary>
-        /// Gets or sets the ZIP code - account ID index store.
-        /// </summary>
-        public KeyValueStore<ZipCodeAccountIdIndex> ZipCodeAccountIdIndices { get; set; }
-
+        
         /// <summary>
         /// Gets or sets the checkpoint store.
         /// </summary>
@@ -88,8 +76,6 @@
             environmentSettings = settings;
             accountStore = KeyValueStore<AccountEntity>.Create(settings.AccountStoreConfiguration);
             messageStore = KeyValueStore<MessageEntity>.Create(settings.MessageStoreConfiguration);
-            locationStore = KeyValueStore<LocationEntity>.Create(settings.LocationStoreConfiguration);
-            zipCodeAccountIdIndices = KeyValueStore<ZipCodeAccountIdIndex>.Create(settings.ZipCodeAccountIdIndexStoreConfiguration);
             checkpointStore = KeyValueStore<Checkpoint>.Create(settings.CheckpointStoreConfiguration);
             checkpointQueue = QueueStore.Create(settings.CheckpointQueueConfiguration);
             compensationClient = new CompensationClient(checkpointStore, checkpointQueue, settings.CheckpointVisibilityTimeout);
@@ -110,10 +96,8 @@
                 CheckpointStore = checkpointStore,
                 CompensationClient = compensationClient,
                 Settings = environmentSettings,
-                LocationStore = locationStore,
                 MessageClient = messageClient,
                 MessageStore = messageStore,
-                ZipCodeAccountIdIndices = zipCodeAccountIdIndices,
             };
 
             if (CreateFunc == null)

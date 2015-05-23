@@ -102,7 +102,6 @@
                     // the ZIP code has not been updated
                     this.Context.Account.ZipCode = zipCode;
                     await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
-                    await this.IndexZipCode();
 
                     outgoingMessage = Message.CreateZipCodeUpdated(this.Context.Account.PhoneNumber, location);
                 }
@@ -115,21 +114,7 @@
 
             return await this.TranstitionToUpdateAccount(outgoingMessage);
         }
-
-        private async Task IndexZipCode()
-        {
-            LocationEntity location = new LocationEntity { ZipCode = this.Context.Account.ZipCode };
-            await this.Bag.LocationStore.InsertOrGet(location, this.Context.CancellationToken);
-
-            ZipCodeAccountIdIndex index = new ZipCodeAccountIdIndex
-            {
-                ZipCode = this.Context.Account.ZipCode,
-                AccountId = this.Context.Account.AccountId,
-            };
-
-            await this.Bag.ZipCodeAccountIdIndices.InsertOrGet(index, this.Context.CancellationToken);
-        }
-
+        
         private async Task<OperationResponse<bool>> TranstitionToUpdateAccount(Message outgoingMessage)
         {
             this.checkpointData.State = GenericOperationState.UpdatingAccount;
