@@ -61,6 +61,7 @@
                     return;
                 }
             }
+
             message.ExternalId = Guid.NewGuid().ToString();
             string messageStr = JsonConvert.SerializeObject(message, Formatting.Indented);
             this.messages.Add(messageStr);

@@ -124,7 +124,6 @@
 
             await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
-
             return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, true);
         }
     }
