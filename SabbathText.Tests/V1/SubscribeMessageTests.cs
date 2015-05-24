@@ -8,7 +8,7 @@
     /// Test cases for subscribe messages
     /// </summary>
     [TestClass]
-    public class SubscribeMessageTests : ProcessMessageOperationTests
+    public class SubscribeMessageTests : TestBase
     {
         /// <summary>
         /// Tests an incoming "subscribe" message after greeting the users

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Net;
     using System.Threading;
     using KeyValueStorage;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,8 +26,8 @@
         [TestInitialize]
         public void TestInit()
         {
-            GoodieBag bag = GoodieBag.Create();
-            ((InMemoryQueueStore)bag.CheckpointQueue).Clear();
+            GoodieBag.Initialize(new TestEnvironmentSettings());
+
             this.fakeClock = new FakeClockScope();
         }
 
@@ -139,7 +140,7 @@
                 new OperationCheckpointHandler());
             Assert.AreEqual(TimeSpan.Zero, worker.RunIteration(CancellationToken.None).Result);
         }
-        
+
         /// <summary>
         /// Ensures that the last message sent to the user has a particular template.
         /// </summary>
@@ -183,6 +184,73 @@
                 expectedCount,
                 count,
                 string.Format("The phone number {0} is expected to have {1} {2} messages. Actual count: {3}", phoneNumber, expectedCount, template, count));
+        }
+
+        /// <summary>
+        /// Creates an incoming message.
+        /// </summary>
+        /// <param name="sender">The sender phone number.</param>
+        /// <param name="body">The message body.</param>
+        /// <returns>The message.</returns>
+        protected static Message CreateIncomingMessage(string sender, string body)
+        {
+            return new Message
+            {
+                Body = body,
+                ExternalId = Guid.NewGuid().ToString(),
+                Recipient = null,
+                Sender = sender,
+                Template = MessageTemplate.FreeForm,
+                Timestamp = Clock.UtcNow,
+            };
+        }
+
+        /// <summary>
+        /// Sends a greeting message to a specific account.
+        /// </summary>
+        /// <param name="account">The account.</param>
+        protected static void GreetUser(AccountEntity account)
+        {
+            OperationContext context = CreateContext(account);
+            GreetUserOperation operation = new GreetUserOperation(context);
+            OperationResponse<bool> response = operation.Run().Result;
+            Assert.AreEqual<HttpStatusCode>(HttpStatusCode.Accepted, response.StatusCode);
+            RunCheckpointWorker();
+        }
+
+        /// <summary>
+        /// Inspect an <see cref="InspectAccountOperation"/> and pushes it to finish by invoking the compensation agent.
+        /// </summary>
+        /// <param name="account">The account</param>
+        protected static void InspectAccount(AccountEntity account)
+        {
+            OperationContext context = CreateContext(account);
+            InspectAccountOperation operation = new InspectAccountOperation(context);
+            OperationResponse<bool> response = operation.Run().Result;
+            Assert.AreEqual<HttpStatusCode>(HttpStatusCode.Accepted, response.StatusCode);
+            RunCheckpointWorker();
+        }
+
+        /// <summary>
+        /// Processes an incoming message.
+        /// </summary>
+        /// <param name="accountId">The account ID.</param>
+        /// <param name="incomingMessage">The incoming message.</param>
+        protected static void ProcessMessage(string accountId, Message incomingMessage)
+        {
+            AccountEntity account =
+                GoodieBag.Create().AccountStore.Get(AccountEntity.GetReferenceById(accountId), CancellationToken.None).Result;
+
+            OperationContext context = CreateContext(account);
+            MessageProcessor processor = new MessageProcessor();
+            processor.Process(context, incomingMessage).Wait();
+
+            RunCheckpointWorker();
+        }
+
+        protected static void GoToDay(DayOfWeek dayOfWeek)
+        {
+
         }
     }
 }

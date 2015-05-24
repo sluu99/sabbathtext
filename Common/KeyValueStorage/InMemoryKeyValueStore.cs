@@ -228,6 +228,14 @@
         }
 
         /// <summary>
+        /// Clears the entity store
+        /// </summary>
+        public void Clear()
+        {
+            this.entities.Clear();
+        }
+
+        /// <summary>
         /// Hash the entity keys with the following scheme:
         /// SHA256(partitionKey) + "::" + SHA256(rowKey)
         /// </summary>

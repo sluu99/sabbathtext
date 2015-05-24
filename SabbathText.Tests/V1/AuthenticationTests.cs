@@ -14,7 +14,7 @@
     /// Authentication test cases
     /// </summary>
     [TestClass]
-    public class AuthenticationTests : ProcessMessageOperationTests
+    public class AuthenticationTests : TestBase
     {
         /// <summary>
         /// Tests begin authentication success scenario

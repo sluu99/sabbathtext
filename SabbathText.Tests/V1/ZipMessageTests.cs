@@ -10,7 +10,7 @@
     /// Test cases for ZIP messages.
     /// </summary>
     [TestClass]
-    public class ZipMessageTests : ProcessMessageOperationTests
+    public class ZipMessageTests : TestBase
     {
         /// <summary>
         /// Tests the first time a user updates the ZIP code after subscribing
