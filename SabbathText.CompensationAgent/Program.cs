@@ -25,7 +25,7 @@
         /// </summary>
         /// <param name="args">The application argument</param>
         public static void Main(string[] args)
-        {
+        {            
             new Program().Run();
         }
 
@@ -34,28 +34,30 @@
         /// </summary>
         public void Run()
         {
-            this.cancellationToken = new CancellationTokenSource();
             GoodieBag.Initialize(EnvironmentSettings.Create());
             GoodieBag bag = GoodieBag.Create();
-
-            Console.CancelKeyPress += this.CancelKeyPress;
-            TraceListener traceListener = new ConsoleTraceListener();
             
+            // setup tracing
+            TraceListener traceListener = new ConsoleTraceListener();
+            if (bag.Settings.WorkersUseConsoleTrace)
+            {
+                Trace.Listeners.Add(traceListener);
+            }
+
+            // setup shutdown signals
+            Console.CancelKeyPress += this.CancelKeyPress;
+            this.StartWatchingShutdownFile();
+
             try
             {
-                if (bag.Settings.WorkersUseConsoleTrace)
-                {
-                    Trace.Listeners.Add(traceListener);
-                }
-
-                this.StartWatchingShutdownFile();
-
                 Trace.TraceInformation("Compensation Agent started on " + Environment.MachineName);
 
                 CheckpointWorker worker = new CheckpointWorker(
                     bag.CompensationClient,
                     bag.Settings.CheckpointWorkerIdleDelay,
                     new OperationCheckpointHandler());
+
+                this.cancellationToken = new CancellationTokenSource();
                 worker.Run(bag.Settings.CheckpointWorkerIdleDelay, this.cancellationToken.Token).Wait();
             }
             finally

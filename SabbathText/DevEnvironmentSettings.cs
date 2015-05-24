@@ -63,6 +63,14 @@
             }
         }
 
+        /// <summary>
+        /// Gets the delay between account partition for the runner
+        /// </summary>
+        public override TimeSpan RunnerPartitionDelay
+        {
+            get { return TimeSpan.FromSeconds(0.2); }
+        }
+
         private static Dictionary<string, string> DecryptSecrets()
         {
             string certPath = Path.Combine(

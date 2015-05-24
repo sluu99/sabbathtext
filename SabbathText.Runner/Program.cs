@@ -1,15 +1,9 @@
-﻿namespace SabbathText.CompensationAgent
+﻿namespace SabbathText.Runner
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
-    using System.Linq;
-    using System.Text;
     using System.Threading;
-    using System.Threading.Tasks;
-    using SabbathText.Compensation.V1;
-    using SabbathText.V1;
 
     /// <summary>
     /// The main program
@@ -34,29 +28,28 @@
         /// </summary>
         public void Run()
         {
-            this.cancellationToken = new CancellationTokenSource();
             GoodieBag.Initialize(EnvironmentSettings.Create());
             GoodieBag bag = GoodieBag.Create();
 
-            Console.CancelKeyPress += this.CancelKeyPress;
+            // setup tracing
             TraceListener traceListener = new ConsoleTraceListener();
-            
+            if (bag.Settings.WorkersUseConsoleTrace)
+            {
+                Trace.Listeners.Add(traceListener);
+            }
+
+            // setup shutdown signals
+            Console.CancelKeyPress += this.CancelKeyPress;
+            this.StartWatchingShutdownFile();
+
             try
             {
-                if (bag.Settings.WorkersUseConsoleTrace)
-                {
-                    Trace.Listeners.Add(traceListener);
-                }                
-
-                this.StartWatchingShutdownFile();
-
                 Trace.TraceInformation("Runner started on " + Environment.MachineName);
 
-                while (this.cancellationToken.IsCancellationRequested == false)
-                {
-                    Trace.TraceInformation("Hello from runner" + Clock.UtcNow);
-                    Thread.Sleep(10000);
-                }
+                AccountRunner runner = new AccountRunner();
+
+                this.cancellationToken = new CancellationTokenSource();
+                runner.Run(bag.Settings.CheckpointWorkerIdleDelay, this.cancellationToken.Token).Wait();
             }
             finally
             {

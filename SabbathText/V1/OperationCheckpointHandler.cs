@@ -70,6 +70,8 @@
                     await bag.CompensationClient.UpdateCheckpoint(checkpoint, cancellationToken);
                 }
             }
+
+            Trace.TraceInformation("Processing checkpoint {0}/{1}", checkpoint.PartitionKey, checkpoint.RowKey);
                         
             AccountEntity account =
                 await bag.AccountStore.Get(AccountEntity.GetReferenceById(checkpoint.AccountId), cancellationToken);
@@ -106,6 +108,13 @@
                 case "BeginAuthOperation.V1":
                     {
                         BeginAuthOperation operation = new BeginAuthOperation(context);
+                        await operation.Resume(checkpoint);
+                        break;
+                    }
+
+                case "InspectAccountOperation.V1":
+                    {
+                        InspectAccountOperation operation = new InspectAccountOperation(context);
                         await operation.Resume(checkpoint);
                         break;
                     }

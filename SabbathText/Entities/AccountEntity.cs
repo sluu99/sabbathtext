@@ -162,7 +162,7 @@
                 return null;
             }
 
-            return accountId.Substring(0, 4).ToUpperInvariant();
+            return accountId.Substring(0, 2).ToUpperInvariant();
         }
 
         private static string GetRowKey(string accountId)

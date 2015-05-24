@@ -292,6 +292,14 @@
         }
 
         /// <summary>
+        /// Gets the delay between account partition for the runner
+        /// </summary>
+        public virtual TimeSpan RunnerPartitionDelay
+        {
+            get { return TimeSpan.FromSeconds(0.5); }
+        }
+
+        /// <summary>
         /// Creates a new instance of <see cref="EnvironmentSettings"/> based on the environment name.
         /// </summary>
         /// <param name="environmentName">
