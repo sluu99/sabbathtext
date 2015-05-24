@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using KeyValueStorage;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SabbathText.Entities;
 
@@ -14,6 +15,47 @@
     [TestClass]
     public class InspectAccountTests : TestBase
     {
+        /// <summary>
+        /// Tests that the operation archives messages
+        /// </summary>
+        [TestMethod]
+        public void InspectAccount_ArchiveMessage()
+        {
+            GoodieBag bag = GoodieBag.Create();
+            AccountEntity account = CreateAccount();
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
+
+            string seattle = "98104";
+            string orlando = "32803";
+
+            for (int i = 0; i < bag.Settings.RecentMessageThreshold / 4; i++)
+            {
+                // each iteration will have create 2 incoming messages and 2 outgoing messages
+                ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "zip " + seattle));
+                ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "zip " + orlando));
+            }
+
+            account = GetAccount(account.AccountId);
+            Assert.AreEqual(
+                bag.Settings.RecentMessageThreshold + 2,
+                account.RecentMessages.Count,
+                "The account does not have enough recent messages");
+
+            InspectAccount(account.AccountId);
+            account = GetAccount(account.AccountId);
+            Assert.AreEqual(
+                bag.Settings.RecentMessageThreshold,
+                account.RecentMessages.Count,
+                "The account should have recent messages at the threshold");
+            AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated);
+
+            InMemoryKeyValueStore<MessageEntity> messageStore = (InMemoryKeyValueStore<MessageEntity>)bag.MessageStore;
+            Assert.AreEqual(
+                2,
+                messageStore.Entities.Count,
+                "The message store should have 2 archived messages");
+        }
+
         /// <summary>
         /// Tests that the operation sends out Sabbath message for Redmond
         /// </summary>
@@ -78,7 +120,7 @@
             DateTime nextSabbathUtc = ClockHelper.GetSabbathStartTime(zipCode);
             ClockHelper.GoTo(nextSabbathUtc + TimeSpan.FromSeconds(1));
 
-            InspectAccount(account);
+            InspectAccount(account.AccountId);
 
             AssertLastSentMessage(account.AccountId, MessageTemplate.SabbathText);
         }
@@ -93,7 +135,7 @@
             DateTime nextSabbathUtc = ClockHelper.GetSabbathStartTime(zipCode);
             ClockHelper.GoTo(nextSabbathUtc - TimeSpan.FromSeconds(15));
 
-            InspectAccount(account);
+            InspectAccount(account.AccountId);
 
             AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated);
         }
@@ -108,7 +150,7 @@
             DateTime nextSabbathUtc = ClockHelper.GetSabbathStartTime(zipCode);
             ClockHelper.GoTo(nextSabbathUtc + GoodieBag.Create().Settings.SabbathTextGracePeriod - TimeSpan.FromSeconds(15));
 
-            InspectAccount(account);
+            InspectAccount(account.AccountId);
 
             AssertLastSentMessage(account.AccountId, MessageTemplate.SabbathText);
         }

@@ -221,10 +221,10 @@
         /// <summary>
         /// Inspect an <see cref="InspectAccountOperation"/> and pushes it to finish by invoking the compensation agent.
         /// </summary>
-        /// <param name="account">The account</param>
-        protected static void InspectAccount(AccountEntity account)
+        /// <param name="accountId">The account ID</param>
+        protected static void InspectAccount(string accountId)
         {
-            OperationContext context = CreateContext(account);
+            OperationContext context = CreateContext(GetAccount(accountId));
             InspectAccountOperation operation = new InspectAccountOperation(context);
             OperationResponse<bool> response = operation.Run().Result;
             Assert.AreEqual<HttpStatusCode>(HttpStatusCode.Accepted, response.StatusCode);

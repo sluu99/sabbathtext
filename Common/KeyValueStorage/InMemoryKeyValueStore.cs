@@ -18,14 +18,14 @@
         where T : KeyValueEntity
     {
         /// <summary>
-        /// The internal storage
-        /// </summary>
-        private SortedDictionary<string, string> entities;
-
-        /// <summary>
         /// The SHA265 hashing provider
         /// </summary>
         private SHA256 sha256;
+
+        /// <summary>
+        /// The internal storage
+        /// </summary>
+        public SortedDictionary<string, string> Entities { get; set; }
 
         /// <summary>
         /// Gets an entity
@@ -38,19 +38,19 @@
         {
             string key = this.HashEntityKeys(partitionKey, rowKey);
 
-            if (!this.entities.ContainsKey(key))
+            if (!this.Entities.ContainsKey(key))
             {
                 return Task.FromResult<T>(null);
             }
 
-            lock (this.entities)
+            lock (this.Entities)
             {
-                if (!this.entities.ContainsKey(key))
+                if (!this.Entities.ContainsKey(key))
                 {
                     return Task.FromResult<T>(null);
                 }
 
-                return Task.FromResult(JsonConvert.DeserializeObject<T>(this.entities[key]));
+                return Task.FromResult(JsonConvert.DeserializeObject<T>(this.Entities[key]));
             }
         }
 
@@ -84,7 +84,7 @@
 
             PagedResult<T> pagedResult = new PagedResult<T>(take);
             pagedResult.Entities.AddRange(
-                this.entities
+                this.Entities
                 .Where(kv => kv.Key.StartsWith(partitionKeyPrefix))
                 .Skip(skip)
                 .Take(take)
@@ -114,14 +114,14 @@
 
             string key = this.HashEntityKeys(entity.PartitionKey, entity.RowKey);
 
-            if (this.entities.ContainsKey(key))
+            if (this.Entities.ContainsKey(key))
             {
                 throw new DuplicateKeyException();
             }
 
-            lock (this.entities)
+            lock (this.Entities)
             {
-                if (this.entities.ContainsKey(key))
+                if (this.Entities.ContainsKey(key))
                 {
                     throw new DuplicateKeyException();
                 }
@@ -129,7 +129,7 @@
                 entity.ETag = Guid.NewGuid().ToString();
                 entity.Timestamp = Clock.UtcNow;
 
-                this.entities.Add(key, JsonConvert.SerializeObject(entity));
+                this.Entities.Add(key, JsonConvert.SerializeObject(entity));
             }
 
             return Task.FromResult<object>(null);
@@ -150,19 +150,19 @@
 
             string key = this.HashEntityKeys(entity.PartitionKey, entity.RowKey);
 
-            if (!this.entities.ContainsKey(key))
+            if (!this.Entities.ContainsKey(key))
             {
                 throw new EntityNotFoundException(string.Format(CultureInfo.InvariantCulture, "Entity {0}/{1} does not exist", entity.PartitionKey, entity.RowKey));
             }
 
-            lock (this.entities)
+            lock (this.Entities)
             {
-                if (!this.entities.ContainsKey(key))
+                if (!this.Entities.ContainsKey(key))
                 {
                     throw new EntityNotFoundException(string.Format(CultureInfo.InvariantCulture, "Entity {0}/{1} does not exist", entity.PartitionKey, entity.RowKey));
                 }
 
-                T existingEntity = JsonConvert.DeserializeObject<T>(this.entities[key]);
+                T existingEntity = JsonConvert.DeserializeObject<T>(this.Entities[key]);
 
                 if (existingEntity.ETag != entity.ETag)
                 {
@@ -172,7 +172,7 @@
                 entity.ETag = Guid.NewGuid().ToString();
                 entity.Timestamp = Clock.UtcNow;
 
-                this.entities[key] = JsonConvert.SerializeObject(entity);
+                this.Entities[key] = JsonConvert.SerializeObject(entity);
             }
 
             return Task.FromResult<object>(null);
@@ -193,26 +193,26 @@
 
             string key = this.HashEntityKeys(entity.PartitionKey, entity.RowKey);
 
-            if (!this.entities.ContainsKey(key))
+            if (!this.Entities.ContainsKey(key))
             {
                 throw new EntityNotFoundException(string.Format(CultureInfo.InvariantCulture, "Entity {0}/{1} does not exist", entity.PartitionKey, entity.RowKey));
             }
 
-            lock (this.entities)
+            lock (this.Entities)
             {
-                if (!this.entities.ContainsKey(key))
+                if (!this.Entities.ContainsKey(key))
                 {
                     throw new EntityNotFoundException(string.Format(CultureInfo.InvariantCulture, "Entity {0}/{1} does not exist", entity.PartitionKey, entity.RowKey));
                 }
 
-                T existingEntity = JsonConvert.DeserializeObject<T>(this.entities[key]);
+                T existingEntity = JsonConvert.DeserializeObject<T>(this.Entities[key]);
 
                 if (existingEntity.ETag != entity.ETag)
                 {
                     throw new ETagMismatchException();
                 }
 
-                this.entities.Remove(key);
+                this.Entities.Remove(key);
             }
 
             return Task.FromResult<object>(null);
@@ -223,7 +223,7 @@
         /// </summary>
         public void InitMemory()
         {
-            this.entities = new SortedDictionary<string, string>();
+            this.Entities = new SortedDictionary<string, string>();
             this.sha256 = SHA256CryptoServiceProvider.Create();
         }
 
@@ -232,7 +232,7 @@
         /// </summary>
         public void Clear()
         {
-            this.entities.Clear();
+            this.Entities.Clear();
         }
 
         /// <summary>
