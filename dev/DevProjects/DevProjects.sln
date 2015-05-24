@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecretUI", "SecretUI.csproj", "{B0BEEA6B-605D-46CF-A87D-C673868EECFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText", "..\..\SabbathText\SabbathText.csproj", "{AB2BF8A3-020E-4CF6-B47A-E2A2C91DE503}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyValueStorage", "..\..\Common\KeyValueStorage\KeyValueStorage.csproj", "{BAEAC47D-EA85-4A29-9651-A48AE1CC31E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System2", "..\..\Common\System2\System2.csproj", "{88035141-476B-4625-A5DF-738509B58E99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueStorage", "..\..\Common\QueueStorage\QueueStorage.csproj", "{C6CC3315-77E5-48F0-BEAE-E4AE8C584983}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core References", "Core References", "{D5A5A424-0545-4C8C-B66C-EB831F9651C0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B0BEEA6B-605D-46CF-A87D-C673868EECFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0BEEA6B-605D-46CF-A87D-C673868EECFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0BEEA6B-605D-46CF-A87D-C673868EECFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0BEEA6B-605D-46CF-A87D-C673868EECFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB2BF8A3-020E-4CF6-B47A-E2A2C91DE503}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB2BF8A3-020E-4CF6-B47A-E2A2C91DE503}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB2BF8A3-020E-4CF6-B47A-E2A2C91DE503}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB2BF8A3-020E-4CF6-B47A-E2A2C91DE503}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAEAC47D-EA85-4A29-9651-A48AE1CC31E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAEAC47D-EA85-4A29-9651-A48AE1CC31E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAEAC47D-EA85-4A29-9651-A48AE1CC31E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAEAC47D-EA85-4A29-9651-A48AE1CC31E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88035141-476B-4625-A5DF-738509B58E99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88035141-476B-4625-A5DF-738509B58E99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88035141-476B-4625-A5DF-738509B58E99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88035141-476B-4625-A5DF-738509B58E99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6CC3315-77E5-48F0-BEAE-E4AE8C584983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6CC3315-77E5-48F0-BEAE-E4AE8C584983}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6CC3315-77E5-48F0-BEAE-E4AE8C584983}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6CC3315-77E5-48F0-BEAE-E4AE8C584983}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AB2BF8A3-020E-4CF6-B47A-E2A2C91DE503} = {D5A5A424-0545-4C8C-B66C-EB831F9651C0}
+		{BAEAC47D-EA85-4A29-9651-A48AE1CC31E6} = {D5A5A424-0545-4C8C-B66C-EB831F9651C0}
+		{88035141-476B-4625-A5DF-738509B58E99} = {D5A5A424-0545-4C8C-B66C-EB831F9651C0}
+		{C6CC3315-77E5-48F0-BEAE-E4AE8C584983} = {D5A5A424-0545-4C8C-B66C-EB831F9651C0}
+	EndGlobalSection
+EndGlobal
