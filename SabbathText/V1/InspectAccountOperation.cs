@@ -81,35 +81,11 @@
             LocationInfo locationInfo = LocationInfo.FromZipCode(this.Context.Account.ZipCode);
             DateTime accountTime = locationInfo.LocalTime;
 
-            if (accountTime.DayOfWeek != DayOfWeek.Friday && accountTime.DayOfWeek != DayOfWeek.Saturday)
+            if (locationInfo.IsSabbath() == false)
             {
-                // Sabbath is only between Friday & Saturday
                 return await this.TransitionToArchiveMessages();
             }
-
-            // it is now either Friday or Saturday
-            // find the sun down time on Friday
-            DateTime friday = accountTime.Date;
-            if (friday.DayOfWeek == DayOfWeek.Saturday)
-            {
-                friday = friday.AddDays(-1);
-            }
-
-            TimeInfo timeInfo = TimeInfo.Create(this.Context.Account.ZipCode, friday);
-
-            if (timeInfo.SunSetUtc > Clock.UtcNow)
-            {
-                // Sabbath has not started yet
-                return await this.TransitionToArchiveMessages();
-            }
-
-            DateTime sabbathTextEndTime = timeInfo.SunSetUtc + this.Bag.Settings.SabbathTextGracePeriod;
-            if (Clock.UtcNow > sabbathTextEndTime)
-            {
-                // we have passed the Sabbath text grace period
-                return await this.TransitionToArchiveMessages();
-            }
-
+            
             string verseNumber;
             string verseContent;
             SelectBibleVerse(this.Context.Account.RecentVerses, out verseNumber, out verseContent);

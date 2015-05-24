@@ -247,17 +247,7 @@
         {
             get { return TimeSpan.FromDays(5); }
         }
-
-        /// <summary>
-        /// Gets the grace period for sending out Sabbath text.
-        /// With in this time span after Sabbath started,
-        /// we can still send out the Sabbath text.
-        /// </summary>
-        public TimeSpan SabbathTextGracePeriod
-        {
-            get { return TimeSpan.FromHours(22); }
-        }
-
+        
         /// <summary>
         /// Gets the amount of time to way before trying again,
         /// if the checkpoint worker did not find any message.

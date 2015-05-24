@@ -63,7 +63,7 @@
         /// Gets the goodie bag.
         /// </summary>
         protected GoodieBag Bag { get; private set; }
-
+        
         /// <summary>
         /// Try adding a message to the account.
         /// </summary>

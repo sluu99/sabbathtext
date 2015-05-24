@@ -8,6 +8,7 @@
     using KeyValueStorage;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SabbathText.Entities;
+    using SabbathText.Location.V1;
 
     /// <summary>
     /// Test cases for the inspect account operation
@@ -70,7 +71,8 @@
 
             for (int i = 0; i < 100; i++)
             {
-                ClockHelper.GoTo(ClockHelper.GetSabbathStartTime(zipCode));
+                DateTime sabbathEndsUtc;
+                ClockHelper.GoTo(ClockHelper.GetSabbathStartTime(zipCode, out sabbathEndsUtc));
 
                 InspectAccount(account.AccountId);
 
@@ -135,9 +137,9 @@
         /// Tests that the operation still sends out Sabbath message until the end of grace period
         /// </summary>
         [TestMethod]
-        public void InspectAccount_ShouldSendMessageDuringGracePeriod_Boston()
+        public void InspectAccount_ShouldSendMessageUntilSabbathEnds_Boston()
         {
-            this.InspectAccount_ShouldSendMessageDuringGracePeriod("02110");
+            this.InspectAccount_ShouldSendMessageUntilSabbathEnds("02110");
         }
 
         private void InspectAccount_SendMessageOnSabbath(string zipCode)
@@ -147,8 +149,9 @@
             ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "zip " + zipCode));
 
             // go to the next Sabbath
-            DateTime nextSabbathUtc = ClockHelper.GetSabbathStartTime(zipCode);
-            ClockHelper.GoTo(nextSabbathUtc + TimeSpan.FromSeconds(1));
+            DateTime sabbathEndsUtc;
+            DateTime nextSabbathUtc = ClockHelper.GetSabbathStartTime(zipCode, out sabbathEndsUtc);
+            ClockHelper.GoTo(nextSabbathUtc.AddSeconds(1));
 
             InspectAccount(account.AccountId);
 
@@ -162,23 +165,25 @@
             ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "zip " + zipCode));
 
             // go to 15 seconds before Sabbath
-            DateTime nextSabbathUtc = ClockHelper.GetSabbathStartTime(zipCode);
-            ClockHelper.GoTo(nextSabbathUtc - TimeSpan.FromSeconds(15));
+            DateTime sabbathEndsUtc;
+            DateTime nextSabbathUtc = ClockHelper.GetSabbathStartTime(zipCode, out sabbathEndsUtc);
+            ClockHelper.GoTo(nextSabbathUtc.AddSeconds(-15));
 
             InspectAccount(account.AccountId);
 
             AssertLastSentMessage(account.AccountId, MessageTemplate.SubscribedForZipCode);
         }
 
-        private void InspectAccount_ShouldSendMessageDuringGracePeriod(string zipCode)
+        private void InspectAccount_ShouldSendMessageUntilSabbathEnds(string zipCode)
         {
             AccountEntity account = CreateAccount();
             ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
             ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "zip " + zipCode));
 
-            // go to 15 seconds before grace period ends
-            DateTime nextSabbathUtc = ClockHelper.GetSabbathStartTime(zipCode);
-            ClockHelper.GoTo(nextSabbathUtc + GoodieBag.Create().Settings.SabbathTextGracePeriod - TimeSpan.FromSeconds(15));
+            // go to 15 seconds before Sabbath ends
+            DateTime sabbathEndsUtc;
+            DateTime nextSabbathUtc = ClockHelper.GetSabbathStartTime(zipCode, out sabbathEndsUtc);
+            ClockHelper.GoTo(sabbathEndsUtc.AddSeconds(-15));
 
             InspectAccount(account.AccountId);
 

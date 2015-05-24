@@ -12,8 +12,9 @@
         /// Gets the <see cref="DateTime"/> for the next Sabbath at a specific location.
         /// </summary>
         /// <param name="zipCode">The ZIP code of the location.</param>
+        /// <param name="sabbathEndTime">The Sabbath end time, in UTC</param>
         /// <returns>The time of the next Sabbath in UTC.</returns>
-        public static DateTime GetSabbathStartTime(string zipCode)
+        public static DateTime GetSabbathStartTime(string zipCode, out DateTime sabbathEndTime)
         {
             LocationInfo location = LocationInfo.FromZipCode(zipCode);
             
@@ -23,6 +24,8 @@
                 TimeInfo timeInfo = TimeInfo.Create(zipCode, location.LocalTime.Date);
                 if (Clock.UtcNow < timeInfo.SunSetUtc)
                 {
+                    // sunset of the next day
+                    sabbathEndTime = TimeInfo.Create(zipCode, timeInfo.SunSetDestination.Date.AddDays(1)).SunSetUtc;
                     return timeInfo.SunSetUtc;
                 }
             }
@@ -34,7 +37,11 @@
                 dayDelta = 7 + dayDelta;
             }
 
-            return TimeInfo.Create(zipCode, location.LocalTime.Date.AddDays(dayDelta)).SunSetUtc;
+            TimeInfo sabbathTimeInfo = TimeInfo.Create(zipCode, location.LocalTime.Date.AddDays(dayDelta));
+
+            // sunset of the next day
+            sabbathEndTime = TimeInfo.Create(zipCode, sabbathTimeInfo.SunSetDestination.Date.AddDays(1)).SunSetUtc;
+            return sabbathTimeInfo.SunSetUtc;            
         }
 
         /// <summary>
