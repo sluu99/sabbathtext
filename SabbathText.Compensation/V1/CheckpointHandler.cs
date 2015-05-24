@@ -13,7 +13,7 @@ using System.Threading.Tasks;
         /// </summary>
         /// <param name="checkpoint">The checkpoint</param>
         /// <param name="cancellationToken">The cancellation token</param>
-        /// <returns>The operation task</returns>
-        public abstract Task Finish(Checkpoint checkpoint, CancellationToken cancellationToken);
+        /// <returns>Whether the checkpoint got processed</returns>
+        public abstract Task<bool> Finish(Checkpoint checkpoint, CancellationToken cancellationToken);
     }
 }

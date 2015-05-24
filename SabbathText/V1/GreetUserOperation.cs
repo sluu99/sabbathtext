@@ -73,7 +73,7 @@
             }
 
             this.checkpointData.OperationState = GreetUserOperationState.SendingMessage;
-            return this.DelayProcessingCheckpoint(
+            return this.HandOffCheckpoint(
                 TimeSpan.Zero,
                 this.checkpointData,
                 HttpStatusCode.Accepted,
@@ -95,7 +95,7 @@
             this.checkpointData.MessageEntityId = Guid.NewGuid().ToString();
 
             return
-                await this.CreateOrUpdateCheckpoint(this.checkpointData) ??
+                await this.SetCheckpoint(this.checkpointData) ??
                 await this.EnterUpdatingAccount();
         }
 

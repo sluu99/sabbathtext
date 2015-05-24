@@ -76,6 +76,8 @@
             OperationResponse<bool> response = operation.Run().Result;
 
             Assert.AreEqual(HttpStatusCode.Accepted, response.StatusCode);
+
+            // wait 1 second to make sure the compensation agent can pick up the queue item
             RunCheckpointWorker();
 
             OperationContext context2 = CreateContext(GetAccount(account.AccountId));

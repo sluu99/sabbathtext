@@ -1,11 +1,11 @@
 ﻿namespace SabbathText.Compensation.V1
 {
     using System;
-using System.Globalization;
-using KeyValueStorage;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using QueueStorage;
+    using System.Globalization;
+    using KeyValueStorage;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
+    using QueueStorage;
 
     /// <summary>
     /// Checkpoint status
@@ -32,11 +32,6 @@ using QueueStorage;
         /// The operation is in the process of rolling back
         /// </summary>
         Cancelling,
-
-        /// <summary>
-        /// The operation is marked to continue later
-        /// </summary>
-        DelayedProcessing,
     }
 
     /// <summary>
@@ -68,11 +63,6 @@ using QueueStorage;
         /// Gets or sets the checkpoint data
         /// </summary>
         public string CheckpointData { get; set; }
-
-        /// <summary>
-        /// Gets or sets the time when the checkpoint can be processed
-        /// </summary>
-        public DateTime? ProcessAfter { get; set; }
 
         /// <summary>
         /// Gets the queue message associated with the checkpoint

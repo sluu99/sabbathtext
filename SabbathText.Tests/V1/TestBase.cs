@@ -17,6 +17,8 @@
     [TestClass]
     public abstract class TestBase
     {
+        private FakeClockScope fakeClock;
+
         /// <summary>
         /// Runs before each test case begins
         /// </summary>
@@ -25,6 +27,16 @@
         {
             GoodieBag bag = GoodieBag.Create();
             ((InMemoryQueueStore)bag.CheckpointQueue).Clear();
+            this.fakeClock = new FakeClockScope();
+        }
+
+        /// <summary>
+        /// Clean up after test cases
+        /// </summary>
+        [TestCleanup]
+        public void TestCleanUp()
+        {
+            this.fakeClock.Dispose();
         }
 
         /// <summary>
@@ -116,6 +128,9 @@
         /// </summary>
         protected static void RunCheckpointWorker()
         {
+            // wait 1 second to make sure hand off items can be picked up
+            Clock.Delay(TimeSpan.FromSeconds(1)).Wait();
+
             GoodieBag bag = GoodieBag.Create();
 
             CheckpointWorker worker = new CheckpointWorker(

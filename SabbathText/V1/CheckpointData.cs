@@ -16,7 +16,7 @@
         {
             if (string.IsNullOrWhiteSpace(accountId))
             {
-                throw new ArgumentException("The account ID is requireD", "accountId");
+                throw new ArgumentException("The account ID is required", "accountId");
             }
 
             this.AccountId = accountId;
@@ -26,6 +26,16 @@
         /// Gets or sets the account ID associated with the checkpoint.
         /// </summary>
         public string AccountId { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the time when the checkpoint can be processed
+        /// </summary>
+        public DateTime? ProcessAfter { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value indicating whether the checkpoint was handed off to compensation processing.
+        /// </summary>
+        public bool IsHandOffProcessing { get; set; }
     }
 
     /// <summary>

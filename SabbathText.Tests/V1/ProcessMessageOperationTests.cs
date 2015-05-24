@@ -58,6 +58,7 @@
             OperationContext context = CreateContext(account);
             MessageProcessor processor = new MessageProcessor();
             processor.Process(context, incomingMessage).Wait();
+
             RunCheckpointWorker();
         }
     }

@@ -65,7 +65,7 @@
         {
             this.checkpointData.OperationState = GenericOperationState.ProcessingMessage;
             this.checkpointData.IncomingMessage = incomingMessage;
-            return this.DelayProcessingCheckpoint(TimeSpan.Zero, this.checkpointData, HttpStatusCode.Accepted, true);
+            return this.HandOffCheckpoint(TimeSpan.Zero, this.checkpointData, HttpStatusCode.Accepted, true);
         }
 
         private async Task<OperationResponse<bool>> EnterProcessMessage()
@@ -84,7 +84,7 @@
             this.checkpointData.AuthKey = authKey;
 
             return
-                await this.CreateOrUpdateCheckpoint(this.checkpointData) ??
+                await this.SetCheckpoint(this.checkpointData) ??
                 await this.EnterSendMessage();
         }
 
@@ -115,7 +115,7 @@
             this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
 
             return
-                await this.CreateOrUpdateCheckpoint(this.checkpointData) ??
+                await this.SetCheckpoint(this.checkpointData) ??
                 await this.EnterUpdateAccountMessages();
         }
 

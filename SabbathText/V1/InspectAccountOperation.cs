@@ -40,7 +40,7 @@
         private Task<OperationResponse<bool>> TransitionToCheckSabbath()
         {
             this.checkpointData.State = InspectAccountOperationState.CheckingSabbath;
-            return this.DelayProcessingCheckpoint(
+            return this.HandOffCheckpoint(
                 TimeSpan.Zero,
                 this.checkpointData,
                 HttpStatusCode.Accepted,
@@ -107,7 +107,7 @@
             this.checkpointData.SabbathMesage = sabbathMessage;
 
             return
-                await this.CreateOrUpdateCheckpoint(this.checkpointData) ??
+                await this.SetCheckpoint(this.checkpointData) ??
                 await this.EnterStoreSabbathText();
         }
 

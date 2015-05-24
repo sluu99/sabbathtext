@@ -61,7 +61,7 @@
             this.checkpointData.State = GenericOperationState.ProcessingMessage;
             this.checkpointData.CurrentZipCode = this.Context.Account.ZipCode;
 
-            return this.DelayProcessingCheckpoint(
+            return this.HandOffCheckpoint(
                 TimeSpan.Zero,
                 this.checkpointData,
                 HttpStatusCode.Accepted,
@@ -123,7 +123,7 @@
             this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
 
             return
-                await this.CreateOrUpdateCheckpoint(this.checkpointData) ??
+                await this.SetCheckpoint(this.checkpointData) ??
                 await this.EnterUpdateAccount();
         }
 
