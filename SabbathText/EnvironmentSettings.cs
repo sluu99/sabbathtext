@@ -296,7 +296,7 @@
         /// </summary>
         public virtual TimeSpan RunnerPartitionDelay
         {
-            get { return TimeSpan.FromSeconds(0.5); }
+            get { return TimeSpan.FromSeconds(1); }
         }
 
         /// <summary>
