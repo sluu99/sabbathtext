@@ -56,6 +56,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\System2\System2.csproj">
+      <Project>{88035141-476b-4625-a5df-738509b58e99}</Project>
+      <Name>System2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SabbathText.Location\SabbathText.Location.csproj">
       <Project>{8434442e-36ae-4b1e-b37f-4cc89b4839dd}</Project>
       <Name>SabbathText.Location</Name>

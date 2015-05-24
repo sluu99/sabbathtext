@@ -1,6 +1,8 @@
 ﻿namespace SabbathText.Location.V1
 {
-    using System.Collections.Generic;
+    using System;
+using System.Collections.Generic;
+    using NodaTime;
 
     /// <summary>
     /// This class contains information about a specific location.
@@ -46,6 +48,18 @@
         /// Gets the location longitude.
         /// </summary>
         public double Longitude { get; internal set; }
+
+        /// <summary>
+        /// Gets the current time at the location
+        /// </summary>
+        public DateTime LocalTime
+        {
+            get
+            {
+                DateTimeZone timeZone = DateTimeZoneProviders.Tzdb[this.TimeZoneName];
+                return Instant.FromDateTimeUtc(Clock.UtcNow).InZone(timeZone).ToDateTimeUnspecified();
+            }
+        }
 
         /// <summary>
         /// Gets a <see cref="LocationInfo"/> instance from the ZIP Code.

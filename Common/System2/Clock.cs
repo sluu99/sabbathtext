@@ -26,13 +26,13 @@
         /// <summary>
         /// The amount of time offset from the real time
         /// </summary>
-        private static TimeSpan fakeClockOffset = TimeSpan.Zero;
+        private static TimeSpan clockOffset = TimeSpan.Zero;
 
         /// <summary>
-        /// Indicates whether the clock can change modes
+        /// The frozen time
         /// </summary>
-        private static bool frozen = false;
-
+        private static DateTime? frozenTime = null;
+        
         /// <summary>
         /// Gets the current UTC date time
         /// </summary>
@@ -42,7 +42,13 @@
             {
                 if (fakeClock)
                 {
-                    return DateTime.UtcNow + fakeClockOffset;
+                    DateTime now = DateTime.UtcNow;
+                    if (frozenTime != null)
+                    {
+                        now = frozenTime.Value;
+                    }
+
+                    return now + clockOffset;
                 }
 
                 return DateTime.UtcNow;
@@ -72,11 +78,6 @@
         /// </summary>
         internal static void UseSystemClock()
         {
-            if (frozen)
-            {
-                throw new ApplicationException("Cannot change clock mode when it is frozen");
-            }
-
             fakeClock = false;
         }
 
@@ -85,20 +86,16 @@
         /// </summary>
         internal static void UseFakeClock()
         {
-            if (frozen)
-            {
-                throw new ApplicationException("Cannot change clock mode when it is frozen");
-            }
-
             fakeClock = true;
         }
 
         /// <summary>
-        /// Freezes the clock, which prevents mode switching between system clock and fake clock
+        /// Freezes the clock at a specific point of time
         /// </summary>
-        public static void Freeze()
+        /// <param name="dateTime">The date time to be frozen at.</param>
+        public static void Freeze(DateTime dateTime)
         {
-            frozen = true;
+            frozenTime = dateTime;
         }
 
         /// <summary>
@@ -107,7 +104,12 @@
         /// <param name="offset">The offset to be added</param>
         public static void RollClock(TimeSpan offset)
         {
-            fakeClockOffset += offset;
+            if (offset < TimeSpan.Zero)
+            {
+                throw new ArgumentException("Cannot the clock backward.", "offset");
+            }
+
+            clockOffset += offset;
         }
 
         /// <summary>
@@ -115,7 +117,8 @@
         /// </summary>
         public static void ResetClock()
         {
-            fakeClockOffset = TimeSpan.Zero;
+            clockOffset = TimeSpan.Zero;
+            frozenTime = null;
         }
     }
 }
