@@ -64,8 +64,16 @@
             MessageProcessor processor = new MessageProcessor();
             OperationResponse<bool> response = await processor.Process(context, incomingMessage);
 
-            string content = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><Response></Response>";
-            return this.Content(content, "text/xml");
+            if ((int)response.StatusCode / 100 == 2)
+            {
+                // successful response
+                string content = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><Response></Response>";
+                return this.Content(content, "text/xml");
+            }
+            else
+            {
+                return new HttpStatusCodeResult(response.StatusCode);
+            }
         }
     }
 }

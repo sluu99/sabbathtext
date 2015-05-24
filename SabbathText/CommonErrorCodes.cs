@@ -10,5 +10,6 @@
     {
         public const string InvalidInput = "InvalidInput";
         public const string OperationInProgress = "OperationInProgress";
+        public const string UnrecognizedIncomingMessage = "UnrecognizedIncomingMessage";
     }
 }

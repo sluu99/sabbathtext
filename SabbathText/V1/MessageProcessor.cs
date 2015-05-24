@@ -49,7 +49,13 @@
                 return beginAuth.Run(message);
             }
 
-            return Task.FromResult<OperationResponse<bool>>(null);
+            return Task.FromResult(
+                new OperationResponse<bool>
+                {
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    ErrorCode = CommonErrorCodes.UnrecognizedIncomingMessage,
+                    ErrorDescription = "Cannot process message with the content '{0}'".InvariantFormat(body),
+                });
         }
 
         private bool IsPositiveMessage(string message)
