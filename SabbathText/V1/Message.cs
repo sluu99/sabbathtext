@@ -86,9 +86,13 @@ using SabbathText.Location.V1;
         /// <returns>The message.</returns>
         public static Message CreateSubscribedForLocation(string phoneNumber, LocationInfo location)
         {
-            string message =
-                "You are subscribed to Sabbath texts for {0}. You can change your ZIP code at anytime by texting \"Zip <zip>\"."
-                .InvariantFormat(location.PrimaryCity);
+            string message = "You are subscribed to Sabbath texts for {0}, {1}.".InvariantFormat(location.PrimaryCity, location.State);
+            if (location.IsSabbath() == false)
+            {
+                message += " Expect a text from us when Sabbath starts!";
+            }
+
+            message += "{0}{0}You can change your ZIP code at anytime by texting \"Zip <zip>\".".InvariantFormat(Environment.NewLine);
 
             return CreateMessage(
                 phoneNumber,
