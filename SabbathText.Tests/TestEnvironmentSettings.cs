@@ -79,23 +79,9 @@
         }
 
         /// <summary>
-        /// Gets the location store configuration.
+        /// Gets the tracker store configuration.
         /// </summary>
-        public override KeyValueStoreConfiguration LocationStoreConfiguration
-        {
-            get
-            {
-                return new KeyValueStoreConfiguration
-                {
-                    Type = KeyValueStoreType.InMemory
-                };
-            }
-        }
-
-        /// <summary>
-        /// Gets the configuration for the ZIP code - Account ID index store
-        /// </summary>
-        public override KeyValueStoreConfiguration ZipCodeAccountIdIndexStoreConfiguration
+        public override KeyValueStoreConfiguration TrackerStoreConfiguration
         {
             get
             {

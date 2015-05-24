@@ -47,7 +47,7 @@
                 bag.Settings.RecentMessageThreshold,
                 account.RecentMessages.Count,
                 "The account should have recent messages at the threshold");
-            AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.SubscribedForZipCode);
 
             InMemoryKeyValueStore<MessageEntity> messageStore = (InMemoryKeyValueStore<MessageEntity>)bag.MessageStore;
             Assert.AreEqual(
@@ -167,7 +167,7 @@
 
             InspectAccount(account.AccountId);
 
-            AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.SubscribedForZipCode);
         }
 
         private void InspectAccount_ShouldSendMessageDuringGracePeriod(string zipCode)

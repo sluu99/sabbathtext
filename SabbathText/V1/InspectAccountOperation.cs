@@ -58,6 +58,7 @@
         private Task<OperationResponse<bool>> TransitionToCheckSabbath()
         {
             this.checkpointData.State = InspectAccountOperationState.CheckingSabbath;
+            this.checkpointData.SabbathMessageId = Guid.NewGuid().ToString();
             return this.HandOffCheckpoint(
                 TimeSpan.Zero,
                 this.checkpointData,
@@ -130,7 +131,7 @@
             await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
             Message sabbathMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber, verseNumber, verseContent);
-            await this.Bag.MessageClient.SendMessage(sabbathMessage);
+            await this.Bag.MessageClient.SendMessage(sabbathMessage, this.checkpointData.SabbathMessageId);
 
             return await this.TransitionToStoreSabbathText(sabbathMessage);
         }
@@ -138,7 +139,6 @@
         private async Task<OperationResponse<bool>> TransitionToStoreSabbathText(Message sabbathMessage)
         {
             this.checkpointData.State = InspectAccountOperationState.StoringSabbathText;
-            this.checkpointData.SabbathMessageId = Guid.NewGuid().ToString();
             this.checkpointData.SabbathMesage = sabbathMessage;
 
             return

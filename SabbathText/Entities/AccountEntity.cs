@@ -68,12 +68,6 @@
         public AccountStatus Status { get; set; }
 
         /// <summary>
-        /// Gets or sets the version number of the account status.
-        /// This version number is used to 
-        /// </summary>
-        public int StatusVersion { get; set; }
-
-        /// <summary>
         /// Gets or sets the list of recent messages
         /// </summary>
         public List<MessageEntity> RecentMessages { get; set; }

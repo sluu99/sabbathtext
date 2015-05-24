@@ -66,33 +66,33 @@ using SabbathText.Location.V1;
         }
 
         /// <summary>
-        /// Creates a message to confirm the user subscription.
+        /// Creates a message to prompt the user for the ZIP code.
         /// </summary>
         /// <param name="phoneNumber">The recipient phone number.</param>
         /// <returns>The message.</returns>
-        public static Message CreateSubscriptionConfirmed(string phoneNumber)
+        public static Message CreatePromptZipCode(string phoneNumber)
         {
             return CreateMessage(
                 phoneNumber,
-                MessageTemplate.SubscriptionConfirmed,
+                MessageTemplate.PromptZipCode,
                 "Just one more thing! Text us your ZIP code to calculate the sunset time. For example: \"Zip 12345\".");
         }
 
         /// <summary>
-        /// The user already subscribed, and has a ZIP code.
+        /// The user subscribed, and has a ZIP code.
         /// </summary>
         /// <param name="phoneNumber">The account phone number.</param>
-        /// <param name="zipCode">The ZIP code.</param>
+        /// <param name="location">The location.</param>
         /// <returns>The message.</returns>
-        public static Message CreateAlreadySubscribedWithZipCode(string phoneNumber, string zipCode)
+        public static Message CreateSubscribedForLocation(string phoneNumber, LocationInfo location)
         {
             string message =
-                "You are already subscribed with the ZIP code {0}. You can change your ZIP code at anytime by texting \"Zip <zip>\"."
-                .InvariantFormat(zipCode);
+                "You are subscribed to Sabbath texts for {0}. You can change your ZIP code at anytime by texting \"Zip <zip>\"."
+                .InvariantFormat(location.PrimaryCity);
 
             return CreateMessage(
                 phoneNumber,
-                MessageTemplate.AlreadySubscribedWithZipCode,
+                MessageTemplate.SubscribedForZipCode,
                 message);
         }
 
@@ -134,20 +134,6 @@ using SabbathText.Location.V1;
                 phoneNumber,
                 MessageTemplate.LocationNotFound,
                 "Sorry, but we cannot find a location for the ZIP code {0}.".InvariantFormat(badZipCode));
-        }
-
-        /// <summary>
-        /// Notifies the user that the ZIP code is updated.
-        /// </summary>
-        /// <param name="phoneNumber">The phone number.</param>
-        /// <param name="location">The new location.</param>
-        /// <returns>The message.</returns>
-        public static Message CreateZipCodeUpdated(string phoneNumber, LocationInfo location)
-        {
-            return CreateMessage(
-                phoneNumber,
-                MessageTemplate.ZipCodeUpdated,
-                "Your location is updated to {0}.".InvariantFormat(location.PrimaryCity));
         }
 
         /// <summary>

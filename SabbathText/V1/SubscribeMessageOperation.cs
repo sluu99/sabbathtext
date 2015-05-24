@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using Newtonsoft.Json;
     using SabbathText.Entities;
+    using SabbathText.Location.V1;
 
     /// <summary>
     /// This operation processes incoming "subscribe" messages
@@ -60,6 +61,7 @@
         {
             this.checkpointData.State = GenericOperationState.ProcessingMessage;
             this.checkpointData.IncomingMessage = incomingMessage;
+            this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
             return this.HandOffCheckpoint(
                 TimeSpan.Zero,
                 this.checkpointData,
@@ -69,34 +71,31 @@
 
         private async Task<OperationResponse<bool>> EnterProcessMessage()
         {
-            bool alreadySubscribed = false;
             Message outgoingMessage;
 
             if (this.Context.Account.Status == AccountStatus.Subscribed &&
-                string.IsNullOrWhiteSpace(this.Context.Account.ZipCode) == false)
+                string.IsNullOrWhiteSpace(this.Context.Account.ZipCode) == false &&
+                LocationInfo.FromZipCode(this.Context.Account.ZipCode) != null)
             {
+                LocationInfo location = LocationInfo.FromZipCode(this.Context.Account.ZipCode);
                 outgoingMessage =
-                    Message.CreateAlreadySubscribedWithZipCode(this.Context.Account.PhoneNumber, this.Context.Account.ZipCode);
-                alreadySubscribed = true;
+                    Message.CreateSubscribedForLocation(this.Context.Account.PhoneNumber, location);
             }
             else
             {
                 outgoingMessage =
-                    Message.CreateSubscriptionConfirmed(this.Context.Account.PhoneNumber);
+                    Message.CreatePromptZipCode(this.Context.Account.PhoneNumber);
             }
 
-            await this.Bag.MessageClient.SendMessage(outgoingMessage);
-            return await this.TransitionToUpdateAccount(outgoingMessage, alreadySubscribed);
+            await this.Bag.MessageClient.SendMessage(outgoingMessage, this.checkpointData.OutgoingMessageId);
+            return await this.TransitionToUpdateAccount(outgoingMessage);
         }
 
-        private async Task<OperationResponse<bool>> TransitionToUpdateAccount(Message outgoingMessage, bool alreadySubscribed)
+        private async Task<OperationResponse<bool>> TransitionToUpdateAccount(Message outgoingMessage)
         {
             this.checkpointData.OutgoingMessage = outgoingMessage;
-            this.checkpointData.AccountAlreadySubscribed = alreadySubscribed;
             this.checkpointData.State = GenericOperationState.UpdatingAccount;
-            this.checkpointData.StatusVersion = this.Context.Account.StatusVersion;
             this.checkpointData.IncomingMessageId = Guid.NewGuid().ToString();
-            this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
 
             return
                 await this.SetCheckpoint(this.checkpointData) ??
@@ -105,31 +104,26 @@
 
         private async Task<OperationResponse<bool>> EnterUpdateAccount()
         {
-            if (this.checkpointData.AccountAlreadySubscribed == false &&
-                //// make sure no other operation updated the status
-                this.checkpointData.StatusVersion == this.Context.Account.StatusVersion)
-            {
-                this.Context.Account.Status = AccountStatus.Subscribed;
-                this.Context.Account.StatusVersion++;
-                this.Context.Account.ZipCode = null;
-                this.Context.Account.ConversationContext = ConversationContext.SubscriptionConfirmed;
+            this.Context.Account.Status = AccountStatus.Subscribed;
+            this.Context.Account.ZipCode = null;
+            this.Context.Account.ConversationContext = ConversationContext.SubscriptionConfirmed;
 
-                MessageEntity incomingEntity = this.checkpointData.IncomingMessage.ToEntity(
-                    this.Context.Account.AccountId,
-                    this.checkpointData.IncomingMessageId,
-                    MessageDirection.Incoming,
-                    MessageStatus.Responded);
-                TryAddMessageEntity(this.Context.Account, incomingEntity);
+            MessageEntity incomingEntity = this.checkpointData.IncomingMessage.ToEntity(
+                this.Context.Account.AccountId,
+                this.checkpointData.IncomingMessageId,
+                MessageDirection.Incoming,
+                MessageStatus.Responded);
+            TryAddMessageEntity(this.Context.Account, incomingEntity);
 
-                MessageEntity outgoingEntity = this.checkpointData.OutgoingMessage.ToEntity(
-                    this.Context.Account.AccountId,
-                    this.checkpointData.OutgoingMessageId,
-                    MessageDirection.Outgoing,
-                    MessageStatus.Sent);
-                TryAddMessageEntity(this.Context.Account, outgoingEntity);
+            MessageEntity outgoingEntity = this.checkpointData.OutgoingMessage.ToEntity(
+                this.Context.Account.AccountId,
+                this.checkpointData.OutgoingMessageId,
+                MessageDirection.Outgoing,
+                MessageStatus.Sent);
+            TryAddMessageEntity(this.Context.Account, outgoingEntity);
 
-                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
-            }
+            await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+
 
             return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, true);
         }

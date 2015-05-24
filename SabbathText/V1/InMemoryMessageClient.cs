@@ -34,8 +34,9 @@
         /// Adds the message to the message collection
         /// </summary>
         /// <param name="message">The messages</param>
+        /// <param name="trackingId">The tracking ID for the message.</param>
         /// <returns>The operation task</returns>
-        public override Task SendMessage(Message message)
+        public override Task SendMessage(Message message, string trackingId)
         {
             message.ExternalId = Guid.NewGuid().ToString();
             string messageStr = JsonConvert.SerializeObject(message, Formatting.Indented);

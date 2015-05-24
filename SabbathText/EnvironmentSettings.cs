@@ -175,9 +175,9 @@
         }
 
         /// <summary>
-        /// Gets the location store configuration.
+        /// Gets the tracker store configuration.
         /// </summary>
-        public virtual KeyValueStoreConfiguration LocationStoreConfiguration
+        public virtual KeyValueStoreConfiguration TrackerStoreConfiguration
         {
             get
             {
@@ -185,23 +185,7 @@
                 {
                     Type = KeyValueStoreType.AzureTable,
                     ConnectionString = this.KeyValueStoreConnectionString,
-                    AzureTableName = "locations",
-                };
-            }
-        }
-
-        /// <summary>
-        /// Gets the configuration for the ZIP code - Account ID index store
-        /// </summary>
-        public virtual KeyValueStoreConfiguration ZipCodeAccountIdIndexStoreConfiguration
-        {
-            get
-            {
-                return new KeyValueStoreConfiguration
-                {
-                    Type = KeyValueStoreType.AzureTable,
-                    ConnectionString = this.KeyValueStoreConnectionString,
-                    AzureTableName = "zipcodeaccountidindices",
+                    AzureTableName = "trackers",
                 };
             }
         }

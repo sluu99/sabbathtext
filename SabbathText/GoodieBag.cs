@@ -14,6 +14,7 @@
     {
         private static KeyValueStore<AccountEntity> accountStore;
         private static KeyValueStore<MessageEntity> messageStore;
+        private static KeyValueStore<TrackerEntity> trackerStore;
         private static KeyValueStore<Checkpoint> checkpointStore;
         private static EnvironmentSettings environmentSettings;
         private static CompensationClient compensationClient;
@@ -41,6 +42,11 @@
         /// Gets or sets the message store.
         /// </summary>
         public KeyValueStore<MessageEntity> MessageStore { get; set; }
+
+        /// <summary>
+        /// Gets or sets the tracker store.
+        /// </summary>
+        public KeyValueStore<TrackerEntity> TrackerStore { get; set; }
         
         /// <summary>
         /// Gets or sets the checkpoint store.
@@ -76,6 +82,7 @@
             environmentSettings = settings;
             accountStore = KeyValueStore<AccountEntity>.Create(settings.AccountStoreConfiguration);
             messageStore = KeyValueStore<MessageEntity>.Create(settings.MessageStoreConfiguration);
+            trackerStore = KeyValueStore<TrackerEntity>.Create(settings.TrackerStoreConfiguration);
             checkpointStore = KeyValueStore<Checkpoint>.Create(settings.CheckpointStoreConfiguration);
             checkpointQueue = QueueStore.Create(settings.CheckpointQueueConfiguration);
             compensationClient = new CompensationClient(checkpointStore, checkpointQueue, settings.CheckpointVisibilityTimeout);

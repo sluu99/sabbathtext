@@ -20,9 +20,9 @@
         Greetings,
 
         /// <summary>
-        /// Lets the user know that he/she has subscribed.
+        /// Asking the user for the ZIP code
         /// </summary>
-        SubscriptionConfirmed,
+        PromptZipCode,
 
         /// <summary>
         /// The service could not understand the last incoming message.
@@ -32,7 +32,7 @@
         /// <summary>
         /// The account is already subscribed with an existing ZIP code.
         /// </summary>
-        AlreadySubscribedWithZipCode,
+        SubscribedForZipCode,
 
         /// <summary>
         /// Notify the user that he/she needs to subscribe before continuing.
@@ -48,11 +48,6 @@
         /// Cannot find a location for the ZIP code provided.
         /// </summary>
         LocationNotFound,
-
-        /// <summary>
-        /// The ZIP code is updated.
-        /// </summary>
-        ZipCodeUpdated,
 
         /// <summary>
         /// Sabbath text.

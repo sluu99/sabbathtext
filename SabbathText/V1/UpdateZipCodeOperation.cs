@@ -57,9 +57,10 @@
 
         private Task<OperationResponse<bool>> TransitionToProcessMessage(Message incomingMessage)
         {
-            this.checkpointData.IncomingMessage = incomingMessage;
             this.checkpointData.State = GenericOperationState.ProcessingMessage;
+            this.checkpointData.IncomingMessage = incomingMessage;
             this.checkpointData.CurrentZipCode = this.Context.Account.ZipCode;
+            this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
 
             return this.HandOffCheckpoint(
                 TimeSpan.Zero,
@@ -70,13 +71,6 @@
 
         private async Task<OperationResponse<bool>> EnterProcessMessage()
         {
-            if (this.Context.Account.Status != AccountStatus.Subscribed)
-            {
-                Message msg = Message.CreateSubscriptionRequired(this.Context.Account.PhoneNumber);
-                await this.Bag.MessageClient.SendMessage(msg);
-                return await this.TranstitionToUpdateAccount(msg);
-            }
-
             Message outgoingMessage = null;
             string body = this.checkpointData.IncomingMessage.Body.ExtractAlphaNumericSpace().Trim();
             
@@ -103,13 +97,20 @@
                     this.Context.Account.ZipCode = zipCode;
                     await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
-                    outgoingMessage = Message.CreateZipCodeUpdated(this.Context.Account.PhoneNumber, location);
+                    if (this.Context.Account.Status != AccountStatus.Subscribed)
+                    {
+                        outgoingMessage = Message.CreateSubscriptionRequired(this.Context.Account.PhoneNumber);
+                    }
+                    else
+                    {
+                        outgoingMessage = Message.CreateSubscribedForLocation(this.Context.Account.PhoneNumber, location);
+                    }
                 }
             }
 
             if (outgoingMessage != null)
             {
-                await this.Bag.MessageClient.SendMessage(outgoingMessage);
+                await this.Bag.MessageClient.SendMessage(outgoingMessage, this.checkpointData.OutgoingMessageId);
             }
 
             return await this.TranstitionToUpdateAccount(outgoingMessage);
@@ -120,7 +121,6 @@
             this.checkpointData.State = GenericOperationState.UpdatingAccount;
             this.checkpointData.OutgoingMessage = outgoingMessage;
             this.checkpointData.IncomingMessageId = Guid.NewGuid().ToString();
-            this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
 
             return
                 await this.SetCheckpoint(this.checkpointData) ??

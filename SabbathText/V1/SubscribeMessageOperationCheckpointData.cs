@@ -30,16 +30,6 @@
         public Message OutgoingMessage { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the account had already subscribed.
-        /// </summary>
-        public bool AccountAlreadySubscribed { get; set; }
-
-        /// <summary>
-        /// Gets or sets the status version.
-        /// </summary>
-        public int StatusVersion { get; set; }
-
-        /// <summary>
         /// Gets or sets the incoming message ID.
         /// </summary>
         public string IncomingMessageId { get; set; }

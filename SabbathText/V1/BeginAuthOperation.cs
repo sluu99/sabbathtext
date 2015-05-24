@@ -82,6 +82,7 @@
         {
             this.checkpointData.OperationState = GenericOperationState.SendingResponse;
             this.checkpointData.AuthKey = authKey;
+            this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
 
             return
                 await this.SetCheckpoint(this.checkpointData) ??
@@ -101,7 +102,7 @@
                     this.checkpointData.AuthKey,
                     (int)(this.Context.Account.AuthKeyExpiration - Clock.UtcNow).TotalMinutes);
 
-                await this.Bag.MessageClient.SendMessage(outgoingMessage);
+                await this.Bag.MessageClient.SendMessage(outgoingMessage, this.checkpointData.OutgoingMessageId);
             }
 
             return await this.TransitionToUpdateAccount(outgoingMessage);
@@ -112,7 +113,6 @@
             this.checkpointData.OperationState = GenericOperationState.UpdatingAccount;
             this.checkpointData.OutgoingMessage = outgoingMessage;
             this.checkpointData.IncomingMessageId = Guid.NewGuid().ToString();
-            this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
 
             return
                 await this.SetCheckpoint(this.checkpointData) ??

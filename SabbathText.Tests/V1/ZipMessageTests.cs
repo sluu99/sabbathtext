@@ -28,8 +28,8 @@
             ProcessMessage(zipMessage);
 
             AssertZipCode(account.AccountId, ZipCode);
-            AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated, mustContain: "Chicago");
-            AssertMessageCount(account.PhoneNumber, MessageTemplate.ZipCodeUpdated, 1);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.SubscribedForZipCode, mustContain: "Chicago");
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.SubscribedForZipCode, 1);
         }
 
         /// <summary>
@@ -100,8 +100,8 @@
                 ProcessMessage(zipMessage);
 
                 AssertZipCode(account.AccountId, zipCode);
-                AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated, mustContain: city);
-                AssertMessageCount(account.PhoneNumber, MessageTemplate.ZipCodeUpdated, count);
+                AssertLastSentMessage(account.AccountId, MessageTemplate.SubscribedForZipCode, mustContain: city);
+                AssertMessageCount(account.PhoneNumber, MessageTemplate.SubscribedForZipCode, count);
             }            
         }
 
@@ -117,7 +117,7 @@
             ProcessMessage(zipMessage);
 
             AssertLastSentMessage(account.AccountId, MessageTemplate.SubscriptionRequired);
-            AssertZipCode(account.AccountId, null);
+            AssertZipCode(account.AccountId, "98052");
         }
 
         /// <summary>

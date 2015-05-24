@@ -72,6 +72,7 @@
                 });
             }
 
+            this.checkpointData.MessageEntityId = Guid.NewGuid().ToString();
             this.checkpointData.OperationState = GreetUserOperationState.SendingMessage;
             return this.HandOffCheckpoint(
                 TimeSpan.Zero,
@@ -83,7 +84,7 @@
         private async Task<OperationResponse<bool>> EnterSendingMessage()
         {
             Message message = Message.CreateGreetingMessage(this.Context.Account.PhoneNumber);
-            await this.Bag.MessageClient.SendMessage(message);
+            await this.Bag.MessageClient.SendMessage(message, this.checkpointData.MessageEntityId);
 
             return await this.TransitionToUpdatingAccount(message);
         }
@@ -91,8 +92,7 @@
         private async Task<OperationResponse<bool>> TransitionToUpdatingAccount(Message message)
         {
             this.checkpointData.Message = message;
-            this.checkpointData.OperationState = GreetUserOperationState.UpdatingAccountContext;
-            this.checkpointData.MessageEntityId = Guid.NewGuid().ToString();
+            this.checkpointData.OperationState = GreetUserOperationState.UpdatingAccountContext;            
 
             return
                 await this.SetCheckpoint(this.checkpointData) ??

@@ -33,9 +33,12 @@
         /// Sends a message and sets its external ID
         /// </summary>
         /// <param name="message">The message</param>
+        /// <param name="trackingId">The tracking ID used for this message.</param>
         /// <returns>The operation task</returns>
-        public virtual Task SendMessage(Message message)
+        public virtual Task SendMessage(Message message, string trackingId)
         {
+
+
             return Task.Run(() =>
             {
                 TwilioRestClient client = new TwilioRestClient(this.twilioAccount, this.twilioToken);
