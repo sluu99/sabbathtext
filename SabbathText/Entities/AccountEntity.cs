@@ -157,7 +157,12 @@
 
         private static string GetPartitionKey(string accountId)
         {
-            return accountId;
+            if (string.IsNullOrWhiteSpace(accountId))
+            {
+                return null;
+            }
+
+            return accountId.Substring(0, 4).ToUpperInvariant();
         }
 
         private static string GetRowKey(string accountId)
