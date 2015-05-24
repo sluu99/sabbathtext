@@ -32,7 +32,7 @@
         /// The frozen time
         /// </summary>
         private static DateTime? frozenTime = null;
-        
+
         /// <summary>
         /// Gets the current UTC date time
         /// </summary>
