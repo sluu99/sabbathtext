@@ -22,7 +22,7 @@
             AssertAccountStatus(account.AccountId, AccountStatus.BrandNew);
 
             Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
-            ProcessMessage(account.AccountId, subscribeMessage);
+            ProcessMessage(subscribeMessage);
 
             AssertAccountStatus(account.AccountId, AccountStatus.Subscribed);
             AssertConversationContext(account.AccountId, ConversationContext.SubscriptionConfirmed);

@@ -22,10 +22,10 @@
             AccountEntity account = CreateAccount();
             
             Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
-            ProcessMessage(account.AccountId, subscribeMessage);
+            ProcessMessage(subscribeMessage);
 
             Message zipMessage = CreateIncomingMessage(account.PhoneNumber, "Zip " + ZipCode);
-            ProcessMessage(account.AccountId, zipMessage);
+            ProcessMessage(zipMessage);
 
             AssertZipCode(account.AccountId, ZipCode);
             AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated, mustContain: "Chicago");
@@ -42,10 +42,10 @@
             AccountEntity account = CreateAccount();
 
             Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
-            ProcessMessage(account.AccountId, subscribeMessage);
+            ProcessMessage(subscribeMessage);
 
             Message zipMessage = CreateIncomingMessage(account.PhoneNumber, "Zip " + ZipCode + ".");
-            ProcessMessage(account.AccountId, zipMessage);
+            ProcessMessage(zipMessage);
 
             AssertZipCode(account.AccountId, null);
             AssertLastSentMessage(account.AccountId, MessageTemplate.LocationNotFound);
@@ -61,10 +61,10 @@
             AccountEntity account = CreateAccount();
 
             Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "subscribe");
-            ProcessMessage(account.AccountId, subscribeMessage);
+            ProcessMessage(subscribeMessage);
 
             Message zipMessage = CreateIncomingMessage(account.PhoneNumber, "Zip blahblahblah!!!");
-            ProcessMessage(account.AccountId, zipMessage);
+            ProcessMessage(zipMessage);
 
             AssertZipCode(account.AccountId, null);
             AssertLastSentMessage(account.AccountId, MessageTemplate.UpdateZipInstruction);
@@ -87,7 +87,7 @@
             AccountEntity account = CreateAccount();
 
             Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
-            ProcessMessage(account.AccountId, subscribeMessage);
+            ProcessMessage(subscribeMessage);
 
             int count = 0;
             foreach (KeyValuePair<string, string> kv in zipCodes)
@@ -97,7 +97,7 @@
                 string city = kv.Value;
 
                 Message zipMessage = CreateIncomingMessage(account.PhoneNumber, "Zip " + zipCode);
-                ProcessMessage(account.AccountId, zipMessage);
+                ProcessMessage(zipMessage);
 
                 AssertZipCode(account.AccountId, zipCode);
                 AssertLastSentMessage(account.AccountId, MessageTemplate.ZipCodeUpdated, mustContain: city);
@@ -114,7 +114,7 @@
             AccountEntity account = CreateAccount();
 
             Message zipMessage = CreateIncomingMessage(account.PhoneNumber, "zip 98052");
-            ProcessMessage(account.AccountId, zipMessage);
+            ProcessMessage(zipMessage);
 
             AssertLastSentMessage(account.AccountId, MessageTemplate.SubscriptionRequired);
             AssertZipCode(account.AccountId, null);

@@ -10,6 +10,7 @@
     using QueueStorage;
     using SabbathText.Compensation.V1;
     using SabbathText.Entities;
+    using SabbathText.Runner;
     using SabbathText.V1;
 
     /// <summary>
@@ -27,7 +28,6 @@
         public void TestInit()
         {
             GoodieBag.Initialize(new TestEnvironmentSettings());
-
             this.fakeClock = new FakeClockScope();
         }
 
@@ -123,7 +123,7 @@
                 CancellationToken.None)
                 .Result;
         }
-
+        
         /// <summary>
         /// Ensures an operation is finished base on the checkpoint.
         /// </summary>
@@ -236,8 +236,9 @@
         /// </summary>
         /// <param name="accountId">The account ID.</param>
         /// <param name="incomingMessage">The incoming message.</param>
-        protected static void ProcessMessage(string accountId, Message incomingMessage)
+        protected static void ProcessMessage(Message incomingMessage)
         {
+            string accountId = AccountEntity.GetAccountIdByPhoneNumber(incomingMessage.Sender);
             AccountEntity account =
                 GoodieBag.Create().AccountStore.Get(AccountEntity.GetReferenceById(accountId), CancellationToken.None).Result;
 
@@ -246,11 +247,6 @@
             processor.Process(context, incomingMessage).Wait();
 
             RunCheckpointWorker();
-        }
-
-        protected static void GoToDay(DayOfWeek dayOfWeek)
-        {
-
         }
     }
 }

@@ -30,7 +30,7 @@
 
                 AccountEntity account = CreateAccount();
                 Message message = CreateIncomingMessage(account.PhoneNumber, "Auth.");
-                ProcessMessage(account.AccountId, message);
+                ProcessMessage(message);
 
                 AssertAccountStatus(account.AccountId, AccountStatus.BrandNew);
                 AssertLastSentMessage(account.AccountId, MessageTemplate.AuthKeyCreated);
