@@ -38,9 +38,12 @@
                 }
                 catch (Exception ex)
                 {
-                    Trace.TraceError(ex.Message);
-                    Trace.TraceError(ex.StackTrace);
-                    exceptionCaught = true;
+                    if (ex is OperationCanceledException == false || cancellationToken.IsCancellationRequested == false)
+                    {
+                        Trace.TraceError(ex.Message);
+                        Trace.TraceError(ex.StackTrace);
+                        exceptionCaught = true;
+                    }
                 }
 
                 if (exceptionCaught)
