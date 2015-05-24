@@ -37,10 +37,13 @@
 
             foreach (string accountPartition in GetAllAccountPartitions())
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 string continuationToken = null;
 
                 do
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     PagedResult<AccountEntity> page = await bag.AccountStore.ReadPartition(accountPartition, PageSize, continuationToken, cancellationToken);
 
                     if (page.Entities == null || page.Entities.Any() == false)
@@ -56,8 +59,8 @@
                     }
                 }
                 while (continuationToken != null);
-
-                await Clock.Delay(bag.Settings.RunnerPartitionDelay);
+                
+                await Clock.Delay(bag.Settings.RunnerPartitionDelay, cancellationToken);
             }
         }
 

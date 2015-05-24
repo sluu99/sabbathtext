@@ -62,6 +62,17 @@
         /// <returns>The async task</returns>
         public static Task Delay(TimeSpan timeout)
         {
+            return Delay(timeout, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Delay for an amount of time.
+        /// </summary>
+        /// <param name="timeout">The amount of time to sleep.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The async task</returns>
+        public static Task Delay(TimeSpan timeout, CancellationToken cancellationToken)
+        {
             if (fakeClock)
             {
                 RollClock(timeout);
@@ -69,7 +80,7 @@
             }
             else
             {
-                return Task.Delay(timeout);
+                return Task.Delay(timeout, cancellationToken);
             }
         }
 

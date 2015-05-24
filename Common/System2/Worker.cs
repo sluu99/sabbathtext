@@ -34,7 +34,7 @@
                 try
                 {
                     TimeSpan delay = await this.RunIteration(cancellationToken);
-                    await Clock.Delay(delay);
+                    await Clock.Delay(delay, cancellationToken);
                 }
                 catch (Exception ex)
                 {
@@ -48,7 +48,7 @@
 
                 if (exceptionCaught)
                 {
-                    await Clock.Delay(defaultDelay);
+                    await Clock.Delay(defaultDelay, cancellationToken);
                 }
             }
 
