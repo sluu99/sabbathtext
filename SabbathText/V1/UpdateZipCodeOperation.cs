@@ -110,7 +110,7 @@
 
             if (outgoingMessage != null)
             {
-                await this.Bag.MessageClient.SendMessage(outgoingMessage, this.checkpointData.OutgoingMessageId);
+                await this.Bag.MessageClient.SendMessage(outgoingMessage, this.checkpointData.OutgoingMessageId, this.Context.CancellationToken);
             }
 
             return await this.TranstitionToUpdateAccount(outgoingMessage);

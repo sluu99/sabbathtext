@@ -102,7 +102,7 @@
                     this.checkpointData.AuthKey,
                     (int)(this.Context.Account.AuthKeyExpiration - Clock.UtcNow).TotalMinutes);
 
-                await this.Bag.MessageClient.SendMessage(outgoingMessage, this.checkpointData.OutgoingMessageId);
+                await this.Bag.MessageClient.SendMessage(outgoingMessage, this.checkpointData.OutgoingMessageId, this.Context.CancellationToken);
             }
 
             return await this.TransitionToUpdateAccount(outgoingMessage);

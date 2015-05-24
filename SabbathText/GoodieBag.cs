@@ -105,6 +105,7 @@
                 Settings = environmentSettings,
                 MessageClient = messageClient,
                 MessageStore = messageStore,
+                TrackerStore = trackerStore,
             };
 
             if (CreateFunc == null)

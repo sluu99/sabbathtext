@@ -87,7 +87,7 @@
                     Message.CreatePromptZipCode(this.Context.Account.PhoneNumber);
             }
 
-            await this.Bag.MessageClient.SendMessage(outgoingMessage, this.checkpointData.OutgoingMessageId);
+            await this.Bag.MessageClient.SendMessage(outgoingMessage, this.checkpointData.OutgoingMessageId, this.Context.CancellationToken);
             return await this.TransitionToUpdateAccount(outgoingMessage);
         }
 

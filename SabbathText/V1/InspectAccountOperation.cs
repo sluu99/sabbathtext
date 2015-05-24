@@ -131,7 +131,7 @@
             await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
             Message sabbathMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber, verseNumber, verseContent);
-            await this.Bag.MessageClient.SendMessage(sabbathMessage, this.checkpointData.SabbathMessageId);
+            await this.Bag.MessageClient.SendMessage(sabbathMessage, this.checkpointData.SabbathMessageId, this.Context.CancellationToken);
 
             return await this.TransitionToStoreSabbathText(sabbathMessage);
         }

@@ -84,7 +84,7 @@
         private async Task<OperationResponse<bool>> EnterSendingMessage()
         {
             Message message = Message.CreateGreetingMessage(this.Context.Account.PhoneNumber);
-            await this.Bag.MessageClient.SendMessage(message, this.checkpointData.MessageEntityId);
+            await this.Bag.MessageClient.SendMessage(message, this.checkpointData.MessageEntityId, this.Context.CancellationToken);
 
             return await this.TransitionToUpdatingAccount(message);
         }
