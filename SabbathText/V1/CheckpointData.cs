@@ -33,7 +33,7 @@
         public DateTime? ProcessAfter { get; set; }
 
         /// <summary>
-        /// Gets or sets the value indicating whether the checkpoint was handed off to compensation processing.
+        /// Gets or sets a value indicating whether the checkpoint was handed off to compensation processing.
         /// </summary>
         public bool IsHandOffProcessing { get; set; }
     }

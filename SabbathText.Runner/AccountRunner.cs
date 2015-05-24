@@ -19,25 +19,15 @@
 
         private static readonly char[] HexCharacters = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
+        /// <summary>
+        /// Runs a worker iteration
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The delay after the iteration.</returns>
         public override async Task<TimeSpan> RunIteration(CancellationToken cancellationToken)
         {
             await IterateAccounts(this.InspectAccount, cancellationToken);
             return IterationDelay;
-        }
-
-        private Task InspectAccount(AccountEntity account, CancellationToken cancellationToken)
-        {
-            Trace.TraceInformation("Inspecting account {0}", account.AccountId);
-
-            OperationContext context = new OperationContext
-            {
-                Account = account,
-                CancellationToken = cancellationToken,
-                TrackingId = Guid.NewGuid().ToString(),
-            };
-
-            InspectAccountOperation operation = new InspectAccountOperation(context);
-            return operation.Run();
         }
 
         private static async Task IterateAccounts(Func<AccountEntity, CancellationToken, Task> toRun, CancellationToken cancellationToken)
@@ -64,8 +54,8 @@
                     {
                         await toRun(account, cancellationToken);
                     }
-
-                } while (continuationToken != null);
+                }
+                while (continuationToken != null);
 
                 await Clock.Delay(bag.Settings.RunnerPartitionDelay);
             }
@@ -80,6 +70,21 @@
                     yield return new string(new char[2] { c1, c2 });
                 }
             }
+        }
+
+        private Task InspectAccount(AccountEntity account, CancellationToken cancellationToken)
+        {
+            Trace.TraceInformation("Inspecting account {0}", account.AccountId);
+
+            OperationContext context = new OperationContext
+            {
+                Account = account,
+                CancellationToken = cancellationToken,
+                TrackingId = Guid.NewGuid().ToString(),
+            };
+
+            InspectAccountOperation operation = new InspectAccountOperation(context);
+            return operation.Run();
         }
     }
 }
