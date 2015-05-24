@@ -47,7 +47,6 @@
 
             foreach (string accountPartition in GetAllAccountPartitions())
             {
-                Trace.TraceInformation("Inspecting accounts in partition {0}", accountPartition);
                 string continuationToken = null;
 
                 do
