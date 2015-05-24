@@ -16,6 +16,7 @@
     /// </summary>
     public class InspectAccountOperation : BaseOperation<bool>
     {
+        private static readonly Random Rand = new Random(Environment.TickCount);
         private InspectAccountOperationCheckpointData checkpointData;
 
         /// <summary>
@@ -37,6 +38,23 @@
             return this.TransitionToCheckSabbath();
         }
 
+        private static void SelectBibleVerse(IEnumerable<string> recentVerses, out string verseNumber, out string verseContent)
+        {
+            string[] allVerses = null;
+
+            if (recentVerses != null)
+            {
+                allVerses = DomainData.BibleVerses.Keys.Except(recentVerses.Take(DomainData.BibleVerses.Count - 1)).ToArray();
+            }
+            else
+            {
+                allVerses = DomainData.BibleVerses.Keys.ToArray();
+            }
+
+            verseNumber = allVerses[Rand.Next(0, allVerses.Length)];
+            verseContent = DomainData.BibleVerses[verseNumber];
+        }
+
         private Task<OperationResponse<bool>> TransitionToCheckSabbath()
         {
             this.checkpointData.State = InspectAccountOperationState.CheckingSabbath;
@@ -49,8 +67,10 @@
 
         private async Task<OperationResponse<bool>> EnterCheckSabbath()
         {
+            TimeSpan timeSinceLastSabbathText = Clock.UtcNow - this.Context.Account.LastSabbathTextTime;
+
             if (this.Context.Account.Status != Entities.AccountStatus.Subscribed ||
-                (Clock.UtcNow - this.Context.Account.LastSabbathTextTime) < this.Bag.Settings.SabbathTextGap ||
+                timeSinceLastSabbathText < this.Bag.Settings.SabbathTextGap ||
                 string.IsNullOrWhiteSpace(this.Context.Account.ZipCode))
             {
                 // Don't need to check for Sabbath
@@ -58,8 +78,7 @@
             }
 
             LocationInfo locationInfo = LocationInfo.FromZipCode(this.Context.Account.ZipCode);
-            DateTimeZone timeZone = DateTimeZoneProviders.Tzdb[locationInfo.TimeZoneName];
-            DateTime accountTime = Instant.FromDateTimeUtc(Clock.UtcNow).InZone(timeZone).ToDateTimeUnspecified();
+            DateTime accountTime = locationInfo.LocalTime;
 
             if (accountTime.DayOfWeek != DayOfWeek.Friday && accountTime.DayOfWeek != DayOfWeek.Saturday)
             {
@@ -83,18 +102,34 @@
                 return await this.TransitionToArchiveMessages();
             }
 
-            if (timeInfo.SunSetUtc + this.Bag.Settings.SabbathTextGracePeriod < Clock.UtcNow)
+            DateTime sabbathTextEndTime = timeInfo.SunSetUtc + this.Bag.Settings.SabbathTextGracePeriod;
+            if (Clock.UtcNow > sabbathTextEndTime)
             {
                 // we have passed the Sabbath text grace period
                 return await this.TransitionToArchiveMessages();
             }
 
+            string verseNumber;
+            string verseContent;
+            SelectBibleVerse(this.Context.Account.RecentVerses, out verseNumber, out verseContent);
+
+            this.Context.Account.RecentVerses.Add(verseNumber);
+            if (this.Context.Account.RecentVerses.Count == DomainData.BibleVerses.Count)
+            {
+                // This account has seen all the Bible verses we have.
+                // We'll remove the oldest *five* verses.
+                // We can just remove one oldest one, but that would put the account into a circle of verses in order.
+                // By removing five verses, the account can still have somewhat random verses after the first cycle
+                this.Context.Account.RecentVerses.RemoveRange(0, 5);
+            }
+
             // update the account Sabbath text time first
             // so that if the operation fails later, we won't be spamming the user on each retry
-            this.Context.Account.LastSabbathTextTime = Clock.UtcNow;
+            // (Twilio really needs to start supporting idempotent calls)
+            this.Context.Account.LastSabbathTextTime = Clock.UtcNow;            
             await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
-            Message sabbathMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber, null, null);
+            Message sabbathMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber, verseNumber, verseContent);
             await this.Bag.MessageClient.SendMessage(sabbathMessage);
 
             return await this.TransitionToStoreSabbathText(sabbathMessage);

@@ -23,7 +23,7 @@
         private SHA256 sha256;
 
         /// <summary>
-        /// The internal storage
+        /// Gets or sets the internal storage
         /// </summary>
         public SortedDictionary<string, string> Entities { get; set; }
 

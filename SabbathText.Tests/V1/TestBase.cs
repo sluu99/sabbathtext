@@ -234,7 +234,6 @@
         /// <summary>
         /// Processes an incoming message.
         /// </summary>
-        /// <param name="accountId">The account ID.</param>
         /// <param name="incomingMessage">The incoming message.</param>
         protected static void ProcessMessage(Message incomingMessage)
         {

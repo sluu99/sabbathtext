@@ -57,6 +57,36 @@
         }
 
         /// <summary>
+        /// Ensure that the account always receives unique Bible verses on their Sabbath text
+        /// </summary>
+        [TestMethod]
+        public void InspectAccount_SabbathTextsShouldBeUnique()
+        {
+            string zipCode = "11434"; // Jamaica, NY (but any ZIP should work)
+
+            AccountEntity account = CreateAccount();
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "zip " + zipCode));
+
+            for (int i = 0; i < 100; i++)
+            {
+                ClockHelper.GoTo(ClockHelper.GetSabbathStartTime(zipCode));
+
+                InspectAccount(account.AccountId);
+
+                // go to the next day so that GetSabbathStartTime will return next week's Sabbath
+                Clock.RollClock(TimeSpan.FromDays(1));
+            }
+
+            account = GetAccount(account.AccountId); // get the updated account
+            Assert.AreEqual(104, account.RecentMessages.Count);
+            Assert.AreEqual(
+                account.RecentVerses.Distinct().Count(),
+                account.RecentVerses.Count(),
+                "Found duplicate texts in recent verses: {0}".InvariantFormat(string.Join("; ", account.RecentVerses)));
+        }
+
+        /// <summary>
         /// Tests that the operation sends out Sabbath message for Redmond
         /// </summary>
         [TestMethod]
@@ -109,7 +139,7 @@
         {
             this.InspectAccount_ShouldSendMessageDuringGracePeriod("02110");
         }
-        
+
         private void InspectAccount_SendMessageOnSabbath(string zipCode)
         {
             AccountEntity account = CreateAccount();
@@ -145,7 +175,7 @@
             AccountEntity account = CreateAccount();
             ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
             ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "zip " + zipCode));
-            
+
             // go to 15 seconds before grace period ends
             DateTime nextSabbathUtc = ClockHelper.GetSabbathStartTime(zipCode);
             ClockHelper.GoTo(nextSabbathUtc + GoodieBag.Create().Settings.SabbathTextGracePeriod - TimeSpan.FromSeconds(15));

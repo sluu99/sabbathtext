@@ -39,6 +39,7 @@
         public AccountEntity()
         {
             this.RecentMessages = new List<MessageEntity>();
+            this.RecentVerses = new List<string>();
         }
 
         /// <summary>
@@ -76,6 +77,11 @@
         /// Gets or sets the list of recent messages
         /// </summary>
         public List<MessageEntity> RecentMessages { get; set; }
+
+        /// <summary>
+        /// Gets or sets the recent Bible verses sent to the user
+        /// </summary>
+        public List<string> RecentVerses { get; set; }
 
         /// <summary>
         /// Gets or sets the account conversation context.
