@@ -92,7 +92,7 @@ using SabbathText.Location.V1;
                 message += " Expect a text from us when Sabbath starts!";
             }
 
-            message += "{0}{0}You can change your ZIP code at anytime by texting \"Zip <zip>\".".InvariantFormat(Environment.NewLine);
+            message += " (You can change your ZIP code at anytime by texting \"Zip <zip>\")";
 
             return CreateMessage(
                 phoneNumber,
