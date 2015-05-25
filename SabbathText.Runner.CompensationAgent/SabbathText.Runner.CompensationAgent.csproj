@@ -4,15 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9E5F643A-D207-44C6-9A8A-902542101597}</ProjectGuid>
+    <ProjectGuid>{9B2FA6C7-405F-480C-AAAE-9C2ADCCE0C2B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SabbathText.Runner</RootNamespace>
-    <AssemblyName>SabbathText.Runner</AssemblyName>
+    <RootNamespace>SabbathText.Runner.CompensationAgent</RootNamespace>
+    <AssemblyName>SabbathText.Runner.CompensationAgent</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <NuGetPackageImportStamp>c2b24e68</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>a92c729d</NuGetPackageImportStamp>
     <StyleCopTreatErrorsAsWarnings Condition=" '$(Configuration)' == 'Debug' ">false</StyleCopTreatErrorsAsWarnings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -44,20 +44,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccountRunner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RunnerEnvironmentSettings.cs" />
-    <Compile Include="DevRunnerEnvironmentSettings.cs" />
-    <Compile Include="StagingRunnerEnvironmentSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Properties\webjob-publish-settings.json" />
-    <None Include="settings.job">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\common\KeyValueStorage\KeyValueStorage.csproj">
@@ -79,6 +72,10 @@
     <ProjectReference Include="..\SabbathText.Location\SabbathText.Location.csproj">
       <Project>{8434442e-36ae-4b1e-b37f-4cc89b4839dd}</Project>
       <Name>SabbathText.Location</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SabbathText.Runner\SabbathText.Runner.csproj">
+      <Project>{9e5f643a-d207-44c6-9a8a-902542101597}</Project>
+      <Name>SabbathText.Runner</Name>
     </ProjectReference>
     <ProjectReference Include="..\SabbathText\SabbathText.csproj">
       <Project>{ab2bf8a3-020e-4cf6-b47a-e2a2c91de503}</Project>

@@ -6,6 +6,9 @@
     },
     {
       "filePath": "../SabbathText.Runner/SabbathText.Runner.csproj"
+    },
+    {
+      "filePath": "../SabbathText.Runner.CompensationAgent/SabbathText.Runner.CompensationAgent.csproj"
     }
   ]
 }

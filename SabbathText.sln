@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.CompensationAge
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.Runner", "SabbathText.Runner\SabbathText.Runner.csproj", "{9E5F643A-D207-44C6-9A8A-902542101597}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabbathText.Runner.CompensationAgent", "SabbathText.Runner.CompensationAgent\SabbathText.Runner.CompensationAgent.csproj", "{9B2FA6C7-405F-480C-AAAE-9C2ADCCE0C2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{9E5F643A-D207-44C6-9A8A-902542101597}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E5F643A-D207-44C6-9A8A-902542101597}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E5F643A-D207-44C6-9A8A-902542101597}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B2FA6C7-405F-480C-AAAE-9C2ADCCE0C2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B2FA6C7-405F-480C-AAAE-9C2ADCCE0C2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B2FA6C7-405F-480C-AAAE-9C2ADCCE0C2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B2FA6C7-405F-480C-AAAE-9C2ADCCE0C2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,5 +113,6 @@ Global
 		{462B2896-B1CC-4B2F-AA18-E948D3E805BE} = {AC4385D0-5F38-4939-8975-84700286B796}
 		{57EFAC0F-48F4-4340-B6A4-4FB7CF676821} = {A5CE5378-ACEA-4986-8FB6-B55FF88AD679}
 		{9E5F643A-D207-44C6-9A8A-902542101597} = {A5CE5378-ACEA-4986-8FB6-B55FF88AD679}
+		{9B2FA6C7-405F-480C-AAAE-9C2ADCCE0C2B} = {A5CE5378-ACEA-4986-8FB6-B55FF88AD679}
 	EndGlobalSection
 EndGlobal

@@ -1,9 +1,15 @@
-﻿namespace SabbathText.Runner
+﻿namespace SabbathText.Runner.CompensationAgent
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
+    using System.Text;
     using System.Threading;
+    using System.Threading.Tasks;
+    using SabbathText.Compensation.V1;
+    using SabbathText.V1;
 
     /// <summary>
     /// The main program
@@ -19,7 +25,7 @@
         /// </summary>
         /// <param name="args">The application argument</param>
         public static void Main(string[] args)
-        {
+        {            
             new Program().Run();
         }
 
@@ -30,7 +36,7 @@
         {
             GoodieBag.Initialize(RunnerEnvironmentSettings.Create());
             GoodieBag bag = GoodieBag.Create();
-
+            
             // setup tracing
             TraceListener traceListener = new ConsoleTraceListener();
             if (bag.Settings.WorkersUseConsoleTrace)
@@ -44,12 +50,15 @@
 
             try
             {
-                Trace.TraceInformation("Runner started on " + Environment.MachineName);
+                Trace.TraceInformation("Runner Compensation Agent started on " + Environment.MachineName);
 
-                AccountRunner runner = new AccountRunner();
+                CheckpointWorker worker = new CheckpointWorker(
+                    bag.CompensationClient,
+                    bag.Settings.CheckpointWorkerIdleDelay,
+                    new OperationCheckpointHandler());
 
                 this.cancellationToken = new CancellationTokenSource();
-                runner.Run(bag.Settings.CheckpointWorkerIdleDelay, this.cancellationToken.Token).Wait();
+                worker.Run(bag.Settings.CheckpointWorkerIdleDelay, this.cancellationToken.Token).Wait();
             }
             finally
             {
