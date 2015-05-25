@@ -14,11 +14,11 @@
         /// </summary>
         protected void Application_Start()
         {
-            AreaRegistration.RegisterAllAreas();
-            AppStart.RegisterGlobalFilters(GlobalFilters.Filters);
-            AppStart.RegisterRoutes(RouteTable.Routes);
-            AppStart.RegisterBundles(BundleTable.Bundles);
             GoodieBag.Initialize(EnvironmentSettings.Create());
+            AreaRegistration.RegisterAllAreas();
+            Startup.RegisterGlobalFilters(GlobalFilters.Filters);
+            Startup.RegisterRoutes(RouteTable.Routes);
+            Startup.RegisterBundles(BundleTable.Bundles);            
         }
     }
 }

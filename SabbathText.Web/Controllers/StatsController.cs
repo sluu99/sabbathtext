@@ -18,7 +18,7 @@
         /// <returns>The index view.</returns>
         public ActionResult Index()
         {
-            return View(stats);
+            return this.View(stats);
         }
     }
 }

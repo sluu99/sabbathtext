@@ -41,6 +41,7 @@ namespace SecretUI
             this.txtEncryptedText.Text = this.secretProvider.Encrypt(
                 this.txtPlainText.Text);
             this.txtPlainText.Text = string.Empty;
+            Clipboard.SetText(this.txtEncryptedText.Text);
         }
 
         private void btnDecrypt_Click(object sender, EventArgs e)
@@ -54,6 +55,7 @@ namespace SecretUI
             this.txtPlainText.Text = this.secretProvider.Decrypt(
                 this.txtEncryptedText.Text);
             this.txtEncryptedText.Text = string.Empty;
+            Clipboard.SetText(this.txtPlainText.Text);
         }
 
         private void linkSelectCert_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

@@ -30,7 +30,7 @@
             {
                 IncomingMessageSecondaryTokenKey,
                 "EfzivVXsHNGobxSCfWtuS1YG3DSVVhF0fOddPBt2EGWU1PQPp268uy3Onv+74Jo3QG079UObtboTUiK1XGujR8yU8RMe74pNlwSrg095nHQPRvBBPQiOs82l5jxTsVbPuU2z1myAecSYjIlMMOzf+mrzn77GfA5+NMlmpZJVkOmv34wGhQjUfxySTZBzlOfIHo3Jhii8UswaJnLL4gCjmPTxl/D7nCMPyZQI7PXF+ntlJvedDU8jEPJgrpXeKNycFgi3t4tGOn9VAH79B1IYEbTMn7UnIN1NRP/QQX3KXY87oyQ53PoYTikr5qb4kC8u1WEtrNxsH8hkwiTV5Pe0XA=="
-            }
+            },
         };
 
         /// <summary>
@@ -69,6 +69,28 @@
         public override TimeSpan RunnerPartitionDelay
         {
             get { return TimeSpan.FromSeconds(0.2); }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether to use Google authentication
+        /// </summary>
+        public override bool UseGoogleAuthentication
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether to use Development authentication
+        /// </summary>
+        public override bool UseDevelopmentAuthentication
+        {
+            get
+            {
+                return true;
+            }
         }
 
         private static Dictionary<string, string> DecryptSecrets()

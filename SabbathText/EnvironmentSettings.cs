@@ -41,6 +41,16 @@
         /// </summary>
         protected const string IncomingMessageSecondaryTokenKey = "IncomingMessageSecondaryToken";
 
+        /// <summary>
+        /// Key for <see cref="GoogleClientId"/>
+        /// </summary>
+        protected const string GoogleClientIdKey = "GoogleClientId";
+
+        /// <summary>
+        /// Key for <see cref="GoogleClientSecret"/>
+        /// </summary>
+        protected const string GoogleClientSecretKey = "GoogleClientSecret";
+
         private Dictionary<string, string> secrets;
 
         /// <summary>
@@ -271,6 +281,39 @@
         public virtual TimeSpan RunnerPartitionDelay
         {
             get { return TimeSpan.FromSeconds(1); }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the web app uses Development authentication.
+        /// This should only be used for the development environment.
+        /// </summary>
+        public virtual bool UseDevelopmentAuthentication
+        {
+            get { return false; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the web app uses Google authentication
+        /// </summary>
+        public virtual bool UseGoogleAuthentication
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// Gets the Google client ID.
+        /// </summary>
+        public string GoogleClientId
+        {
+            get { return this.secrets[GoogleClientIdKey]; }
+        }
+
+        /// <summary>
+        /// Gets the Google client secret.
+        /// </summary>
+        public string GoogleClientSecret
+        {
+            get { return this.secrets[GoogleClientSecretKey]; }
         }
 
         /// <summary>

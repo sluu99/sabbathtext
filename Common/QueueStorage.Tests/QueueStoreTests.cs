@@ -88,7 +88,7 @@
             Clock.Delay(TimeSpan.FromSeconds(1)).Wait();
             QueueMessage msg2 = this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(1), cancellationToken: CancellationToken.None).Result;
 
-            Assert.IsNotNull(msg2, "GetMessage did not return anythingt");
+            Assert.IsNotNull(msg2, "GetMessage did not return anything");
             Assert.AreEqual(msg1.MessageId, msg2.MessageId, "GetMessage did not resturn the same message");
 
             this.Store.GetMessage(visibilityTimeout: TimeSpan.FromSeconds(5), cancellationToken: CancellationToken.None).Wait();

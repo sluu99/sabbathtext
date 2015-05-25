@@ -36,7 +36,15 @@
             {
                 IncomingMessageSecondaryTokenKey,
                 "QNAnX+wp3wSKqwU1zvrSOX5dQ+3O6lmIknn2lqyJat+Y8iXYoxCjvv6ceENkj9cxTF8/WarJK627M2k88rgmgy2ZeDgggiIKw1cm6VHSEWnhBQANZZtKTlWhT2qW6vlOHCGO0C8WWBFOavXEs0N95ovhDPJ+YYNRsE/R8D42JRMnD83b9Rm1xLtrk0npoT7Vof9gKX+LLcglAiU92m3MF2zzeDpHOdzr1ZIoxk6rYI82YUcLCDvc6DnwnXkPM/NBU/XpWvgHS2e11K1obyD1kcuD4q0iTFlzPFAdjKrO+vjnZOI8aTHjnSz+j/such8UUDS9lhR/360hAy8Q8N7RUw=="
-            }
+            },
+            {
+                GoogleClientIdKey,
+                "BGgBBQCn5SlZ5VId6L3ZTDB6De9PvflXnbGzyai2ehlE5DpM+HL9QlVtFlFC3B05eEzSDUKoi78/eaqswhkl3kYbXYcakeysSuGLKbO7VTSBvgSE9fOnzVYyl9T83ZwQo5li63dQgDpNmO1E02u8WkZE54U2JJNY4e4NEeDNm8ZDCNqO0YeojqrdimNKbhccv6R8DQMHIDrKvfkuKBU9+PJxFyZ+3SaLKjDFp1E3hO3PCOAO4iyXUgopYmrogXcbF7misyK35Pxs7FefZcM1gE3u3ZiLzEYKC4wu0irS2DLFlY4l/YOmFL/oqgNUegN5A65antu5NtSI8T7VZP8oNA=="
+            },
+            {
+                GoogleClientSecretKey,
+                "Lja13w6QD/+qWj9jUJ56FA/MYUT872lin9cf07dCQFaLO2Pfc63LrGX6tH7Wcm2fUvV21CaNN2WRdsdqZr7nOs/J5G94SQ5G5xXkP8xITvI9w3fxO8lC+oioGvT1tbVDPPdqb8FPOkmet1XwK34mhJdVrYLS96xtvooKTuCNDmfw2Wvu1zt7f4TBmUoT+XSywO1mmVx4F/tBmGrN84BClpnaXN88YuKIhifbQdGsgui6ygTb3lRlYMGbhWF0v01GMdUPlIpicyqbZa8iyQ89cCpzKLtldyuoLz0Rsk9UkvAsgQ9b6eqXfjIygYHiBJT1GxSjvYoYUPRgCBv7D41xBw=="
+            },
         };
 
         /// <summary>

@@ -7,17 +7,18 @@
     using System.Web.Mvc;
 
     /// <summary>
-    /// The landing page of the web application
+    /// Controller for admins
     /// </summary>
-    public class HomeController : BaseController
+    [Authorize]
+    public class AdminController : BaseController
     {
         /// <summary>
         /// The index page
         /// </summary>
-        /// <returns>The index view.</returns>
+        /// <returns>The action result</returns>
         public ActionResult Index()
         {
-            return this.View();
+            return View();
         }
     }
 }
