@@ -120,53 +120,32 @@
         /// <param name="take">The number of entities to read.</param>
         /// <param name="continuationToken">The continuation token. Specify null for the first time.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The paged result.</returns>
-        public virtual async Task<PagedResult<T>> ReadPartition(string partitionKey, int take, string continuationToken, CancellationToken cancellationToken)
+        /// <returns>A paged result.</returns>
+        public virtual Task<PagedResult<T>> ReadPartition(string partitionKey, int take, string continuationToken, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(partitionKey))
             {
                 throw new ArgumentException("The partition key is required", "partitionKey");
             }
-
-            if (take < 1 || take > 100)
-            {
-                throw new ArgumentException("Take must be between 1 and 100, inclusive", "take");
-            }
-
+            
             string condition = TableQuery.GenerateFilterCondition(
                 "PartitionKey",
                 QueryComparisons.Equal,
                 partitionKey);
-            TableQuery<AzureTableKeyValueEntity> tableQuery = new TableQuery<AzureTableKeyValueEntity>().Where(condition).Take(take);
 
-            TableContinuationToken tableContinuationToken = GetContinuationToken(continuationToken);
-            
-            TableQuerySegment<AzureTableKeyValueEntity> tableQueryResult =
-                await this.cloudTable.ExecuteQuerySegmentedAsync(tableQuery, tableContinuationToken, cancellationToken);
-            
-            PagedResult<T> pagedResult;
+            return this.ExecutePagedQuery(condition, take, continuationToken, cancellationToken);            
+        }
 
-            if (tableQueryResult.Results != null && tableQueryResult.Results.Count > 0)
-            {
-                pagedResult = new PagedResult<T>(take);
-                pagedResult.Entities.AddRange(tableQueryResult.Results.Select(
-                    rawEntity =>
-                    {
-                        T entity = Deserialize<T>(rawEntity.EntityData);
-                        entity.Timestamp = rawEntity.Timestamp.UtcDateTime;
-                        entity.ETag = rawEntity.ETag;
-
-                        return entity;
-                    }));
-            }
-            else
-            {
-                pagedResult = new PagedResult<T>(0);
-            }
-
-            pagedResult.ContinuationToken = GetContinuationTokenString(tableQueryResult.ContinuationToken);
-
-            return pagedResult;
+        /// <summary>
+        /// Reads the entities from all the partitions.
+        /// </summary>
+        /// <param name="take">The number of entities to read.</param>
+        /// <param name="continuationToken">The continuation token. Specify null for the first time.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A paged result.</returns>
+        public virtual Task<PagedResult<T>> ReadAllPartitions(int take, string continuationToken, CancellationToken cancellationToken)
+        {
+            return this.ExecutePagedQuery(null /* condition */, take, continuationToken, cancellationToken);
         }
 
         /// <summary>
@@ -354,7 +333,7 @@
                 throw new ArgumentNullException("rowKey");
             }
         }
-
+        
         private static byte[] Serialize(object obj)
         {
             using (MemoryStream stream = new MemoryStream())
@@ -445,6 +424,50 @@
                 
                 return contToken;
             }
+        }
+        
+        private async Task<PagedResult<T>> ExecutePagedQuery(string condition, int take, string continuationToken, CancellationToken cancellationToken)
+        {
+            if (take < 1 || take > 100)
+            {
+                throw new ArgumentException("Take must be between 1 and 100, inclusive", "take");
+            }
+
+            TableQuery<AzureTableKeyValueEntity> tableQuery = new TableQuery<AzureTableKeyValueEntity>();
+            if (string.IsNullOrWhiteSpace(condition) == false)
+            {
+                tableQuery = tableQuery.Where(condition);
+            }
+
+            tableQuery = tableQuery.Take(take);
+            TableContinuationToken tableContinuationToken = GetContinuationToken(continuationToken);
+
+            TableQuerySegment<AzureTableKeyValueEntity> tableQueryResult =
+                await this.cloudTable.ExecuteQuerySegmentedAsync(tableQuery, tableContinuationToken, cancellationToken);
+
+            PagedResult<T> pagedResult;
+
+            if (tableQueryResult.Results != null && tableQueryResult.Results.Count > 0)
+            {
+                pagedResult = new PagedResult<T>(take);
+                pagedResult.Entities.AddRange(tableQueryResult.Results.Select(
+                    rawEntity =>
+                    {
+                        T entity = Deserialize<T>(rawEntity.EntityData);
+                        entity.Timestamp = rawEntity.Timestamp.UtcDateTime;
+                        entity.ETag = rawEntity.ETag;
+
+                        return entity;
+                    }));
+            }
+            else
+            {
+                pagedResult = new PagedResult<T>(0);
+            }
+
+            pagedResult.ContinuationToken = GetContinuationTokenString(tableQueryResult.ContinuationToken);
+
+            return pagedResult;
         }
     }
 }

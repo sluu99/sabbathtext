@@ -455,6 +455,98 @@
         }
 
         /// <summary>
+        /// Test reading all partitions with less data available than one page
+        /// </summary>
+        [TestMethod]
+        public void ReadAllPartitions_LessDataAvailableThanOnePage()
+        {
+            // populate the store
+            for (int i = 0; i < 7; i++)
+            {
+                Dog dogA = new Dog
+                {
+                    PK = "A",
+                    RK = Guid.NewGuid().ToString(),
+                };
+
+                this.Store.Insert(dogA, CancellationToken.None).Wait();
+
+                Dog dogB = new Dog
+                {
+                    PK = "B",
+                    RK = Guid.NewGuid().ToString(),
+                };
+
+                this.Store.Insert(dogB, CancellationToken.None).Wait();
+            }
+
+            PagedResult<Dog> result = this.Store.ReadAllPartitions(20, null, CancellationToken.None).Result;
+
+            Assert.AreEqual(
+                14,
+                result.Entities.Count,
+                string.Format("Expected 14 entities in partition the result. Actual: {0}", result.Entities.Count));
+            Assert.IsNull(result.ContinuationToken, "The result should not have a continuation token");
+        }
+
+        /// <summary>
+        /// Test reading all partitions with multiple pages
+        /// </summary>
+        [TestMethod]
+        public void ReadAllPartitions_MultiplePages()
+        {
+            // populate the store
+            for (int i = 0; i < 35; i++)
+            {
+                Dog dogA = new Dog
+                {
+                    PK = "A",
+                    RK = Guid.NewGuid().ToString(),
+                };
+
+                this.Store.Insert(dogA, CancellationToken.None).Wait();
+
+                Dog dogB = new Dog
+                {
+                    PK = "B",
+                    RK = Guid.NewGuid().ToString(),
+                };
+
+                this.Store.Insert(dogB, CancellationToken.None).Wait();
+            }
+            
+            string continuationToken = null;
+            int pageCount = 0;
+
+            do
+            {
+                PagedResult<Dog> page = this.Store.ReadAllPartitions(20, continuationToken, CancellationToken.None).Result;
+                pageCount++;
+
+                if (pageCount <= 3)
+                {
+                    Assert.AreEqual(
+                        20,
+                        page.Entities.Count,
+                        string.Format("Page {0} is expected to have {1} entities. Actual entity count: {2}", pageCount, 20, page.Entities.Count));
+                }
+                else if (pageCount == 4)
+                {
+                    Assert.AreEqual(
+                        10,
+                        page.Entities.Count,
+                        string.Format("Page {0} is expected to have {1} entities. Actual entity count: {2}", pageCount, 10, page.Entities.Count));
+                }
+
+                continuationToken = page.ContinuationToken;
+            }
+            while (continuationToken != null);
+
+            Assert.AreEqual(4, pageCount);
+            Assert.IsNull(continuationToken);
+        }
+
+        /// <summary>
         /// Reset the Azure table store
         /// </summary>
         protected virtual void InitStore()

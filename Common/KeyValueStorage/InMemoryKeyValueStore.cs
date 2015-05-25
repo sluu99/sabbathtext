@@ -99,6 +99,41 @@
         }
 
         /// <summary>
+        /// Reads the entities from all the partitions.
+        /// </summary>
+        /// <param name="take">The number of entities to read.</param>
+        /// <param name="continuationToken">The continuation token. Specify null for the first time.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A paged result.</returns>
+        public override Task<PagedResult<T>> ReadAllPartitions(int take, string continuationToken, CancellationToken cancellationToken)
+        {
+            if (take < 1 || take > 100)
+            {
+                throw new ArgumentException("Take must be between 1 and 100, inclusive", "take");
+            }
+            
+            int skip = 0;
+            if (continuationToken != null && int.TryParse(continuationToken, out skip) == false)
+            {
+                throw new ArgumentException("Invalid continuation token", "continuationToken");
+            }
+
+            PagedResult<T> pagedResult = new PagedResult<T>(take);
+            pagedResult.Entities.AddRange(
+                this.Entities            
+                .Skip(skip)
+                .Take(take)
+                .Select(kv => JsonConvert.DeserializeObject<T>(kv.Value)));
+
+            if (pagedResult.Entities.Count == take)
+            {
+                pagedResult.ContinuationToken = (skip + pagedResult.Entities.Count).ToString();
+            }
+
+            return Task.FromResult(pagedResult);
+        }
+
+        /// <summary>
         /// Inserts an entity to the key value store
         /// </summary>
         /// <param name="entity">The entity for insertion</param>
