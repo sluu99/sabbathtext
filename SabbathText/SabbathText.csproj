@@ -93,9 +93,7 @@
     <Compile Include="Entities\MessageEntity.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="V1\AuthKey.cs" />
-    <Compile Include="V1\BeginAuthOperation.cs" />
     <Compile Include="V1\BaseOperation.cs" />
-    <Compile Include="V1\BeginAuthOperationCheckpointData.cs" />
     <Compile Include="V1\CheckpointData.cs" />
     <Compile Include="V1\InMemoryMessageClient.cs" />
     <Compile Include="V1\InspectAccountOperation.cs" />

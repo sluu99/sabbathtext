@@ -105,13 +105,6 @@
                         break;
                     }
 
-                case "BeginAuthOperation.V1":
-                    {
-                        BeginAuthOperation operation = new BeginAuthOperation(context);
-                        await operation.Resume(checkpoint);
-                        break;
-                    }
-
                 case "InspectAccountOperation.V1":
                     {
                         InspectAccountOperation operation = new InspectAccountOperation(context);

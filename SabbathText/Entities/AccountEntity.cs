@@ -83,16 +83,6 @@
         public ConversationContext ConversationContext { get; set; }
 
         /// <summary>
-        /// Gets or sets the authentication key for this account.
-        /// </summary>
-        public string AuthKey { get; set; }
-
-        /// <summary>
-        /// Gets or sets when the authentication key expires
-        /// </summary>
-        public DateTime AuthKeyExpiration { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the user has been greeted.
         /// </summary>
         public bool HasBeenGreeted { get; set; }
