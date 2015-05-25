@@ -63,6 +63,14 @@
         /// Gets the goodie bag.
         /// </summary>
         protected GoodieBag Bag { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the operation is being cancelled
+        /// </summary>
+        protected bool IsCancelling
+        {
+            get { return this.checkpoint != null && this.checkpoint.Status == CheckpointStatus.Cancelling; }
+        }
         
         /// <summary>
         /// Try adding a message to the account.

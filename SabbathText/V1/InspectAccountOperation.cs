@@ -173,6 +173,12 @@
         /// <returns>The operation response.</returns>
         protected override Task<OperationResponse<bool>> Resume(string serializedCheckpointData)
         {
+            if (this.IsCancelling)
+            {
+                // we don't have any compensation
+                return this.CompleteCheckpoint(null, HttpStatusCode.InternalServerError, false);
+            }
+
             this.checkpointData = JsonConvert.DeserializeObject<InspectAccountOperationCheckpointData>(serializedCheckpointData);
 
             switch (this.checkpointData.State)
