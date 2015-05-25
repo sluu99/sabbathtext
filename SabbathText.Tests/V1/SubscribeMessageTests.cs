@@ -17,10 +17,6 @@
         public void SubscribeMessage_SubscribeAfterGreetings()
         {
             AccountEntity account = CreateAccount();
-            GreetUser(account);
-            AssertConversationContext(account.AccountId, ConversationContext.Greetings);
-            AssertAccountStatus(account.AccountId, AccountStatus.BrandNew);
-
             Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
             ProcessMessage(subscribeMessage);
 

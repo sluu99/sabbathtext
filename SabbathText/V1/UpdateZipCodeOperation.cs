@@ -55,18 +55,16 @@
             throw new NotImplementedException();
         }
 
-        private Task<OperationResponse<bool>> TransitionToProcessMessage(Message incomingMessage)
+        private async Task<OperationResponse<bool>> TransitionToProcessMessage(Message incomingMessage)
         {
             this.checkpointData.State = GenericOperationState.ProcessingMessage;
             this.checkpointData.IncomingMessage = incomingMessage;
             this.checkpointData.CurrentZipCode = this.Context.Account.ZipCode;
             this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
 
-            return this.HandOffCheckpoint(
-                TimeSpan.Zero,
-                this.checkpointData,
-                HttpStatusCode.Accepted,
-                true);
+            return
+                await this.SetCheckpoint(this.checkpointData) ??
+                await this.EnterProcessMessage();
         }
 
         private async Task<OperationResponse<bool>> EnterProcessMessage()

@@ -204,20 +204,7 @@
                 Timestamp = Clock.UtcNow,
             };
         }
-
-        /// <summary>
-        /// Sends a greeting message to a specific account.
-        /// </summary>
-        /// <param name="account">The account.</param>
-        protected static void GreetUser(AccountEntity account)
-        {
-            OperationContext context = CreateContext(account);
-            GreetUserOperation operation = new GreetUserOperation(context);
-            OperationResponse<bool> response = operation.Run().Result;
-            Assert.AreEqual<HttpStatusCode>(HttpStatusCode.Accepted, response.StatusCode);
-            RunCheckpointWorker();
-        }
-
+        
         /// <summary>
         /// Inspect an <see cref="InspectAccountOperation"/> and pushes it to finish by invoking the compensation agent.
         /// </summary>
