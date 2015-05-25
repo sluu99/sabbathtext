@@ -93,6 +93,20 @@
             }
         }
 
+        /// <summary>
+        /// Gets a list of admin accounts
+        /// </summary>
+        public override IEnumerable<string> AdminAccounts
+        {
+            get
+            {
+                return new string[]
+                {
+                    "dev@dev.local",
+                };
+            }
+        }
+
         private static Dictionary<string, string> DecryptSecrets()
         {
             string certPath = Path.Combine(

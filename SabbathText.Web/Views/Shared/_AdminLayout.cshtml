@@ -12,13 +12,10 @@
         <div class="row">
             <div class="col-md-1">&nbsp;</div>
             <div class="col-md-10">
+                @Html.ActionLink("Admin Home", "Index", "Admin") |
+
                 @if (HttpContext.Current.User != null && HttpContext.Current.User.Identity.IsAuthenticated)
                 {
-                    using (Html.BeginForm("Logout", "Auth", FormMethod.Post, new { id = "logoutForm" }))
-                    {
-                        @Html.AntiForgeryToken()
-                    }
-                    
                     <text>Logged in as @HttpContext.Current.User.Identity.Name </text>
 
                     ClaimsPrincipal claimsPrincipal = HttpContext.Current.User as ClaimsPrincipal;
@@ -27,7 +24,12 @@
                         <text>(@claimsPrincipal.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value)</text>
                     }
 
-                    <a href="javascript:document.getElementById('logoutForm').submit()">[Logout]</a>                    
+                    <a href="javascript:document.getElementById('logoutForm').submit()">[Logout]</a>
+
+                    using (Html.BeginForm("Logout", "Auth", FormMethod.Post, new { id = "logoutForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                    }
                 }
                 else
                 {

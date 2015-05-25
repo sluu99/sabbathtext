@@ -317,6 +317,20 @@
         }
 
         /// <summary>
+        /// Gets a list of the admin accounts
+        /// </summary>
+        public virtual IEnumerable<string> AdminAccounts
+        {
+            get
+            {
+                return new string[]
+                {
+                    "sluu99@gmail.com",
+                };
+            }
+        }
+
+        /// <summary>
         /// Creates a new instance of <see cref="EnvironmentSettings"/> based on the environment name.
         /// </summary>
         /// <param name="environmentName">

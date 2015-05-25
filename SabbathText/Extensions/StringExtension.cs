@@ -144,6 +144,36 @@ public static class StringExtension
         return string.Equals(str1, str2, StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>
+    /// Converts a string to base 64
+    /// </summary>
+    /// <param name="str">The string</param>
+    /// <returns>The base 64 representation of the string</returns>
+    public static string ToBase64(this string str)
+    {
+        if (str == null)
+        {
+            return null;
+        }
+
+        return Convert.ToBase64String(Encoding.UTF8.GetBytes(str));
+    }
+
+    /// <summary>
+    /// Gets the original form of a string from base 64
+    /// </summary>
+    /// <param name="base64Str">The base 64 string</param>
+    /// <returns>The original string</returns>
+    public static string FromBase64(this string base64Str)
+    {
+        if (base64Str == null)
+        {
+            return null;
+        }
+
+        return Encoding.UTF8.GetString(Convert.FromBase64String(base64Str));
+    }
+
     private static string NormalizePhoneNumber(string phoneNumber)
     {
         if (phoneNumber.Length == 11)

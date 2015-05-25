@@ -70,7 +70,9 @@
                 return this.RedirectToLocal(returnUrl);
             }
 
-            if (GoodieBag.Create().Settings.UseDevelopmentAuthentication && DevelopmentLoginProvider.Equals(provider, StringComparison.OrdinalIgnoreCase))
+            EnvironmentSettings settings = GoodieBag.Create().Settings;
+            if (settings.UseDevelopmentAuthentication &&
+                DevelopmentLoginProvider.Equals(provider, StringComparison.OrdinalIgnoreCase))
             {
                 this.SignIn(DevelopmentUserName, DevelopmentIdentityName, DevelopmentLoginProvider);
                 return this.RedirectToLocal(returnUrl);
@@ -100,8 +102,13 @@
                 return this.RedirectToLocal(returnUrl);
             }
 
+            EnvironmentSettings settings = GoodieBag.Create().Settings;
+
             ExternalLoginInfo loginInfo = await this.AuthManager.GetExternalLoginInfoAsync();
-            if (loginInfo == null || string.IsNullOrWhiteSpace(loginInfo.Email) || loginInfo.Login == null)
+            if (loginInfo == null ||
+                string.IsNullOrWhiteSpace(loginInfo.Email) ||
+                loginInfo.Login == null ||
+                settings.AdminAccounts.Any(acct => acct.Equals(loginInfo.Email, StringComparison.OrdinalIgnoreCase) == false))
             {
                 return this.RedirectToAction("Login");
             }

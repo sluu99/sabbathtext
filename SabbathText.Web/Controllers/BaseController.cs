@@ -53,5 +53,14 @@
                 TrackingId = Guid.NewGuid().ToString(),
             };
         }
+
+        /// <summary>
+        /// Gets the default cancellation
+        /// </summary>
+        /// <returns>A cancellation token</returns>
+        protected CancellationToken GetCancellationToken()
+        {
+            return new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+        }
     }
 }
