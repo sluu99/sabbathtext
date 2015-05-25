@@ -138,7 +138,11 @@
                 bag.CompensationClient,
                 bag.Settings.CheckpointWorkerIdleDelay,
                 new OperationCheckpointHandler());
-            Assert.AreEqual(TimeSpan.Zero, worker.RunIteration(CancellationToken.None).Result);
+
+            // process all the checkpoints avail
+            while (worker.RunIteration(CancellationToken.None).Result == TimeSpan.Zero)
+            {
+            }
         }
 
         /// <summary>
@@ -231,8 +235,6 @@
             OperationContext context = CreateContext(account);
             MessageProcessor processor = new MessageProcessor();
             processor.Process(context, incomingMessage).Wait();
-
-            RunCheckpointWorker();
         }
     }
 }
