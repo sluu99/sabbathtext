@@ -53,7 +53,7 @@
         /// environment variable will be used.
         /// </param>
         /// <returns>The environment settings.</returns>
-        public static EnvironmentSettings Create(string environmentName = null)
+        public static new EnvironmentSettings Create(string environmentName = null)
         {
             if (environmentName == null)
             {

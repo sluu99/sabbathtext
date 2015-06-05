@@ -31,6 +31,7 @@ namespace AccountMigrator
                 foreach (var entity in result)
                 {
                     string phoneNumber = entity.Properties["PhoneNumber"].StringValue;
+                    
                     DateTime creationTime = new DateTime(entity.Properties["CreationTime"].DateTime.Value.Ticks, DateTimeKind.Utc);
                     DateTime lastSabbathTextTime = DateTime.MinValue;
                     if (entity.Properties["LastSabbathMessageTime"].DateTime != null)
@@ -76,6 +77,9 @@ namespace AccountMigrator
                     Console.WriteLine("Migrated account " + account.AccountId);
                 }
             }
+
+            Console.WriteLine("Done");
+            Console.ReadKey();
         }
     }
 }

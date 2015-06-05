@@ -1,0 +1,1 @@
+..\SabbathText.Runner.CompensationAgent\bin\Debug\SabbathText.Runner.CompensationAgent.exe
