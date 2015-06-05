@@ -1,0 +1,95 @@
+﻿@model SabbathText.Entities.AccountEntity
+
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Account Details</h2>
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(m => m.PartitionKey)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(m => m.PartitionKey)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.RowKey)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(m => m.RowKey)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.AccountId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(m => m.AccountId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.Status)
+        </dt>
+
+        <dd>
+            @Model.Status.ToString()
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.CreationTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(m => m.CreationTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.PhoneNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(m => m.PhoneNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.ZipCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(m => m.ZipCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.HasBeenGreeted)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(m => m.HasBeenGreeted)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.LastSabbathTextTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(m => m.LastSabbathTextTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.RecentVerses)
+        </dt>
+
+        <dd>
+            @string.Join(", ", Model.RecentVerses)
+        </dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -3,6 +3,7 @@ Sabbath Text is a service that sends out "Happy Sabbath" messages to its subscri
 
 http://www.SabbathText.com
 
+[![Build status](https://ci.appveyor.com/api/projects/status/2ma6nctn79vglyy8?svg=true)](https://ci.appveyor.com/project/StevenLuu/sabbathtext)
 
 # License
 

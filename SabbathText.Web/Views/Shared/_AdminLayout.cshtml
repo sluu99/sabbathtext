@@ -1,0 +1,56 @@
+﻿@using System.Security.Claims
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Sabbath Text</title>
+    <link href="~/Content/sunrise/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div style="margin: 10px;">
+        <div class="row">
+            <div class="col-md-1">&nbsp;</div>
+            <div class="col-md-10">
+                @Html.ActionLink("Admin Home", "Index", "Admin") |
+
+                @if (HttpContext.Current.User != null && HttpContext.Current.User.Identity.IsAuthenticated)
+                {
+                    <text>Logged in as @HttpContext.Current.User.Identity.Name </text>
+
+                    ClaimsPrincipal claimsPrincipal = HttpContext.Current.User as ClaimsPrincipal;
+                    if (claimsPrincipal != null && claimsPrincipal.Claims.Any(c => c.Type == ClaimTypes.NameIdentifier))
+                    {
+                        <text>(@claimsPrincipal.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value)</text>
+                    }
+
+                    <a href="javascript:document.getElementById('logoutForm').submit()">[Logout]</a>
+
+                    using (Html.BeginForm("Logout", "Auth", FormMethod.Post, new { id = "logoutForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                    }
+                }
+                else
+                {
+                    @Html.ActionLink("Login", "Login")
+                }
+            </div>
+            <div class="col-md-1">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-md-1">&nbsp;</div>
+            <div class="col-md-10">
+                @RenderBody()
+            </div>
+            <div class="col-md-1">&nbsp;</div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 15px;">
+        &copy; 2014 Sabbath Text - Reach out to us on <a href="http://twitter.com/sabbathtext" style="text-decoration: underline;">Twitter</a>
+    </div>
+
+    @Html.Partial("GoogleAnalytics")
+</body>
+</html>

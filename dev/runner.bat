@@ -1,0 +1,1 @@
+..\SabbathText.Runner\bin\Debug\SabbathText.Runner.exe

@@ -20,6 +20,8 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <NuGetPackageImportStamp>90609ee4</NuGetPackageImportStamp>
+    <StyleCopTreatErrorsAsWarnings Condition=" '$(Configuration)' == 'Debug' ">false</StyleCopTreatErrorsAsWarnings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,6 +41,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Data.Edm, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -52,6 +60,24 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Data.Services.Client.5.6.2\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.3.0.1\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.2.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.WindowsAzure.Configuration, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.1.8.0.0\lib\net35-full\Microsoft.WindowsAzure.Configuration.dll</HintPath>
@@ -62,10 +88,13 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NodaTime">
       <HintPath>..\packages\NodaTime.1.3.0\lib\net35-Client\NodaTime.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=104.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -154,10 +183,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\ManageAccountsController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AuthController.cs" />
+    <Compile Include="Models\AccountListModel.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\GetStartedController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\StatsController.cs" />
@@ -179,9 +210,6 @@
     <Content Include="Content\sunrise\css\sunrise.css" />
     <Content Include="Content\sunrise\img\bg.jpg" />
     <Content Include="Global.asax" />
-    <Content Include="Properties\WebJobs.xml" />
-    <Content Include="Properties\ligershark.webjobs.targets" />
-    <Content Include="Properties\ligershark.webjobs.ext.targets" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -192,7 +220,6 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="webjobs.wpp.targets" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -200,7 +227,9 @@
     <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Content>
     <None Include="Project_Readme.html" />
     <Content Include="Views\Shared\_BlankLayout.cshtml" />
     <Content Include="Views\GetStarted\Invalid.cshtml" />
@@ -208,27 +237,37 @@
     <Content Include="Views\GetStarted\Success.cshtml" />
     <Content Include="Views\Shared\GoogleAnalytics.cshtml" />
     <Content Include="Views\Stats\Index.cshtml" />
+    <Content Include="Properties\webjobs-list.json" />
+    <Content Include="Views\Auth\Login.cshtml" />
+    <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\ManageAccounts\Index.cshtml" />
+    <Content Include="Views\ManageAccounts\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QueueStorage\QueueStorage.csproj">
+    <ProjectReference Include="..\common\KeyValueStorage\KeyValueStorage.csproj">
+      <Project>{baeac47d-ea85-4a29-9651-a48ae1cc31e6}</Project>
+      <Name>KeyValueStorage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\QueueStorage\QueueStorage.csproj">
       <Project>{c6cc3315-77e5-48f0-beae-e4ae8c584983}</Project>
       <Name>QueueStorage</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SabbathText.Core\SabbathText.Core.csproj">
-      <Project>{b45ea451-a493-4e23-a7a6-a496838edc00}</Project>
-      <Name>SabbathText.Core</Name>
+    <ProjectReference Include="..\Common\System2\System2.csproj">
+      <Project>{88035141-476b-4625-a5df-738509b58e99}</Project>
+      <Name>System2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SabbathText.EventMessageWorker\SabbathText.EventMessageWorker.csproj">
-      <Project>{CFBCD0E5-8DBF-4057-AB1D-08FBC9771103}</Project>
-      <Name>SabbathText.EventMessageWorker</Name>
+    <ProjectReference Include="..\SabbathText.Compensation\SabbathText.Compensation.csproj">
+      <Project>{89227b2c-ebc6-4235-a5a8-e28ee4e034e9}</Project>
+      <Name>SabbathText.Compensation</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SabbathText.InboundMessageWorker\SabbathText.InboundMessageWorker.csproj">
-      <Project>{056EEAA8-275C-4F2D-88E0-BF796994D546}</Project>
-      <Name>SabbathText.InboundMessageWorker</Name>
+    <ProjectReference Include="..\SabbathText.Location\SabbathText.Location.csproj">
+      <Project>{8434442e-36ae-4b1e-b37f-4cc89b4839dd}</Project>
+      <Name>SabbathText.Location</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SabbathText.OutboundMessageWorker\SabbathText.OutboundMessageWorker.csproj">
-      <Project>{FB28C453-1686-43AC-8E86-806D396E63EB}</Project>
-      <Name>SabbathText.OutboundMessageWorker</Name>
+    <ProjectReference Include="..\SabbathText\SabbathText.csproj">
+      <Project>{ab2bf8a3-020e-4cf6-b47a-e2a2c91de503}</Project>
+      <Name>SabbathText</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
@@ -259,6 +298,14 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="..\packages\Microsoft.Web.WebJobs.Publish.1.0.2\tools\webjobs.targets" Condition="Exists('..\packages\Microsoft.Web.WebJobs.Publish.1.0.2\tools\webjobs.targets')" />
+  <Import Project="..\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets" Condition="Exists('..\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StyleCop.MSBuild.4.7.49.1\build\StyleCop.MSBuild.Targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

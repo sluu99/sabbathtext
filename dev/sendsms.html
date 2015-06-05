@@ -11,11 +11,11 @@
             </p>
             <p>
                 From:<br/>
-                <input name="From" />
+                <input name="From" value="+11234567890" />
             </p>
             <p>
                 Message ID:<br/>
-                <input name="MessageSid" />
+                <input name="MessageSid" /> <input type="button" value="New" onclick="javascript:newMessageId()" />
             </p>
             <p>
                 Body:<br/>
@@ -25,5 +25,12 @@
                 <input type="submit" />
             </p>
         </form>
+		<script>
+		function newMessageId() {
+			document.getElementsByName('MessageSid')[0].value = new Date().getTime().toString();
+		}
+		
+		newMessageId();
+		</script>
     </body>
 </html>

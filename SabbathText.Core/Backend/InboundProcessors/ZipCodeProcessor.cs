@@ -11,7 +11,7 @@ namespace SabbathText.Core.Backend.InboundProcessors
 {
     public class ZipCodeProcessor : AccountBasedProcessor
     {
-        public static readonly Regex ZipCodeRegex = new Regex(@"^Zip(?:Code)?\s*(?<ZipCode>\d*)$", RegexOptions.IgnoreCase);
+        public static readonly Regex ZipCodeRegex = new Regex(@"^Zip(?:Code)?\s*(?<ZipCode>\d+)$", RegexOptions.IgnoreCase);
 
         public ZipCodeProcessor() : base(subscriberRequired: true)
         {

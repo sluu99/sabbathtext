@@ -1,0 +1,29 @@
+﻿@model SabbathText.Web.Models.AccountListModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Manage Accounts</h2>
+
+<table border="0">
+    <tr>
+        <th>Account ID</th>
+        <th>Creation Time</th>
+    </tr>
+    
+    @foreach (var account in this.Model.Accounts)
+    {
+        <tr>
+            <td>@Html.ActionLink(account.AccountId, "Details", new { accountId = account.AccountId })</td>
+            <td>@account.CreationTime</td>
+        </tr>
+    }   
+</table>
+<br />
+@if (string.IsNullOrWhiteSpace(this.Model.ContinuationToken) == false)
+{
+    @Html.ActionLink("Next Page", "Index", new { continuationToken = this.Model.ContinuationToken });
+}
+
