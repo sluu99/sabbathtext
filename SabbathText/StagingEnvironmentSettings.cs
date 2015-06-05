@@ -51,16 +51,8 @@
         /// Creates a new instance of the staging environment settings.
         /// </summary>
         public StagingEnvironmentSettings()
-            : base(DecryptSecrets())
+            : base(DecryptSecrets(Secrets))
         {
-        }
-
-        private static Dictionary<string, string> DecryptSecrets()
-        {
-            SecretProvider provider = new SecretProvider(Environment.GetEnvironmentVariable("CertificateThumbprint"));
-            return Secrets.ToDictionary(
-                kv => kv.Key,
-                kv => provider.Decrypt(kv.Value));
         }
     }
 }

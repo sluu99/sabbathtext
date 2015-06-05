@@ -107,7 +107,7 @@
             }
         }
 
-        private static Dictionary<string, string> DecryptSecrets()
+        private static new Dictionary<string, string> DecryptSecrets()
         {
             string certPath = Path.Combine(
                 Assembly.GetExecutingAssembly().GetDirectory(),

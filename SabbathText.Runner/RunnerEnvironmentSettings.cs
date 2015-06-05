@@ -13,7 +13,7 @@
         /// Creates a new instance of this class
         /// </summary>
         protected RunnerEnvironmentSettings()
-            : base(null)
+            : base(DecryptSecrets())
         {
         }
 
@@ -56,7 +56,7 @@
         public static new EnvironmentSettings Create(string environmentName = null)
         {
             if (environmentName == null)
-            {
+            { 
                 environmentName = Environment.GetEnvironmentVariable("SabbathTextEnvironment");
             }
 
