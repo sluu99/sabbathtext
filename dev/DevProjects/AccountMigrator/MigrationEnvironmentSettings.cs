@@ -13,7 +13,7 @@ namespace AccountMigrator
         {
             get
             {
-                return "UseDevelopmentStorage=true";
+                return "";
             }
         }
     }
