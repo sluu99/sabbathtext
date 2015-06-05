@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using KeyValueStorage;
     using QueueStorage;
     using SabbathText.V1;
@@ -50,6 +51,42 @@
         /// Key for <see cref="GoogleClientSecret"/>
         /// </summary>
         protected const string GoogleClientSecretKey = "GoogleClientSecret";
+
+        private static readonly Dictionary<string, string> Secrets = new Dictionary<string, string>
+        {
+            {
+                KeyValueStoreConnectionStringKey,
+                "u9fLA4Bv1eeshQFgbwoFti8PmtU7+qIAPGJPrBAvjS3bfL7Dcb5QA+ibD0yHxMFU5WeJlWb2JPE2OLXBEbsKVCz+dNAsti5qDcQtEE4Fhca9BXCNJwrhLA7mQ9zNW5HM3z38QCHN2gt4rn/e0NunCgK258F6M/FLe86OkH64jmYOnM6KgSS/4Yiq24aux/uxVg9ktDdI9EVSYhevnygYlDJZb+vdE1Budl2HfC/D0dU+icEJXuzAznzyxQzM+K6aTm02LUcVf6BwpA4/YM7d/tIO2p2eVKoK75OTPiKYuMbCBeUeTtw1nd7pq774eaGCl5b683cWZBwzYUHIQxX5wg=="
+            },
+            {
+                ServicePhoneNumberKey,
+                "dtmHSvLVOZ0gdB3ALVqQ6He57uMbLffBinqitZQKD/Kuvf8IqiyGe11YzWP5rEs3cSSXL/daiBsGH1sM0kHeiCtlNwlYTkBO1fap/nA7gwqlXepvOjubIddDrMC8FdLun06HT6ssqEWuXSQFgOZG+Zc5/cvx/F5N7KB1/en2QHRYlWYsIYdcH+X36m9BsBpsXchuG3E0+3ZS9rGS0SuoUXyzzGeNAgYQahrrRKUNwM+Q5cIBjItxsShnfAT8KktgJqKWkK+13Q/J2w37bvZoJp1PUGWvMJlX+HaRWom95SrtGqQLhUytBpwkSY+5OxOX6NTxbi9OzU/Irr7SZqVDXw=="
+            },
+            {
+                TwilioAccountKey,
+                "w17R/L49KZBKPo1tDsmRDdAo7MKV3TpOVUkcSLw9DyahUEjyBUMAcZr8WtK+F/HfkC/2Yirp7k5GmAR7KIHdFogK3XVi3vmZ1v9H9oNMvD/aeDbz2DNkYzwKMfk1WbQmWMQp+t2HUBEGSffWoIngO+08bRkI1Ol8LBSpngLmMCdCTOHxzIv+YzfNO6oIt0IumovLBU/Le9BDVtOaBZFHI/8w6UZXrQL4fk23VwIjwccv74Sk1GNwF8XO/E0khJGTYPCT8QNu9ttTZLZbdFe4Q1aKaKf0KP3AGyAxnhjiMt8wcmnZqEk6kYnJk+mHi+Ho5mfgfKI4+9mMTsd6T1Gk3g=="
+            },
+            {
+                TwilioTokenKey,
+                "oiKWYEcpnv6+rIlkYK5ekyNyK4mSsx6Bd2Z3n08YlI5v4tygu6L82LHzPLag1mPinpyHAL1aiDFutMSK4WRynvJi+4SSEEwmRWE5JuM6/+IQdegX26WHwUtYX3sgclIWNyZm+POKDbN5HAg7eBSgUEDg00v1yJA0YThjZMFrX2wXji7akXEA2gb7toy/vlJoB7N0/GSJG0Z9IZU7R2kezlUv/p5y039Fg9T1kLHG0If4BG7Dtz0arKf898BE/8dS8ko44/AqtODweyFj+SoYm1cNoqBLIht8oGf2dQDpe256u+PhPfQ0YYxzT9L72viDpWi6zbBsxVQDd77s9F5L5Q=="
+            },
+            {
+                IncomingMessagePrimaryTokenKey,
+                "m4bsSyyOZa0vjaZuRyd8iB/ic/RAhD09dfszeDj1RVYuxNCRv8oIGy8FjFHOi1nuCrXJtNtAruj6/+4MG3nlIm1vjBOSlRC1YPIAeioGuMqq026oYZDlD5TNtAQJlw8VJYOwyqhPYoJSXWVQACHUf8l3c+umhXrXXZiqsSP9hYxlZo7FmS6+iJ+HhJCgpnDPuK0GWVbV4NhEcYPFg3AhiPl3x/BYx+TZpDRB3EZ7FdMaq4EDCDFiOsBOlNDS5g2afMvC73IjHKbIONWNqRm3/QKhj37pLSUwd7LBst2BBpXMea4qJ0+J9XsJ3IKP/t5Xs61CeHjALO+Vjto3DeUgwQ=="
+            },
+            {
+                IncomingMessageSecondaryTokenKey,
+                "ERPcmCDZfbZfOpNP4Ct3uxv5X+RPqSy0HJRhk77XC74zRknMnQ4R0b6BvMRHRJ0wVCDLIlKvhUOmOl6Cq8vaInTu2OfGBaUgfSiVJvkB+cxAX/n4PtglpGbhIpNTvUOrixxaEmSA914xvEVC2tSUg4L45gSO6FPuZ0QZ8GHnHahMeNCiZvDxCLTQeUJvSQ6QsflMUj2hejIn+x/t9pzTxoIT0/iVZUuR2suLWthrTaby9bGkSPZtBd8ZjmMs0TZKVPfMvZw71IIkM6wSGX/qjVJUTLcsueKuGZEegVZ4NDR0RBA49nNdVSLskVpgwelHtAcU0aLTXPOaxKRdSTtUGw=="
+            },
+            {
+                GoogleClientIdKey,
+                "Jd81Vq020nWE9b89Sv53jzUy2QOfeKoqcwbyGfo6JBETl8bgejH8d7fxRgayZrQ+FSvpyFeeyaLTVI0V5ChbLNoVPGrd3RukZM0588MNLPiYWzXqv97O2SKKiRFTETXJLJVS1ZsnmecF3lxJ/EJ4gDEEHcjTk1FnzcElfZIz4qp81tVdcceUMhK7bIY/55F8/VG9+AkYETlalHoJ+0cBiEDmgx3eyC13Wp8GNVOGNFmRVB5YnIL3BEOzlOw8QyeVtD694IkiiU2bj2gmxp+xJQ8ndhihoOZDl1p47Ho/24zC5q0HlpvRF83dzfhpKqEyqt133njOUzY7/M/I5tmjig=="
+            },
+            {
+                GoogleClientSecretKey,
+                "gQ92+tfjIz3iKa9RdomBrvsWyh63XYVLnNeNTk0jwtnscvEPGaKBoDZo3GZ5BwKzq+t/sMbdLXL3b+7GuYpEBDFQI9iMwlK0qnZ0RTEW/wK6NCbGpowgao1LC9flj08tk3vwRdsiKgZXYBUPqXIAaA1ZpweaLUCY2HwOfZZDqON+cYlH7A7L3PLk9TSSWRiom3jwi5EI5Q5+3Ewx9yhFfz6D7peSj/dtHzXLzh30Ld1IvBQNDeph6iQzMlRQ7psgUqvLyC70tfEleUC7tkXwXLIDc2xs3BVzwUoeN+j4GJiB6+l0H3ehQ35K39f29xZ7ZZKSU/pPca1Bck5+vE+f6g=="
+            },
+        };
 
         private Dictionary<string, string> secrets;
 
@@ -348,12 +385,20 @@
             switch (environmentName)
             {
                 case "Production":
-                    return new EnvironmentSettings(null);
+                    return new EnvironmentSettings(DecryptSecrets());
                 case "Staging":
                     return new StagingEnvironmentSettings();
             }
 
             return new DevEnvironmentSettings();
+        }
+
+        private static Dictionary<string, string> DecryptSecrets()
+        {
+            SecretProvider provider = new SecretProvider(Environment.GetEnvironmentVariable("CertificateThumbprint"));
+            return Secrets.ToDictionary(
+                kv => kv.Key,
+                kv => provider.Decrypt(kv.Value));
         }
     }
 }
