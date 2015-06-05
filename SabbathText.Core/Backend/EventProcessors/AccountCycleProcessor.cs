@@ -149,14 +149,19 @@ namespace SabbathText.Core.Backend.EventProcessors
                 select s
             ).ToArray();
 
+            Trace.TraceInformation("Found {0} unsent schedules", unsentSchedules.Length);
+
             DateTime[] scheduleTimes = new DateTime[unsentSchedules.Length];
 
             CustomMessageSchedule actionableSchedule = null;            
-
+                        
             // calculate schedule times and look for an actionable schedule along the way
             for (int i = 0; i < unsentSchedules.Length; i++ )
-            {
+            {                
                 CustomMessageSchedule schedule = unsentSchedules[i];
+
+                Trace.TraceInformation("Schedule {0}", schedule.ScheduleId);
+
                 LocationTimeInfo timeInfo = await this.DataProvider.GetTimeInfoByZipCode(account.ZipCode, schedule.ScheduleDate);
 
                 if (schedule.OffsetFrom == TimeOffsetType.Sunrise)
@@ -167,6 +172,8 @@ namespace SabbathText.Core.Backend.EventProcessors
                 {
                     scheduleTimes[i] = timeInfo.Sunset + TimeSpan.FromSeconds(schedule.SecondsOffset);
                 }
+
+                Trace.TraceInformation("Schedule time: {0}", scheduleTimes[i]);
 
                 if (actionableSchedule == null && scheduleTimes[i] <= Clock.UtcNow && Clock.UtcNow <= scheduleTimes[i] + TimeSpan.FromSeconds(schedule.GracePeriod))
                 {
