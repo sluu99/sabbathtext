@@ -393,10 +393,24 @@
             return new DevEnvironmentSettings();
         }
 
-        private static Dictionary<string, string> DecryptSecrets()
+        /// <summary>
+        /// Decrypt the secrets provided.
+        /// </summary>
+        /// <returns>The decrypted secrets.</returns>
+        protected static Dictionary<string, string> DecryptSecrets()
+        {
+            return DecryptSecrets(Secrets);
+        }
+
+        /// <summary>
+        /// Decrypt the secrets provided.
+        /// </summary>
+        /// <param name="secrets">The secrets to be decrypted.</param>
+        /// <returns>The decrypted secrets.</returns>
+        protected static Dictionary<string, string> DecryptSecrets(Dictionary<string, string> secrets)
         {
             SecretProvider provider = new SecretProvider(Environment.GetEnvironmentVariable("CertificateThumbprint"));
-            return Secrets.ToDictionary(
+            return secrets.ToDictionary(
                 kv => kv.Key,
                 kv => provider.Decrypt(kv.Value));
         }
