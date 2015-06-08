@@ -49,7 +49,7 @@
                 AccountRunner runner = new AccountRunner();
 
                 this.cancellationToken = new CancellationTokenSource();
-                runner.Run(bag.Settings.CheckpointWorkerIdleDelay, this.cancellationToken.Token).Wait();
+                runner.RunIteration(this.cancellationToken.Token).Wait();
             }
             finally
             {
