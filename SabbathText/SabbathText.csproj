@@ -92,7 +92,6 @@
     <Compile Include="Entities\ConversationContext.cs" />
     <Compile Include="Entities\MessageEntity.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
-    <Compile Include="V1\AuthKey.cs" />
     <Compile Include="V1\BaseOperation.cs" />
     <Compile Include="V1\CheckpointData.cs" />
     <Compile Include="V1\InMemoryMessageClient.cs" />
@@ -103,7 +102,7 @@
     <Compile Include="V1\MessageProcessor.cs" />
     <Compile Include="V1\GreetUserOperationCheckpointData.cs" />
     <Compile Include="V1\GreetUserOperation.cs" />
-    <Compile Include="V1\GreetUserOperationState.cs" />
+    <Compile Include="V1\ServiceMessageOperationState.cs" />
     <Compile Include="V1\Message.cs" />
     <Compile Include="V1\MessageClient.cs" />
     <Compile Include="Entities\MessageDirection.cs" />
@@ -118,7 +117,7 @@
     <Compile Include="V1\SubscribeMessageOperationCheckpointData.cs" />
     <Compile Include="V1\UpdateZipCodeOperation.cs" />
     <Compile Include="V1\UpdateZipCodeOperationCheckpointData.cs" />
-    <Compile Include="V1\GenericOperationState.cs" />
+    <Compile Include="V1\RespondingMessageOperationState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\common\KeyValueStorage\KeyValueStorage.csproj">

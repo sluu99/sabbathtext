@@ -27,6 +27,6 @@
         /// <summary>
         /// Gets or sets the operation state
         /// </summary>
-        public GreetUserOperationState OperationState { get; set; }
+        public ServiceMessageOperationState OperationState { get; set; }
     }
 }

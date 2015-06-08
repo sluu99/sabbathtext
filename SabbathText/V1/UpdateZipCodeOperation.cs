@@ -48,7 +48,7 @@
 
             switch (this.checkpointData.State)
             {
-                case GenericOperationState.ProcessingMessage:
+                case RespondingMessageOperationState.ProcessingMessage:
                     return this.EnterProcessMessage();
             }
 
@@ -57,7 +57,7 @@
 
         private async Task<OperationResponse<bool>> TransitionToProcessMessage(Message incomingMessage)
         {
-            this.checkpointData.State = GenericOperationState.ProcessingMessage;
+            this.checkpointData.State = RespondingMessageOperationState.ProcessingMessage;
             this.checkpointData.IncomingMessage = incomingMessage;
             this.checkpointData.CurrentZipCode = this.Context.Account.ZipCode;
             this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
@@ -116,7 +116,7 @@
         
         private async Task<OperationResponse<bool>> TranstitionToUpdateAccount(Message outgoingMessage)
         {
-            this.checkpointData.State = GenericOperationState.UpdatingAccount;
+            this.checkpointData.State = RespondingMessageOperationState.UpdatingAccount;
             this.checkpointData.OutgoingMessage = outgoingMessage;
             this.checkpointData.IncomingMessageId = Guid.NewGuid().ToString();
 
