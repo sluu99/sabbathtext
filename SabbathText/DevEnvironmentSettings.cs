@@ -62,15 +62,7 @@
                 return true;
             }
         }
-
-        /// <summary>
-        /// Gets the delay between account partition for the runner
-        /// </summary>
-        public override TimeSpan RunnerPartitionDelay
-        {
-            get { return TimeSpan.FromSeconds(0.2); }
-        }
-
+        
         /// <summary>
         /// Gets a value indicating whether to use Google authentication
         /// </summary>
@@ -90,6 +82,17 @@
             get
             {
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// Gets the frequency for the runner
+        /// </summary>
+        public override TimeSpan RunnerFrequency
+        {
+            get
+            {
+                return TimeSpan.FromMinutes(1);
             }
         }
 

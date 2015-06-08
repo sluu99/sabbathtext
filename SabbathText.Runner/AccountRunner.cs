@@ -16,8 +16,9 @@
     public class AccountRunner : Worker
     {
         private static readonly TimeSpan IterationDelay = TimeSpan.FromSeconds(30);
-
         private static readonly char[] HexCharacters = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
+        private DateTime nextRun = DateTime.MinValue;
 
         /// <summary>
         /// Runs a worker iteration
@@ -26,7 +27,16 @@
         /// <returns>The delay after the iteration.</returns>
         public override async Task<TimeSpan> RunIteration(CancellationToken cancellationToken)
         {
-            await IterateAccounts(this.InspectAccount, cancellationToken);
+            if (Clock.UtcNow >= nextRun)
+            {
+                // time to run again
+                DateTime startTime = Clock.UtcNow;
+                await IterateAccounts(this.InspectAccount, cancellationToken);
+                nextRun = startTime.Add(GoodieBag.Create().Settings.RunnerFrequency);
+            }
+            
+            Trace.TraceInformation("Next run = {0} {1}. Now = {2}", nextRun, nextRun.Kind, Clock.UtcNow);
+            
             return IterationDelay;
         }
 
@@ -59,8 +69,6 @@
                     }
                 }
                 while (continuationToken != null);
-                
-                await Clock.Delay(bag.Settings.RunnerPartitionDelay, cancellationToken);
             }
         }
 
