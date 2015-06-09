@@ -15,7 +15,7 @@
     /// </summary>
     public class AccountRunner : Worker
     {
-        private static readonly TimeSpan IterationDelay = TimeSpan.FromSeconds(30);
+        private static readonly TimeSpan IterationDelay = TimeSpan.FromSeconds(5);
         private static readonly char[] HexCharacters = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
         private DateTime nextRun = DateTime.MinValue;

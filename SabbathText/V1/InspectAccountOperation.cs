@@ -94,15 +94,13 @@
             if (this.Context.Account.RecentVerses.Count == DomainData.BibleVerses.Count)
             {
                 // This account has seen all the Bible verses we have.
-                // We'll remove the oldest *five* verses.
-                // We can just remove one oldest one, but that would put the account into a circle of verses in order.
-                // By removing five verses, the account can still have somewhat random verses after the first cycle
-                this.Context.Account.RecentVerses.RemoveRange(0, 5);
+                // Remove one of the older used verses
+                int indexToRemove = Rand.Next(0, this.Context.Account.RecentVerses.Count / 2);
+                this.Context.Account.RecentVerses.RemoveAt(indexToRemove);
             }
 
             // update the account Sabbath text time first
             // so that if the operation fails later, we won't be spamming the user on each retry
-            // (Twilio really needs to start supporting idempotent calls)
             this.Context.Account.LastSabbathTextTime = Clock.UtcNow;            
             await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 

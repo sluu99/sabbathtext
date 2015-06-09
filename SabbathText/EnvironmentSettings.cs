@@ -309,7 +309,7 @@
         /// </summary>
         public virtual TimeSpan RunnerFrequency
         {
-            get { return TimeSpan.FromHours(1); }
+            get { return TimeSpan.FromMinutes(1); }
         }
 
         /// <summary>

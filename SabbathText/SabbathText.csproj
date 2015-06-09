@@ -102,8 +102,6 @@
     <Compile Include="V1\MessageProcessor.cs" />
     <Compile Include="V1\GreetUserOperationCheckpointData.cs" />
     <Compile Include="V1\GreetUserOperation.cs" />
-    <Compile Include="V1\SendSabbathTextOperation.cs" />
-    <Compile Include="V1\SendSabbathTextOperationCheckpointData.cs" />
     <Compile Include="V1\ServiceMessageOperationState.cs" />
     <Compile Include="V1\Message.cs" />
     <Compile Include="V1\MessageClient.cs" />
