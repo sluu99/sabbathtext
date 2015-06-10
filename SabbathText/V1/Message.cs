@@ -166,7 +166,7 @@ using SabbathText.Location.V1;
         /// <returns>The message.</returns>
         public static Message CreateBibleVerse(string phoneNumber, string verseNumber, string verseContent)
         {
-            string body = "{0}\r\n--{1}".InvariantFormat(verseContent, verseNumber);
+            string body = "{0}\r\n-- {1}".InvariantFormat(verseContent, verseNumber);
 
             return CreateMessage(
                 phoneNumber,
