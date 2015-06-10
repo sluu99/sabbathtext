@@ -17,14 +17,7 @@
     /// <typeparam name="TResponse">The data type of the operation response</typeparam>
     public abstract class BaseOperation<TResponse>
     {
-        /// <summary>
-        /// The checkpoint for this operation
-        /// </summary>
         private Checkpoint checkpoint;
-
-        /// <summary>
-        /// The operation type
-        /// </summary>
         private string operationType;
 
         /// <summary>
@@ -282,6 +275,26 @@
             }
 
             return Task.FromResult<object>(null);
+        }
+
+        /// <summary>
+        /// Gets a Bible verse that is not in the account recent verses
+        /// </summary>
+        /// <returns>A Bible verse number</returns>
+        protected string GetBibleVerse()
+        {
+            if (this.Context.Account.RecentVerses.Count == DomainData.BibleVerses.Count)
+            {
+                // the account has seen all the verse
+                // remove one of the older ones
+                this.Context.Account.RecentVerses.RemoveAt(
+                    StaticRand.Next(this.Context.Account.RecentVerses.Count / 2));
+            }
+
+            var availVerses = DomainData.BibleVerses.Keys;
+            availVerses = availVerses.Except(this.Context.Account.RecentVerses);
+
+            return availVerses.RandomElement();
         }
 
         /// <summary>

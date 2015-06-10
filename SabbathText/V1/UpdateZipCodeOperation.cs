@@ -127,28 +127,11 @@
 
         private async Task<OperationResponse<bool>> EnterUpdateAccount()
         {
-            MessageEntity incomingMessageEntity = this.checkpointData.IncomingMessage.ToEntity(
-                this.Context.Account.AccountId,
+            await this.AddProcessedMessages(
                 this.checkpointData.IncomingMessageId,
-                MessageDirection.Incoming,
-                this.checkpointData.OutgoingMessage == null ? MessageStatus.Received : MessageStatus.Responded);
-            bool incomingMsgAdded = TryAddMessageEntity(this.Context.Account, incomingMessageEntity);
-
-            bool outgoingMsgAdded = false;
-            if (this.checkpointData.OutgoingMessage != null)
-            {
-                MessageEntity outgoingMessageEntity = this.checkpointData.OutgoingMessage.ToEntity(
-                    this.Context.Account.AccountId,
-                    this.checkpointData.OutgoingMessageId,
-                    MessageDirection.Outgoing,
-                    MessageStatus.Sent);
-                outgoingMsgAdded = TryAddMessageEntity(this.Context.Account, outgoingMessageEntity);
-            }
-
-            if (incomingMsgAdded || outgoingMsgAdded)
-            {
-                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
-            }
+                this.checkpointData.IncomingMessage,
+                this.checkpointData.OutgoingMessageId,
+                this.checkpointData.OutgoingMessage);
 
             return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, true);
         }

@@ -149,11 +149,28 @@ using SabbathText.Location.V1;
         /// <returns>The message.</returns>
         public static Message CreateSabbathText(string phoneNumber, string verseNumber, string verseContent)
         {
-            string body = string.Format("Happy Sabbath!\r\n\"{0}\" -- {1}", verseContent, verseNumber);
+            string body = "Happy Sabbath!\r\n\"{0}\" -- {1}".InvariantFormat(verseContent, verseNumber);
             
             return CreateMessage(
                 phoneNumber,
                 MessageTemplate.SabbathText,
+                body);
+        }
+
+        /// <summary>
+        /// Creates a new text to send out a Bible verse
+        /// </summary>
+        /// <param name="phoneNumber">The phone number.</param>
+        /// <param name="verseNumber">The Bible verse number.</param>
+        /// <param name="verseContent">The Bible verse content.</param>
+        /// <returns>The message.</returns>
+        public static Message CreateBibleVerse(string phoneNumber, string verseNumber, string verseContent)
+        {
+            string body = "{0}\r\n--{1}".InvariantFormat(verseContent, verseNumber);
+
+            return CreateMessage(
+                phoneNumber,
+                MessageTemplate.BibleVerse,
                 body);
         }
 

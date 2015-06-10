@@ -83,6 +83,7 @@
     <Compile Include="DomainData.cs" />
     <Compile Include="Entities\TrackerEntity.cs" />
     <Compile Include="Extensions\AssemblyExtension.cs" />
+    <Compile Include="Extensions\IEnumerableExtension.cs" />
     <Compile Include="Extensions\LocationInfoExtension.cs" />
     <Compile Include="GoodieBag.cs" />
     <Compile Include="SecretProvider.cs" />
@@ -93,6 +94,8 @@
     <Compile Include="Entities\MessageEntity.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="V1\BaseOperation.cs" />
+    <Compile Include="V1\BibleVerseOperation.cs" />
+    <Compile Include="V1\BibleVerseOperationCheckpointData.cs" />
     <Compile Include="V1\CheckpointData.cs" />
     <Compile Include="V1\InMemoryMessageClient.cs" />
     <Compile Include="V1\InspectAccountOperation.cs" />
