@@ -1,6 +1,7 @@
 ﻿namespace SabbathText.Tests.V1
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SabbathText.Entities;
@@ -28,6 +29,28 @@
 
             AssertLastSentMessage(account.AccountId, MessageTemplate.BibleVerse, mustContain: account.RecentVerses[0]);
             AssertMessageCount(account.PhoneNumber, MessageTemplate.BibleVerse, 1);
+        }
+
+        /// <summary>
+        /// Tests that the Bible verses sent out are unique
+        /// </summary>
+        [TestMethod]
+        public void BibleVerseMessage_VersesShouldBeUnique()
+        {
+            AccountEntity account = CreateAccount();
+
+            for (int i = 0; i < 100; i++)
+            {
+                Message incomingMessage = CreateIncomingMessage(account.PhoneNumber, "verse");
+                ProcessMessage(incomingMessage);
+            }
+
+            account = GetAccount(account.AccountId);
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.BibleVerse, 100);
+            Assert.AreEqual(
+                account.RecentVerses.Distinct().Count(),
+                account.RecentVerses.Count,
+                "Bible verses are not distinct");
         }
     }
 }
