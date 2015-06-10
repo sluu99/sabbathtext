@@ -51,9 +51,9 @@
 
             switch (this.checkpointData.OperationState)
             {
-                case GreetUserOperationState.SendingMessage:
+                case ServiceMessageOperationState.SendingMessage:
                     return this.EnterSendingMessage();
-                case GreetUserOperationState.UpdatingAccountContext:
+                case ServiceMessageOperationState.UpdatingAccount:
                     return this.EnterUpdatingAccount();
             }
 
@@ -73,7 +73,7 @@
             }
 
             this.checkpointData.MessageEntityId = Guid.NewGuid().ToString();
-            this.checkpointData.OperationState = GreetUserOperationState.SendingMessage;
+            this.checkpointData.OperationState = ServiceMessageOperationState.SendingMessage;
             return this.HandOffCheckpoint(
                 TimeSpan.Zero,
                 this.checkpointData,
@@ -92,7 +92,7 @@
         private async Task<OperationResponse<bool>> TransitionToUpdatingAccount(Message message)
         {
             this.checkpointData.Message = message;
-            this.checkpointData.OperationState = GreetUserOperationState.UpdatingAccountContext;            
+            this.checkpointData.OperationState = ServiceMessageOperationState.UpdatingAccount;            
 
             return
                 await this.SetCheckpoint(this.checkpointData) ??

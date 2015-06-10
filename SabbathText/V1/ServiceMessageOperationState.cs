@@ -4,23 +4,18 @@
     using Newtonsoft.Json.Converters;
 
     /// <summary>
-    /// Generic states of an operation.
+    /// Generic operation states used when a message is initiated from the server side.
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum GenericOperationState
+    public enum ServiceMessageOperationState
     {
         /// <summary>
-        /// Processing message.
+        /// Sending the message
         /// </summary>
-        ProcessingMessage,
+        SendingMessage,
 
         /// <summary>
-        /// Sending response to the user,
-        /// </summary>
-        SendingResponse,
-
-        /// <summary>
-        /// Updating account.
+        /// Updating the account with the recently sent message
         /// </summary>
         UpdatingAccount,
     }

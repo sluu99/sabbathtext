@@ -17,7 +17,7 @@
         /// <summary>
         /// Gets or sets the operation state.
         /// </summary>
-        public GenericOperationState State { get; set; }
+        public RespondingMessageOperationState State { get; set; }
 
         /// <summary>
         /// Gets or sets the incoming message.

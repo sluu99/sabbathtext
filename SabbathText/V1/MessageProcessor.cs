@@ -43,6 +43,11 @@
                 UpdateZipCodeOperation updateZipCode = new UpdateZipCodeOperation(context);
                 return updateZipCode.Run(message);
             }
+            else if ("bible verse".OicEquals(body) || "verse".OicEquals(body) || "bibleverse".OicEquals(body))
+            {
+                BibleVerseOperation bibleVerseOperation = new BibleVerseOperation(context);
+                return bibleVerseOperation.Run(message);
+            }
 
             return Task.FromResult(
                 new OperationResponse<bool>

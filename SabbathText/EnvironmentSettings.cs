@@ -305,19 +305,19 @@
         }
 
         /// <summary>
+        /// Gets the frequency for the runner
+        /// </summary>
+        public virtual TimeSpan RunnerFrequency
+        {
+            get { return TimeSpan.FromMinutes(1); }
+        }
+
+        /// <summary>
         /// Gets the number of messages to keep with the account entity before archiving.
         /// </summary>
         public int RecentMessageThreshold
         {
             get { return 200; }
-        }
-
-        /// <summary>
-        /// Gets the delay between account partition for the runner
-        /// </summary>
-        public virtual TimeSpan RunnerPartitionDelay
-        {
-            get { return TimeSpan.FromSeconds(1); }
         }
 
         /// <summary>

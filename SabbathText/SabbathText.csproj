@@ -80,9 +80,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonErrorCodes.cs" />
-    <Compile Include="DomainData.cs" />
+    <Compile Include="DomainData.BibleVerses.cs" />
     <Compile Include="Entities\TrackerEntity.cs" />
     <Compile Include="Extensions\AssemblyExtension.cs" />
+    <Compile Include="Extensions\IEnumerableExtension.cs" />
     <Compile Include="Extensions\LocationInfoExtension.cs" />
     <Compile Include="GoodieBag.cs" />
     <Compile Include="SecretProvider.cs" />
@@ -92,8 +93,9 @@
     <Compile Include="Entities\ConversationContext.cs" />
     <Compile Include="Entities\MessageEntity.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
-    <Compile Include="V1\AuthKey.cs" />
     <Compile Include="V1\BaseOperation.cs" />
+    <Compile Include="V1\BibleVerseOperation.cs" />
+    <Compile Include="V1\BibleVerseOperationCheckpointData.cs" />
     <Compile Include="V1\CheckpointData.cs" />
     <Compile Include="V1\InMemoryMessageClient.cs" />
     <Compile Include="V1\InspectAccountOperation.cs" />
@@ -103,7 +105,7 @@
     <Compile Include="V1\MessageProcessor.cs" />
     <Compile Include="V1\GreetUserOperationCheckpointData.cs" />
     <Compile Include="V1\GreetUserOperation.cs" />
-    <Compile Include="V1\GreetUserOperationState.cs" />
+    <Compile Include="V1\ServiceMessageOperationState.cs" />
     <Compile Include="V1\Message.cs" />
     <Compile Include="V1\MessageClient.cs" />
     <Compile Include="Entities\MessageDirection.cs" />
@@ -118,7 +120,7 @@
     <Compile Include="V1\SubscribeMessageOperationCheckpointData.cs" />
     <Compile Include="V1\UpdateZipCodeOperation.cs" />
     <Compile Include="V1\UpdateZipCodeOperationCheckpointData.cs" />
-    <Compile Include="V1\GenericOperationState.cs" />
+    <Compile Include="V1\RespondingMessageOperationState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\common\KeyValueStorage\KeyValueStorage.csproj">

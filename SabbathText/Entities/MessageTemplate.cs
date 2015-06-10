@@ -58,5 +58,10 @@
         /// Authentication key created.
         /// </summary>
         AuthKeyCreated,
+        
+        /// <summary>
+        /// A Bible verse
+        /// </summary>
+        BibleVerse,
     }
 }

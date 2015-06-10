@@ -16,7 +16,6 @@
     /// </summary>
     public class InspectAccountOperation : BaseOperation<bool>
     {
-        private static readonly Random Rand = new Random(Environment.TickCount);
         private InspectAccountOperationCheckpointData checkpointData;
 
         /// <summary>
@@ -36,23 +35,6 @@
         {
             this.checkpointData = new InspectAccountOperationCheckpointData(this.Context.Account.AccountId);
             return this.TransitionToCheckSabbath();
-        }
-
-        private static void SelectBibleVerse(IEnumerable<string> recentVerses, out string verseNumber, out string verseContent)
-        {
-            string[] allVerses = null;
-
-            if (recentVerses != null)
-            {
-                allVerses = DomainData.BibleVerses.Keys.Except(recentVerses.Take(DomainData.BibleVerses.Count - 1)).ToArray();
-            }
-            else
-            {
-                allVerses = DomainData.BibleVerses.Keys.ToArray();
-            }
-
-            verseNumber = allVerses[Rand.Next(0, allVerses.Length)];
-            verseContent = DomainData.BibleVerses[verseNumber];
         }
 
         private Task<OperationResponse<bool>> TransitionToCheckSabbath()
@@ -85,24 +67,12 @@
             {
                 return await this.TransitionToArchiveMessages();
             }
+
+            string verseNumber = this.GetBibleVerse();
+            string verseContent = DomainData.BibleVerses[verseNumber];
             
-            string verseNumber;
-            string verseContent;
-            SelectBibleVerse(this.Context.Account.RecentVerses, out verseNumber, out verseContent);
-
-            this.Context.Account.RecentVerses.Add(verseNumber);
-            if (this.Context.Account.RecentVerses.Count == DomainData.BibleVerses.Count)
-            {
-                // This account has seen all the Bible verses we have.
-                // We'll remove the oldest *five* verses.
-                // We can just remove one oldest one, but that would put the account into a circle of verses in order.
-                // By removing five verses, the account can still have somewhat random verses after the first cycle
-                this.Context.Account.RecentVerses.RemoveRange(0, 5);
-            }
-
             // update the account Sabbath text time first
             // so that if the operation fails later, we won't be spamming the user on each retry
-            // (Twilio really needs to start supporting idempotent calls)
             this.Context.Account.LastSabbathTextTime = Clock.UtcNow;            
             await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
