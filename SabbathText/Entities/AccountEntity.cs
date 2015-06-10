@@ -40,6 +40,7 @@
         {
             this.RecentMessages = new List<MessageEntity>();
             this.RecentVerses = new List<string>();
+            this.SentAnnouncements = new List<string>();
         }
 
         /// <summary>
@@ -110,6 +111,16 @@
         /// Gets or sets last time a Sabbath text was sent to this account.
         /// </summary>
         public DateTime LastSabbathTextTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the last time an announcement was sent to this account.
+        /// </summary>
+        public DateTime LastAnnouncementTextTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of announcements sent to this account
+        /// </summary>
+        public List<string> SentAnnouncements { get; set; }
 
         /// <summary>
         /// Gets the account ID from a phone number

@@ -296,6 +296,14 @@
         }
         
         /// <summary>
+        /// Gets the amount of time gap between two announcement texts.
+        /// </summary>
+        public TimeSpan AnnouncementTextGap
+        {
+            get { return TimeSpan.FromDays(15); }
+        }
+
+        /// <summary>
         /// Gets the amount of time to way before trying again,
         /// if the checkpoint worker did not find any message.
         /// </summary>

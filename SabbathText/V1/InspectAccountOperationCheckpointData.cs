@@ -17,7 +17,7 @@
         /// <summary>
         /// Gets or sets the operation state.
         /// </summary>
-        public InspectAccountOperationState State { get; set; }
+        public InspectAccountOperationState OperationState { get; set; }
 
         /// <summary>
         /// Gets or sets the Sabbath message entity ID.
@@ -28,5 +28,15 @@
         /// Gets or sets the Sabbath message.
         /// </summary>
         public Message SabbathMesage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the selected announcement ID
+        /// </summary>
+        public string SelectedAnnouncementId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the announcement message
+        /// </summary>
+        public Message AnnouncementMessage { get; set; }
     }
 }
