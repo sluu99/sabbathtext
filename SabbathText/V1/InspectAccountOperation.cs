@@ -57,7 +57,7 @@
                 string.IsNullOrWhiteSpace(this.Context.Account.ZipCode))
             {
                 // Don't need to check for Sabbath
-                return await this.TransitionToArchiveMessages();
+                return await this.TransitionToCheckAnnouncements();
             }
 
             LocationInfo locationInfo = LocationInfo.FromZipCode(this.Context.Account.ZipCode);
@@ -65,7 +65,7 @@
 
             if (locationInfo.IsSabbath() == false)
             {
-                return await this.TransitionToArchiveMessages();
+                return await this.TransitionToCheckAnnouncements();
             }
 
             string verseNumber = this.GetBibleVerse();
@@ -239,6 +239,10 @@
                     return this.EnterCheckSabbath();
                 case InspectAccountOperationState.StoringSabbathText:
                     return this.EnterStoreSabbathText();
+                case InspectAccountOperationState.CheckingAnnouncements:
+                    return this.EnterCheckAnnouncements();
+                case InspectAccountOperationState.StoringAnnouncementText:
+                    return this.EnterStoreAnnouncementText();
                 case InspectAccountOperationState.ArchivingMessages:
                     return this.EnterArchiveMessages();
             }
