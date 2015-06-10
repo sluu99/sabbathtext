@@ -80,7 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonErrorCodes.cs" />
-    <Compile Include="DomainData.cs" />
+    <Compile Include="DomainData.BibleVerses.cs" />
     <Compile Include="Entities\TrackerEntity.cs" />
     <Compile Include="Extensions\AssemblyExtension.cs" />
     <Compile Include="Extensions\IEnumerableExtension.cs" />

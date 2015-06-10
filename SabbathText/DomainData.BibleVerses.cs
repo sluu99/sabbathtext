@@ -1,16 +1,11 @@
 ﻿namespace SabbathText
 {
-    using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     /// <summary>
-    /// This class contains the different domain data fields
+    /// Bible verses domain data
     /// </summary>
-    public static class DomainData
+    public static partial class DomainData
     {
         /// <summary>
         /// Bible verses
