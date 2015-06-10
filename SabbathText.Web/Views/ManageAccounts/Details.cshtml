@@ -88,6 +88,22 @@
         <dd>
             @string.Join(", ", Model.RecentVerses)
         </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.SentAnnouncements)
+        </dt>
+
+        <dt>
+            @string.Join(",", Model.SentAnnouncements)
+        </dt>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.LastAnnouncementTextTime)
+        </dt>
+
+        <dt>
+            @Html.DisplayFor(m => m.LastAnnouncementTextTime)
+        </dt>
     </dl>
 </div>
 <p>
