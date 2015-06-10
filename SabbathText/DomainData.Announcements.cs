@@ -37,6 +37,13 @@
                     LocationInfo locationInfo = LocationInfo.FromZipCode(account.ZipCode);
                     TimeInfo timeInfo = TimeInfo.Create(account.ZipCode, locationInfo.LocalTime.Date);
 
+                    if (locationInfo.LocalTime.DayOfWeek != DayOfWeek.Tuesday &&
+                        locationInfo.LocalTime.DayOfWeek != DayOfWeek.Wednesday)
+                    {
+                        // only send out this announcement on Tuesday & Wednesday
+                        return false;
+                    }
+
                     if (timeInfo.SunSetUtc < Clock.UtcNow)
                     {
                         // sunset already
