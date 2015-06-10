@@ -53,15 +53,15 @@
         /// Sabbath text.
         /// </summary>
         SabbathText,
-
-        /// <summary>
-        /// Authentication key created.
-        /// </summary>
-        AuthKeyCreated,
         
         /// <summary>
         /// A Bible verse
         /// </summary>
         BibleVerse,
+
+        /// <summary>
+        /// An announcement
+        /// </summary>
+        Announcement,
     }
 }

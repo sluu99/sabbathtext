@@ -20,6 +20,16 @@
         StoringSabbathText,
 
         /// <summary>
+        /// Checking for announcements to be sent out
+        /// </summary>
+        CheckingAnnouncements,
+
+        /// <summary>
+        /// Storing the announcement text
+        /// </summary>
+        StoringAnnouncementText,
+
+        /// <summary>
         /// Archiving messages
         /// </summary>
         ArchivingMessages,

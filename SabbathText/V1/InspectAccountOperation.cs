@@ -39,8 +39,8 @@
 
         private Task<OperationResponse<bool>> TransitionToCheckSabbath()
         {
-            this.checkpointData.State = InspectAccountOperationState.CheckingSabbath;
-            this.checkpointData.SabbathMessageId = Guid.NewGuid().ToString();
+            this.checkpointData.OperationState = InspectAccountOperationState.CheckingSabbath;
+            this.checkpointData.SabbathMessageId = this.Context.Account.AccountId + "_SabbathText_{0:yyyyMMdd}".InvariantFormat(Clock.UtcNow);
             return this.HandOffCheckpoint(
                 TimeSpan.Zero,
                 this.checkpointData,
@@ -57,7 +57,7 @@
                 string.IsNullOrWhiteSpace(this.Context.Account.ZipCode))
             {
                 // Don't need to check for Sabbath
-                return await this.TransitionToArchiveMessages();
+                return await this.TransitionToCheckAnnouncements();
             }
 
             LocationInfo locationInfo = LocationInfo.FromZipCode(this.Context.Account.ZipCode);
@@ -65,26 +65,25 @@
 
             if (locationInfo.IsSabbath() == false)
             {
-                return await this.TransitionToArchiveMessages();
+                return await this.TransitionToCheckAnnouncements();
             }
 
             string verseNumber = this.GetBibleVerse();
             string verseContent = DomainData.BibleVerses[verseNumber];
             
-            // update the account Sabbath text time first
-            // so that if the operation fails later, we won't be spamming the user on each retry
-            this.Context.Account.LastSabbathTextTime = Clock.UtcNow;            
-            await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
-
             Message sabbathMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber, verseNumber, verseContent);
-            await this.Bag.MessageClient.SendMessage(sabbathMessage, this.checkpointData.SabbathMessageId, this.Context.CancellationToken);
+            if (await this.Bag.MessageClient.SendMessage(sabbathMessage, this.checkpointData.SabbathMessageId, this.Context.CancellationToken))
+            {
+                this.Context.Account.LastSabbathTextTime = Clock.UtcNow;
+                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+            }
 
             return await this.TransitionToStoreSabbathText(sabbathMessage);
         }
 
         private async Task<OperationResponse<bool>> TransitionToStoreSabbathText(Message sabbathMessage)
         {
-            this.checkpointData.State = InspectAccountOperationState.StoringSabbathText;
+            this.checkpointData.OperationState = InspectAccountOperationState.StoringSabbathText;
             this.checkpointData.SabbathMesage = sabbathMessage;
 
             return
@@ -105,13 +104,96 @@
                 await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
             }
 
+            return await this.TransitionToCheckAnnouncements();
+        }
+
+        private async Task<OperationResponse<bool>> TransitionToCheckAnnouncements()
+        {
+            this.checkpointData.OperationState = InspectAccountOperationState.CheckingAnnouncements;
+
+            DateTime timeForNextAnnouncement = this.Context.Account.LastAnnouncementTextTime + this.Bag.Settings.AnnouncementTextGap;
+            if (timeForNextAnnouncement <= Clock.UtcNow)
+            {
+                foreach (var announcement in DomainData.Announcements)
+                {
+                    if (this.Context.Account.SentAnnouncements.Contains(announcement.AnnouncementId) == false &&
+                        announcement.IsEligible(this.Context.Account))
+                    {
+                        this.checkpointData.SelectedAnnouncementId = announcement.AnnouncementId;
+                        break;
+                    }
+                }
+            }           
+
+            return
+                await this.SetCheckpoint(this.checkpointData) ??
+                await this.EnterCheckAnnouncements();
+        }
+
+        private async Task<OperationResponse<bool>> EnterCheckAnnouncements()
+        {
+            if (string.IsNullOrWhiteSpace(this.checkpointData.SelectedAnnouncementId))
+            {
+                return await this.TransitionToArchiveMessages();
+            }
+
+            if (this.Context.Account.SentAnnouncements.Contains(this.checkpointData.SelectedAnnouncementId))
+            {
+                // someone else could've sent out this announcement between transition & enter
+                return await this.TransitionToArchiveMessages();
+            }
+
+            string trackingId = this.Context.Account.AccountId + "_" + this.checkpointData.SelectedAnnouncementId;
+            Message announcementMessage = Message.CreateAnnouncement(
+                this.Context.Account.PhoneNumber,
+                DomainData.Announcements.First(a => a.AnnouncementId == this.checkpointData.SelectedAnnouncementId).Content);
+            
+            if (await this.Bag.MessageClient.SendMessage(announcementMessage, trackingId, this.Context.CancellationToken))
+            {
+                this.Context.Account.LastAnnouncementTextTime = Clock.UtcNow;
+                this.Context.Account.SentAnnouncements.Add(this.checkpointData.SelectedAnnouncementId);
+                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+            }
+
+            return await TransitionToStoreAnnouncementText(announcementMessage);
+        }
+
+        private async Task<OperationResponse<bool>> TransitionToStoreAnnouncementText(Message announcementMessage)
+        {
+            this.checkpointData.AnnouncementMessage = announcementMessage;
+            this.checkpointData.OperationState = InspectAccountOperationState.StoringAnnouncementText;
+
+            return
+                await this.SetCheckpoint(this.checkpointData) ??
+                await this.EnterStoreAnnouncementText();
+        }
+
+        private async Task<OperationResponse<bool>> EnterStoreAnnouncementText()
+        {
+            if (this.checkpointData.AnnouncementMessage == null)
+            {
+                return await this.TransitionToArchiveMessages();
+            }
+
+            MessageEntity messageEntity = this.checkpointData.AnnouncementMessage.ToEntity(
+                this.Context.Account.AccountId,
+                this.Context.Account.AccountId + "_" + this.checkpointData.SelectedAnnouncementId,
+                MessageDirection.Outgoing,
+                MessageStatus.Sent);
+            bool messageAdded = TryAddMessageEntity(this.Context.Account, messageEntity);
+
+            if (messageAdded)
+            {
+                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+            }
+
             return await this.TransitionToArchiveMessages();
         }
 
         private Task<OperationResponse<bool>> TransitionToArchiveMessages()
         {
             // This state is idempotent. We don't need to update the checkpoint
-            this.checkpointData.State = InspectAccountOperationState.ArchivingMessages;
+            this.checkpointData.OperationState = InspectAccountOperationState.ArchivingMessages;
 
             return this.EnterArchiveMessages();
         }
@@ -151,12 +233,16 @@
 
             this.checkpointData = JsonConvert.DeserializeObject<InspectAccountOperationCheckpointData>(serializedCheckpointData);
 
-            switch (this.checkpointData.State)
+            switch (this.checkpointData.OperationState)
             {
                 case InspectAccountOperationState.CheckingSabbath:
                     return this.EnterCheckSabbath();
                 case InspectAccountOperationState.StoringSabbathText:
                     return this.EnterStoreSabbathText();
+                case InspectAccountOperationState.CheckingAnnouncements:
+                    return this.EnterCheckAnnouncements();
+                case InspectAccountOperationState.StoringAnnouncementText:
+                    return this.EnterStoreAnnouncementText();
                 case InspectAccountOperationState.ArchivingMessages:
                     return this.EnterArchiveMessages();
             }

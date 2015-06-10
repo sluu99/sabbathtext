@@ -38,8 +38,8 @@
         /// <param name="message">The message</param>
         /// <param name="trackingId">The tracking ID used for this message.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
-        /// <returns>The operation task</returns>
-        public virtual async Task SendMessage(Message message, string trackingId, CancellationToken cancellationToken)
+        /// <returns>Whether the message was sent</returns>
+        public virtual async Task<bool> SendMessage(Message message, string trackingId, CancellationToken cancellationToken)
         {
             GoodieBag bag = GoodieBag.Create();
 
@@ -57,7 +57,7 @@
                 catch (DuplicateKeyException)
                 {
                     Trace.TraceInformation("Message with tracking ID {0} skipped", trackingId);
-                    return;
+                    return false;
                 }
             }
 
@@ -68,6 +68,8 @@
             Trace.TraceInformation("Message sent with tracking ID {0}: {1}".InvariantFormat(
                 trackingId,
                 JsonConvert.SerializeObject(message, Formatting.Indented)));
+
+            return true;
         }
     }
 }

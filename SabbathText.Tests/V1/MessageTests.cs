@@ -28,5 +28,20 @@
                 StringAssert.Contains(messageBody, verse.Value);
             }
         }
+
+        /// <summary>
+        /// Tests the length of all the announcement texts
+        /// </summary>
+        [TestMethod]
+        public void Message_AnnouncementTextLength()
+        {
+            foreach (var announcement in DomainData.Announcements)
+            {
+                string messageBody = Message.CreateAnnouncement("+11234567890", announcement.Content).Body;
+                Assert.IsTrue(messageBody.Length > 0, "Message length must be > 0");
+                Assert.IsTrue(messageBody.Length <= MaxTextLength, "Message length exceeded {0} for {1}".InvariantFormat(MaxTextLength, announcement.AnnouncementId));
+                StringAssert.Contains(messageBody, announcement.Content);
+            }
+        }
     }
 }

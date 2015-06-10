@@ -142,6 +142,38 @@
             this.InspectAccount_ShouldSendMessageUntilSabbathEnds("02110");
         }
 
+        /// <summary>
+        /// Tests that inspect account sends out announcements
+        /// </summary>
+        [TestMethod]
+        public void InspectAccount_SendAnnouncements()
+        {
+            string zipCode = "80123"; // Denver, CO
+            AccountEntity account = CreateAccount();
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "zip " + zipCode));
+
+            Clock.RollClock(TimeSpan.FromDays(10));
+            ClockHelper.GoToDay(DayOfWeek.Tuesday); // go to some time that's not the Sabbath
+
+            LocationInfo locationInfo = LocationInfo.FromZipCode(zipCode);
+            TimeInfo timeInfo = TimeInfo.Create(zipCode, locationInfo.LocalTime.Date);
+
+            DateTime timeToSendAnnouncement = timeInfo.SunSetUtc - TimeSpan.FromHours(4.5);
+            if (timeToSendAnnouncement < Clock.UtcNow)
+            {
+                // we have passed the announcement time, go to the next day
+                TimeInfo nextDayTimeInfo = TimeInfo.Create(zipCode, locationInfo.LocalTime.Date.AddDays(1));
+                timeToSendAnnouncement = nextDayTimeInfo.SunSetUtc - TimeSpan.FromHours(4.5);
+            }
+                        
+            // go to announcement time
+            ClockHelper.GoTo(timeToSendAnnouncement);
+
+            InspectAccount(account.AccountId);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.Announcement);
+        }
+
         private void InspectAccount_SendMessageOnSabbath(string zipCode)
         {
             AccountEntity account = CreateAccount();
