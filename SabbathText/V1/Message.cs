@@ -2,7 +2,7 @@
 {
     using System;
     using SabbathText.Entities;
-using SabbathText.Location.V1;
+    using SabbathText.Location.V1;
 
     /// <summary>
     /// This class represents a message
@@ -38,7 +38,7 @@ using SabbathText.Location.V1;
         /// Gets or sets the message template.
         /// </summary>
         public MessageTemplate Template { get; set; }
-        
+
         /// <summary>
         /// Creates a new message to greet the user
         /// </summary>
@@ -150,7 +150,7 @@ using SabbathText.Location.V1;
         public static Message CreateSabbathText(string phoneNumber, string verseNumber, string verseContent)
         {
             string body = "Happy Sabbath!\r\n\"{0}\" -- {1}".InvariantFormat(verseContent, verseNumber);
-            
+
             return CreateMessage(
                 phoneNumber,
                 MessageTemplate.SabbathText,
@@ -175,22 +175,17 @@ using SabbathText.Location.V1;
         }
 
         /// <summary>
-        /// Creates a message with authentication key information.
+        /// Creates a new text to send out an announcement
         /// </summary>
-        /// <param name="phoneNumber">The account phone number.</param>
-        /// <param name="authKey">The authentication key.</param>
-        /// <param name="authKeyExpirationMinutes">The number of minutes until the authentication key expires.</param>
-        /// <returns>The message.</returns>
-        public static Message CreateAuthKeyCreated(string phoneNumber, string authKey, int authKeyExpirationMinutes)
+        /// <param name="phoneNumber">The phone number.</param>
+        /// <param name="content">The announcement content.</param>
+        /// <returns>The message</returns>
+        public static Message CreateAnnouncement(string phoneNumber, string content)
         {
-            string body = "Your authentication key is {0}. It will expire in approximately {1} minutes.".InvariantFormat(
-                authKey,
-                authKeyExpirationMinutes);
-
             return CreateMessage(
                 phoneNumber,
-                MessageTemplate.AuthKeyCreated,
-                body);
+                MessageTemplate.Announcement,
+                content);
         }
 
         /// <summary>
@@ -210,7 +205,7 @@ using SabbathText.Location.V1;
                 Template = template,
             };
         }
-        
+
         /// <summary>
         /// Converts this message to a <c>MessageEntity</c>.
         /// </summary>
