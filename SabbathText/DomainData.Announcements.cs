@@ -49,6 +49,12 @@
                         return false;
                     }
 
+                    if (timeInfo.SunSetUtc - Clock.UtcNow < TimeSpan.FromHours(4))
+                    {
+                        // sunset is less than 4 hours away
+                        return false;
+                    }
+
                     return true;
                 }),
         };
