@@ -41,7 +41,7 @@
             { "Psalms 27:14", "Wait for the Lord; be strong and take heart and wait for the Lord." },
             { "Psalm 29:11", "The Lord gives strength to His people; the Lord blesses His people with peace." },
             { "Psalm 37:4", "Delight yourself in the Lord; And He will give you the desires of your heart." },
-            { "Psalms 37:24", "Though he may stumble, he will not fall, for the Lord upholds him with his hand." },
+            { "Psalms 37:24", "Though he may stumble, he will not fall, for the Lord upholds him with His hand." },
             { "Psalm 46:1", "God is our refuge and strength, an ever-present help in trouble." },
             { "Psalms 55:22", "Cast your cares on the Lord and he will sustain you; he will never let the righteous be shaken." },
             { "Psalm 56:3", "When I am afraid, I will put my trust in You." },
