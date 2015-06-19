@@ -34,6 +34,7 @@
             { "Matthew 11:28", "Come to Me, all who are weary and heavy-laden, and I will give you rest." },            
             { "Nahum 1:7", "The Lord is good, a refuge in times of trouble. He cares for those who trust in Him." },
             { "Phil 4:6", "Do not be anxious about anything, but in everything, by prayer and petition, with thanksgiving, present your requests to God." },
+            { "Philippians 1:6", "For I am confident of this very thing, that He who began a good work in you will perfect it until the day of Christ Jesus." },
             { "Philippians 4:7", "And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus." },
             { "Philippians 4:13", "I can do all things through Him who strengthens me." },
             { "Proverbs 17:22", "A cheerful heart is good medicine, but a crushed spirit dries up the bones." },

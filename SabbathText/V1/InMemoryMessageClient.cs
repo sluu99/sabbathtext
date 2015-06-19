@@ -57,7 +57,7 @@
                 }
                 catch (DuplicateKeyException)
                 {
-                    Trace.TraceInformation("Message with tracking ID {0} skipped", trackingId);
+                    bag.TelemetryTracker.MessageSkipped(message.Template, trackingId);
                     return false;
                 }
             }
@@ -66,7 +66,7 @@
             string messageStr = JsonConvert.SerializeObject(message, Formatting.Indented);
             this.messages.Add(messageStr);
 
-            Trace.TraceInformation("Sending message with tracking ID {0}:{1}{2}", trackingId, Environment.NewLine, messageStr);
+            bag.TelemetryTracker.MessageSent(message.Template, message.Body, trackingId);
 
             return true;
         }

@@ -45,6 +45,10 @@
                 GoogleClientSecretKey,
                 "Lja13w6QD/+qWj9jUJ56FA/MYUT872lin9cf07dCQFaLO2Pfc63LrGX6tH7Wcm2fUvV21CaNN2WRdsdqZr7nOs/J5G94SQ5G5xXkP8xITvI9w3fxO8lC+oioGvT1tbVDPPdqb8FPOkmet1XwK34mhJdVrYLS96xtvooKTuCNDmfw2Wvu1zt7f4TBmUoT+XSywO1mmVx4F/tBmGrN84BClpnaXN88YuKIhifbQdGsgui6ygTb3lRlYMGbhWF0v01GMdUPlIpicyqbZa8iyQ89cCpzKLtldyuoLz0Rsk9UkvAsgQ9b6eqXfjIygYHiBJT1GxSjvYoYUPRgCBv7D41xBw=="
             },
+            {
+                AzureAppInsightsInstrumentationKeyKey,
+                "WWajZJkF7IJMCDupsTUGiJSqdYhy0I8aRfPw3DHNgKZotb5wy049WHM6p52vCdp+uJJtkMg9nx05MX2RnXOiwcCo3MhohcBq6wbQZL4ak6hf+7opcbpIQRqblAq3Hq+YviU/LhUwaD3Ee23Twg9bZVIort41vFDhU/kPRqHUYn9bwu2R8jByzNgaOkt6xChIKn6w1xp1fCgurEHZUcs14PKQIlAEp1unAt+ZawgFvBBCI6KxPBwBbIDZshDtNUrUqoHiRJZgjGvFRK9YdGFY1BfIiaCtXWzycopzhZrWzf55A8JXe2/H9ZLXiY7q/YkW84XSU0yPBWRmqCyEYQWjJA=="
+            },
         };
 
         /// <summary>

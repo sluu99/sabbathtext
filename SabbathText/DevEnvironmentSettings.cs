@@ -7,6 +7,7 @@
     using System.Reflection;
     using System.Text;
     using System.Threading.Tasks;
+    using SabbathText.Telemetry;
 
     /// <summary>
     /// Environment settings for the development environment.
@@ -107,6 +108,17 @@
                 {
                     "dev@dev.local",
                 };
+            }
+        }
+
+        /// <summary>
+        /// Gets the telemetry tracker configuration.
+        /// </summary>
+        public override TelemetryTrackerConfiguration TelemetryConfiguration
+        {
+            get
+            {
+                return new TelemetryTrackerConfiguration();
             }
         }
 
