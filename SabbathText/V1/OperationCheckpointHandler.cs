@@ -129,6 +129,13 @@
                         await operation.Resume(checkpoint);
                         break;
                     }
+                    
+                case "BibleVerseOperation.V1":
+                    {
+                        BibleVerseOperation operation = new BibleVerseOperation(context);
+                        await operation.Resume(checkpoint);
+                        break;
+                    }
 
                 default:
                     throw new NotSupportedException("{0} is not handled for compensation.".InvariantFormat(checkpoint.OperationType));
