@@ -301,6 +301,7 @@
             this.Context.Account.RecentVerses.Add(bibleVerse);
 
             await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+            this.Bag.TelemetryTracker.BibleVerseReserved(bibleVerse);
 
             return bibleVerse;
         }

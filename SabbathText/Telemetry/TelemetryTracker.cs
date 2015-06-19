@@ -240,5 +240,19 @@ using SabbathText.Entities;
                     { "CheckpointType", checkpointType },
                 });
         }
+
+        /// <summary>
+        /// Tracks that a Bible verse has been reserved.
+        /// </summary>
+        /// <param name="bibleVerse">The reserved Bible verse.</param>
+        public void BibleVerseReserved(string bibleVerse)
+        {
+            this.TrackEvent(
+                "BibleVerseReserved",
+                new Dictionary<string, string>
+                {
+                    { "BibleVerse", bibleVerse },
+                });
+        }
     }
 }
