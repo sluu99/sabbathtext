@@ -43,11 +43,11 @@
 
             if (checkpointData != null && checkpointData.ProcessAfter != null && checkpointData.ProcessAfter > Clock.UtcNow)
             {
-                Trace.TraceInformation(string.Format(
-                    "Checkpoint {0}/{1} does not get processed until {2}",
+                bag.TelemetryTracker.ExtendingCheckpoint(
                     checkpoint.PartitionKey,
                     checkpoint.RowKey,
-                    checkpointData.ProcessAfter));
+                    checkpoint.OperationType,
+                    checkpointData.ProcessAfter.Value);
 
                 if (checkpoint.QueueMessage != null)
                 {
@@ -64,15 +64,33 @@
             {
                 if (checkpointData == null || checkpointData.IsHandOffProcessing == false)
                 {
+                    bag.TelemetryTracker.CancellingCheckpoint(checkpoint.PartitionKey, checkpoint.RowKey, checkpoint.OperationType);
+
                     // the operation failed mid way (not hand off processing)
                     // we want to cancel
                     checkpoint.Status = CheckpointStatus.Cancelling;
                     await bag.CompensationClient.UpdateCheckpoint(checkpoint, cancellationToken);
                 }
             }
+            
+            try
+            {
+                bag.TelemetryTracker.ProcessingCheckpoint(checkpoint.PartitionKey, checkpoint.RowKey, checkpoint.OperationType);
+                await ResumeOperation(checkpoint, cancellationToken, bag);
+                bag.TelemetryTracker.CompletedCheckpoint(checkpoint.PartitionKey, checkpoint.RowKey, checkpoint.OperationType);
 
-            Trace.TraceInformation("Processing checkpoint {0}/{1}", checkpoint.PartitionKey, checkpoint.RowKey);
-                        
+                return true;
+            }
+            catch (Exception ex)
+            {
+                bag.TelemetryTracker.ProcessCheckpointException(ex, checkpoint.PartitionKey, checkpoint.RowKey, checkpoint.OperationType);
+            }
+
+            return false;
+        }
+
+        private static async Task ResumeOperation(Checkpoint checkpoint, CancellationToken cancellationToken, GoodieBag bag)
+        {
             AccountEntity account =
                 await bag.AccountStore.Get(AccountEntity.GetReferenceById(checkpoint.AccountId), cancellationToken);
             OperationContext context = new OperationContext
@@ -81,7 +99,7 @@
                 CancellationToken = cancellationToken,
                 TrackingId = checkpoint.TrackingId,
             };
-                        
+
             switch (checkpoint.OperationType)
             {
                 case "GreetUserOperation.V1":
@@ -115,8 +133,6 @@
                 default:
                     throw new NotSupportedException("{0} is not handled for compensation.".InvariantFormat(checkpoint.OperationType));
             }
-
-            return true;
         }
     }
 }
