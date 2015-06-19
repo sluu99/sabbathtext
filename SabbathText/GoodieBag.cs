@@ -1,11 +1,12 @@
 ﻿namespace SabbathText
 {
     using System;
-    using KeyValueStorage;
-    using QueueStorage;
-    using SabbathText.Compensation.V1;
-    using SabbathText.Entities;
-    using SabbathText.V1;
+using KeyValueStorage;
+using QueueStorage;
+using SabbathText.Compensation.V1;
+using SabbathText.Entities;
+using SabbathText.Telemetry;
+using SabbathText.V1;
 
     /// <summary>
     /// This class contains dependency goodies
@@ -20,6 +21,7 @@
         private static CompensationClient compensationClient;
         private static QueueStore checkpointQueue;
         private static MessageClient messageClient;
+        private static TelemetryTracker telemetryTracker;
 
         /// <summary>
         /// Hides the constructor
@@ -74,6 +76,11 @@
         public MessageClient MessageClient { get; set; }
 
         /// <summary>
+        /// Gets or sets the telemetry tracker.
+        /// </summary>
+        public TelemetryTracker TelemetryTracker { get; set; }
+
+        /// <summary>
         /// Initializes the default goodie bag
         /// </summary>
         /// <param name="settings">The environment settings.</param>
@@ -87,6 +94,7 @@
             checkpointQueue = QueueStore.Create(settings.CheckpointQueueConfiguration);
             compensationClient = new CompensationClient(checkpointStore, checkpointQueue, settings.CheckpointVisibilityTimeout);
             messageClient = CreateMessageClient(settings);
+            telemetryTracker = TelemetryTracker.Create(settings.TelemetryConfiguration);
         }
 
         /// <summary>
@@ -106,6 +114,7 @@
                 MessageClient = messageClient,
                 MessageStore = messageStore,
                 TrackerStore = trackerStore,
+                TelemetryTracker = telemetryTracker,
             };
 
             if (CreateFunc == null)

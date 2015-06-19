@@ -4,6 +4,7 @@
     using System.Diagnostics;
     using KeyValueStorage;
     using QueueStorage;
+    using SabbathText.Telemetry;
 
     /// <summary>
     /// Test environment settings
@@ -128,6 +129,17 @@
             get
             {
                 return SabbathText.V1.MessageClientType.InMemory;
+            }
+        }
+
+        /// <summary>
+        /// Gets the telemetry tracker configuration.
+        /// </summary>
+        public override TelemetryTrackerConfiguration TelemetryConfiguration
+        {
+            get
+            {
+                return new TelemetryTrackerConfiguration();
             }
         }
     }

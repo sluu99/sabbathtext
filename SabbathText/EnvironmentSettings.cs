@@ -1,11 +1,12 @@
 ﻿namespace SabbathText
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using KeyValueStorage;
-    using QueueStorage;
-    using SabbathText.V1;
+using System.Collections.Generic;
+using System.Linq;
+using KeyValueStorage;
+using QueueStorage;
+using SabbathText.Telemetry;
+using SabbathText.V1;
 
     /// <summary>
     /// Environment settings
@@ -52,6 +53,11 @@
         /// </summary>
         protected const string GoogleClientSecretKey = "GoogleClientSecret";
 
+        /// <summary>
+        /// Key for <see cref="AzureAppInsightsInstrumentationKey"/>
+        /// </summary>
+        protected const string AzureAppInsightsInstrumentationKeyKey = "AzureAppInsightsInstrumentationKey";
+
         private static readonly Dictionary<string, string> Secrets = new Dictionary<string, string>
         {
             {
@@ -85,6 +91,10 @@
             {
                 GoogleClientSecretKey,
                 "gQ92+tfjIz3iKa9RdomBrvsWyh63XYVLnNeNTk0jwtnscvEPGaKBoDZo3GZ5BwKzq+t/sMbdLXL3b+7GuYpEBDFQI9iMwlK0qnZ0RTEW/wK6NCbGpowgao1LC9flj08tk3vwRdsiKgZXYBUPqXIAaA1ZpweaLUCY2HwOfZZDqON+cYlH7A7L3PLk9TSSWRiom3jwi5EI5Q5+3Ewx9yhFfz6D7peSj/dtHzXLzh30Ld1IvBQNDeph6iQzMlRQ7psgUqvLyC70tfEleUC7tkXwXLIDc2xs3BVzwUoeN+j4GJiB6+l0H3ehQ35K39f29xZ7ZZKSU/pPca1Bck5+vE+f6g=="
+            },
+            {
+                AzureAppInsightsInstrumentationKeyKey,
+                "tp1dvddouj5MZDlRM4XoFP/4EYg4lpXZ9L3IEN4UXgoRwOYAkp4lZPMb4fb/gdpQ0GfY5lzZxays/UKvqGI+WyuA7QlqiZlqjpQyT+Zc9OV4WENVSvJe1t/LmPgMwBq67q2HEJXcUHBM4iLJSZx+j5gg8y/8P/okpu2tXxP75Tq6A3DYr1vglliYVU9qBfdUUxQjKH9jKILc13EMD0+1809tUcZMiAm0AB5AdKs3o0xYhIiJ3ZzIj3bHHvOlxdxKYZJQ2/wgjugR6fbCmSwDepigfjqFkMGj5Ccm4uYTbtEKZo2tCOUVQT6Prf7EjEi3f146OvpLitoAxT2d3tL5ng=="
             },
         };
 
@@ -359,6 +369,20 @@
         public string GoogleClientSecret
         {
             get { return this.secrets[GoogleClientSecretKey]; }
+        }
+
+        /// <summary>
+        /// Gets the telemetry tracker configuration.
+        /// </summary>
+        public virtual TelemetryTrackerConfiguration TelemetryConfiguration
+        {
+            get
+            {
+                return new TelemetryTrackerConfiguration
+                {
+                    AzureAppInsightsInstrumentationKey = this.secrets[AzureAppInsightsInstrumentationKeyKey],
+                };
+            }
         }
 
         /// <summary>
