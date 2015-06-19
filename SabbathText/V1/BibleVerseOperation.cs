@@ -62,7 +62,6 @@
         {
             this.checkpointData.OperationState = RespondingMessageOperationState.SendingResponse;
             this.checkpointData.OutgoingMessageId = Guid.NewGuid().ToString();
-            this.checkpointData.SelectedBibleVerse = this.GetBibleVerse();
 
             return
                 await this.SetCheckpoint(this.checkpointData) ??
@@ -71,16 +70,12 @@
 
         private async Task<OperationResponse<bool>> EnterSendResponse()
         {
-            if (this.Context.Account.RecentVerses.Contains(this.checkpointData.SelectedBibleVerse) == false)
-            {
-                this.Context.Account.RecentVerses.Add(this.checkpointData.SelectedBibleVerse);
-                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);   
-            }
+            string selectedBibleVerse = await this.ReserveBibleVerse(this.checkpointData.OutgoingMessageId);
             
             Message outgoingMessage = Message.CreateBibleVerse(
                 this.Context.Account.PhoneNumber,
-                this.checkpointData.SelectedBibleVerse,
-                DomainData.BibleVerses[this.checkpointData.SelectedBibleVerse]);
+                selectedBibleVerse,
+                DomainData.BibleVerses[selectedBibleVerse]);
 
             await this.Bag.MessageClient.SendMessage(
                 outgoingMessage,
@@ -102,11 +97,23 @@
 
         private async Task<OperationResponse<bool>> EnterUpdateAccount()
         {
-            await this.AddProcessedMessages(
+            bool reservedBibleVerseRemoved = false;
+            if (this.Context.Account.ReservedBibleVerse.ContainsKey(this.checkpointData.OutgoingMessageId))
+            {
+                this.Context.Account.ReservedBibleVerse.Remove(this.checkpointData.OutgoingMessageId);
+                reservedBibleVerseRemoved = true;
+            }
+
+            bool messageAdded = this.AddProcessedMessages(
                 this.checkpointData.IncomingMessageId,
                 this.checkpointData.IncomingMessage,
                 this.checkpointData.OutgoingMessageId,
                 this.checkpointData.OutgoingMessage);
+
+            if (messageAdded || reservedBibleVerseRemoved)
+            {
+                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+            }
 
             return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, true);
         }

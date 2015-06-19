@@ -41,6 +41,13 @@
         {
             this.checkpointData.OperationState = InspectAccountOperationState.CheckingSabbath;
             this.checkpointData.SabbathMessageId = this.Context.Account.AccountId + "_SabbathText_{0:yyyyMMdd}".InvariantFormat(Clock.UtcNow);
+            if (Clock.UtcNow.DayOfWeek == DayOfWeek.Saturday)
+            {
+                // we want to use the Friday (when Sabbath starts) in the message ID.
+                // if today is not Sabbath (not Friday/Saturday) this ID won't be used.
+                this.checkpointData.SabbathMessageId = this.Context.Account.AccountId + "_SabbathText_{0:yyyyMMdd}".InvariantFormat(Clock.UtcNow.AddDays(-1));
+            }
+
             return this.HandOffCheckpoint(
                 TimeSpan.Zero,
                 this.checkpointData,
@@ -68,15 +75,19 @@
                 return await this.TransitionToCheckAnnouncements();
             }
 
-            string verseNumber = this.GetBibleVerse();
+            string verseNumber = await this.ReserveBibleVerse(this.checkpointData.SabbathMessageId);
             string verseContent = DomainData.BibleVerses[verseNumber];
             
             Message sabbathMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber, verseNumber, verseContent);
-            if (await this.Bag.MessageClient.SendMessage(sabbathMessage, this.checkpointData.SabbathMessageId, this.Context.CancellationToken))
+            await this.Bag.MessageClient.SendMessage(sabbathMessage, this.checkpointData.SabbathMessageId, this.Context.CancellationToken);
+            
+            if (this.Context.Account.ReservedBibleVerse.ContainsKey(this.checkpointData.SabbathMessageId))
             {
-                this.Context.Account.LastSabbathTextTime = Clock.UtcNow;
-                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+                this.Context.Account.ReservedBibleVerse.Remove(this.checkpointData.SabbathMessageId);
             }
+
+            this.Context.Account.LastSabbathTextTime = Clock.UtcNow;
+            await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
             return await this.TransitionToStoreSabbathText(sabbathMessage);
         }
