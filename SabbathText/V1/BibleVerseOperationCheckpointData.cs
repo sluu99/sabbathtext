@@ -44,10 +44,5 @@
         /// Gets or sets the operation state
         /// </summary>
         public RespondingMessageOperationState OperationState { get; set; }
-
-        /// <summary>
-        /// Gets or sets the selected Bible verse
-        /// </summary>
-        public string SelectedBibleVerse { get; set; }
     }
 }

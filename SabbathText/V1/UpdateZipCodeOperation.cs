@@ -127,11 +127,16 @@
 
         private async Task<OperationResponse<bool>> EnterUpdateAccount()
         {
-            await this.AddProcessedMessages(
+            bool messageAdded = this.AddProcessedMessages(
                 this.checkpointData.IncomingMessageId,
                 this.checkpointData.IncomingMessage,
                 this.checkpointData.OutgoingMessageId,
                 this.checkpointData.OutgoingMessage);
+
+            if (messageAdded)
+            {
+                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+            }
 
             return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, true);
         }

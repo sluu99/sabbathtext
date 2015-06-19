@@ -41,6 +41,7 @@
             this.RecentMessages = new List<MessageEntity>();
             this.RecentVerses = new List<string>();
             this.SentAnnouncements = new List<string>();
+            this.ReservedBibleVerse = new Dictionary<string, string>();
         }
 
         /// <summary>
@@ -87,6 +88,11 @@
         /// Gets or sets a value indicating whether the user has been greeted.
         /// </summary>
         public bool HasBeenGreeted { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reserved Bible verses.
+        /// </summary>
+        public Dictionary<string, string> ReservedBibleVerse { get; set; }
 
         /// <summary>
         /// Gets the partition key.

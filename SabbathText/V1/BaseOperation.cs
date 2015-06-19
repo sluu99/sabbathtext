@@ -244,8 +244,8 @@
         /// <param name="incomingMessage">The incoming message.</param>
         /// <param name="outgoingMessageId">The message ID for the outgoing message entity.</param>
         /// <param name="outgoingMessage">The outgoing message.</param>
-        /// <returns>A TPL task</returns>
-        protected Task AddProcessedMessages(
+        /// <returns>Whether a message was added to the account.</returns>
+        protected bool AddProcessedMessages(
             string incomingMessageId,
             Message incomingMessage,
             string outgoingMessageId,
@@ -269,20 +269,22 @@
                 outgoingMessageAdded = TryAddMessageEntity(this.Context.Account, outgoingMessageEntity);
             }
 
-            if (incomingMessageAdded || outgoingMessageAdded)
-            {
-                return this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
-            }
-
-            return Task.FromResult<object>(null);
+            return incomingMessageAdded || outgoingMessageAdded;
         }
 
         /// <summary>
-        /// Gets a Bible verse that is not in the account recent verses
+        /// Reserve a Bible for a specific tracking ID.
         /// </summary>
+        /// <param name="trackingId">The tracking ID used for the Bible verse.</param>
         /// <returns>A Bible verse number</returns>
-        protected string GetBibleVerse()
+        protected async Task<string> ReserveBibleVerse(string trackingId)
         {
+            if (this.Context.Account.ReservedBibleVerse.ContainsKey(trackingId))
+            {
+                // already reserved the Bible verse
+                return this.Context.Account.ReservedBibleVerse[trackingId];
+            }
+
             if (this.Context.Account.RecentVerses.Count == DomainData.BibleVerses.Count)
             {
                 // the account has seen all the verse
@@ -293,8 +295,15 @@
 
             var availVerses = DomainData.BibleVerses.Keys;
             availVerses = availVerses.Except(this.Context.Account.RecentVerses);
+            string bibleVerse = availVerses.RandomElement();
 
-            return availVerses.RandomElement();
+            this.Context.Account.ReservedBibleVerse.Add(trackingId, bibleVerse);
+            this.Context.Account.RecentVerses.Add(bibleVerse);
+
+            await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+            this.Bag.TelemetryTracker.BibleVerseReserved(bibleVerse);
+
+            return bibleVerse;
         }
 
         /// <summary>
