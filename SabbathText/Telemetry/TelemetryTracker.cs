@@ -147,5 +147,98 @@ using SabbathText.Entities;
                     { "TrackingId", trackingId },
                 });
         }
+
+        /// <summary>
+        /// Tracks that a checkpoint is being processed.
+        /// </summary>
+        /// <param name="partitionKey">The checkpoint partition key.</param>
+        /// <param name="rowKey">The checkpoint row key.</param>
+        /// <param name="checkpointType">The checkpoint type.</param>
+        public void ProcessingCheckpoint(string partitionKey, string rowKey, string checkpointType)
+        {
+            this.TrackEvent(
+                "ProcessingCheckpoint",
+                new Dictionary<string, string>
+                {
+                    { "PartitionKey", partitionKey },
+                    { "RowKey", rowKey },
+                    { "CheckpointType", checkpointType },
+                });
+        }
+
+        /// <summary>
+        /// Tracks that a checkpoint is processed.
+        /// </summary>
+        /// <param name="partitionKey">The checkpoint partition key.</param>
+        /// <param name="rowKey">The checkpoint row key.</param>
+        /// <param name="checkpointType">The checkpoint type.</param>
+        public void CompletedCheckpoint(string partitionKey, string rowKey, string checkpointType)
+        {
+            this.TrackEvent(
+                "CompletedCheckpoint",
+                new Dictionary<string, string>
+                {
+                    { "PartitionKey", partitionKey },
+                    { "RowKey", rowKey },
+                    { "CheckpointType", checkpointType },
+                });
+        }
+
+        /// <summary>
+        /// Tracks that a checkpoint is being marked as cancelling.
+        /// </summary>
+        /// <param name="partitionKey">The checkpoint partition key.</param>
+        /// <param name="rowKey">The checkpoint row key.</param>
+        /// <param name="checkpointType">The checkpoint type.</param>
+        public void CancellingCheckpoint(string partitionKey, string rowKey, string checkpointType)
+        {
+            this.TrackEvent(
+                "CancellingCheckpoint",
+                new Dictionary<string, string>
+                {
+                    { "PartitionKey", partitionKey },
+                    { "RowKey", rowKey },
+                    { "CheckpointType", checkpointType },
+                });
+        }
+
+        /// <summary>
+        /// Tracks that a checkpoint is being extended to process at a later time.
+        /// </summary>
+        /// <param name="partitionKey">The checkpoint partition key.</param>
+        /// <param name="rowKey">The checkpoint row key.</param>
+        /// <param name="checkpointType">The checkpoint type.</param>
+        /// <param name="processTime">The intended checkpoint process time.</param>
+        public void ExtendingCheckpoint(string partitionKey, string rowKey, string checkpointType, DateTime processTime)
+        {
+            this.TrackEvent(
+                "CancellingCheckpoint",
+                new Dictionary<string, string>
+                {
+                    { "PartitionKey", partitionKey },
+                    { "RowKey", rowKey },
+                    { "CheckpointType", checkpointType },
+                    { "ProcessTime", processTime.ToString() },
+                });
+        }
+
+        /// <summary>
+        /// Tracks that some exception occurred when processing a checkpoint.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        /// <param name="partitionKey">The checkpoint partition key.</param>
+        /// <param name="rowKey">The checkpoint row key.</param>
+        /// <param name="checkpointType">The checkpoint type.</param>
+        public void ProcessCheckpointException(Exception exception, string partitionKey, string rowKey, string checkpointType)
+        {
+            this.TrackException(
+                exception,
+                new Dictionary<string, string>
+                {
+                    { "PartitionKey", partitionKey },
+                    { "RowKey", rowKey },
+                    { "CheckpointType", checkpointType },
+                });
+        }
     }
 }
