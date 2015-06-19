@@ -8,6 +8,7 @@
     using Microsoft.ApplicationInsights;
     using Microsoft.ApplicationInsights.DataContracts;
     using Microsoft.ApplicationInsights.Extensibility;
+using SabbathText.Entities;
 
     /// <summary>
     /// A class used for tracking telemetry
@@ -111,6 +112,40 @@
             }
 
             this.telemetryClient.TrackRequest(requestTelemetry);
+        }
+
+        /// <summary>
+        /// Tracks that a message is sent.
+        /// </summary>
+        /// <param name="template">The message template.</param>
+        /// <param name="content">The message content</param>
+        /// <param name="trackingId">The tracking ID.</param>
+        public void MessageSent(MessageTemplate template, string content, string trackingId)
+        {
+            this.TrackEvent(
+                "MessageSent",
+                new Dictionary<string, string>
+                {
+                    { "MessageTemplate", template.ToString() },
+                    { "Content", content },
+                    { "TrackingId", trackingId },
+                });
+        }
+
+        /// <summary>
+        /// Track that a message is skipped.
+        /// </summary>
+        /// <param name="template">The message template.</param>
+        /// <param name="trackingId">The tracking ID.</param>
+        public void MessageSkipped(MessageTemplate template, string trackingId)
+        {
+            this.TrackEvent(
+                "MessageSkipped",
+                new Dictionary<string, string>
+                {
+                    { "MessageTemplate", template.ToString() },
+                    { "TrackingId", trackingId },
+                });
         }
     }
 }

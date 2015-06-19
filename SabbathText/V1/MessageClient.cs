@@ -56,7 +56,7 @@
                 }
                 catch (DuplicateKeyException)
                 {
-                    Trace.TraceInformation("Message with tracking ID {0} skipped", trackingId);
+                    bag.TelemetryTracker.MessageSkipped(message.Template, trackingId);
                     return false;
                 }
             }
@@ -65,9 +65,7 @@
             Twilio.Message twilioMessage = client.SendMessage(this.twilioPhoneNumber, message.Recipient, message.Body);
             message.ExternalId = twilioMessage.Sid;
 
-            Trace.TraceInformation("Message sent with tracking ID {0}: {1}".InvariantFormat(
-                trackingId,
-                JsonConvert.SerializeObject(message, Formatting.Indented)));
+            bag.TelemetryTracker.MessageSent(message.Template, message.Body, trackingId);
 
             return true;
         }
