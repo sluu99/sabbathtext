@@ -80,6 +80,7 @@
             
             Message sabbathMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber, verseNumber, verseContent);
             await this.Bag.MessageClient.SendMessage(sabbathMessage, this.checkpointData.SabbathMessageId, this.Context.CancellationToken);
+            this.Bag.TelemetryTracker.SabbathTextSent(verseNumber, this.Context.Account.ZipCode);
             
             if (this.Context.Account.ReservedBibleVerse.ContainsKey(this.checkpointData.SabbathMessageId))
             {
