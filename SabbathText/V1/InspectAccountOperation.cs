@@ -57,68 +57,45 @@
 
         private async Task<OperationResponse<bool>> EnterCheckSabbath()
         {
-            TimeSpan timeSinceLastSabbathText = Clock.UtcNow - this.Context.Account.LastSabbathTextTime;
-
-            if (this.Context.Account.Status != Entities.AccountStatus.Subscribed ||
-                timeSinceLastSabbathText < this.Bag.Settings.SabbathTextGap ||
-                string.IsNullOrWhiteSpace(this.Context.Account.ZipCode))
+            if (this.Context.Account.Status == AccountStatus.Subscribed &&
+                string.IsNullOrWhiteSpace(this.Context.Account.ZipCode) == false)
             {
-                // Don't need to check for Sabbath
-                return await this.TransitionToCheckAnnouncements();
-            }
+                OperationContext sabbathMsgOpContext = new OperationContext
+                {
+                    Account = this.Context.Account,
+                    CancellationToken = this.Context.CancellationToken,
+                    TrackingId = this.checkpointData.SabbathMessageId,
+                };
 
-            LocationInfo locationInfo = LocationInfo.FromZipCode(this.Context.Account.ZipCode);
-            DateTime accountTime = locationInfo.LocalTime;
+                SabbathMessageOperation sabbathMsgOp = new SabbathMessageOperation(sabbathMsgOpContext);
 
-            if (locationInfo.IsSabbath() == false)
-            {
-                return await this.TransitionToCheckAnnouncements();
-            }
+                LocationInfo location = LocationInfo.FromZipCode(this.Context.Account.ZipCode);
+                if (location.IsSabbath())
+                {
+                    // since we are using the same tracking for the same Sabbath period, running again won't hurt
+                    await sabbathMsgOp.Run();
+                }
+                else if (location.LocalTime.DayOfWeek == DayOfWeek.Friday)
+                {
+                    // it's Friday and not Sabbath yet, so it means Sabbath has not started yet
+                    TimeInfo fridayTimeInfo = TimeInfo.Create(location.ZipCode, location.LocalTime.Date);
+                    TimeSpan timeSpanUntilSabbath = fridayTimeInfo.SunSetUtc - Clock.UtcNow;
+                    if (timeSpanUntilSabbath < TimeSpan.Zero)
+                    {
+                        timeSpanUntilSabbath = TimeSpan.Zero;
+                    }
 
-            string verseNumber = await this.ReserveBibleVerse(this.checkpointData.SabbathMessageId);
-            string verseContent = DomainData.BibleVerses[verseNumber];
-            
-            Message sabbathMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber, verseNumber, verseContent);
-            await this.Bag.MessageClient.SendMessage(sabbathMessage, this.checkpointData.SabbathMessageId, this.Context.CancellationToken);
-            this.Bag.TelemetryTracker.SabbathTextSent(verseNumber, this.Context.Account.ZipCode);
-            
-            if (this.Context.Account.ReservedBibleVerse.ContainsKey(this.checkpointData.SabbathMessageId))
-            {
-                this.Context.Account.ReservedBibleVerse.Remove(this.checkpointData.SabbathMessageId);
-            }
-
-            this.Context.Account.LastSabbathTextTime = Clock.UtcNow;
-            await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
-
-            return await this.TransitionToStoreSabbathText(sabbathMessage);
-        }
-
-        private async Task<OperationResponse<bool>> TransitionToStoreSabbathText(Message sabbathMessage)
-        {
-            this.checkpointData.OperationState = InspectAccountOperationState.StoringSabbathText;
-            this.checkpointData.SabbathMesage = sabbathMessage;
-
-            return
-                await this.SetCheckpoint(this.checkpointData) ??
-                await this.EnterStoreSabbathText();
-        }
-
-        private async Task<OperationResponse<bool>> EnterStoreSabbathText()
-        {
-            MessageEntity messageEntity = this.checkpointData.SabbathMesage.ToEntity(
-                this.Context.Account.AccountId,
-                this.checkpointData.SabbathMessageId,
-                MessageDirection.Outgoing,
-                MessageStatus.Sent);
-
-            if (TryAddMessageEntity(this.Context.Account, messageEntity))
-            {
-                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
+                    if (timeSpanUntilSabbath <= this.Bag.Settings.RunnerFrequency)
+                    {
+                        // Sabbath begins before the next runner iteration
+                        await sabbathMsgOp.RunDelayed(timeSpanUntilSabbath);
+                    }
+                }
             }
 
             return await this.TransitionToCheckAnnouncements();
         }
-
+        
         private async Task<OperationResponse<bool>> TransitionToCheckAnnouncements()
         {
             this.checkpointData.OperationState = InspectAccountOperationState.CheckingAnnouncements;
@@ -249,8 +226,6 @@
             {
                 case InspectAccountOperationState.CheckingSabbath:
                     return this.EnterCheckSabbath();
-                case InspectAccountOperationState.StoringSabbathText:
-                    return this.EnterStoreSabbathText();
                 case InspectAccountOperationState.CheckingAnnouncements:
                     return this.EnterCheckAnnouncements();
                 case InspectAccountOperationState.StoringAnnouncementText:

@@ -141,6 +141,13 @@
                         break;
                     }
 
+                case "SabbathMessageOperation.V1":
+                    {
+                        SabbathMessageOperation operation = new SabbathMessageOperation(context);
+                        await operation.Resume(checkpoint);
+                        break;
+                    }
+
                 default:
                     throw new NotSupportedException("{0} is not handled for compensation.".InvariantFormat(checkpoint.OperationType));
             }

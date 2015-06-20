@@ -120,6 +120,15 @@
         }
 
         /// <summary>
+        /// Tests that running inspect account multiple times will not send out multiple Sabbath texts
+        /// </summary>
+        [TestMethod]
+        public void InspectAccount_MultipleRunsOnlySendsSabbathTextOnce_Nashville()
+        {
+            this.InspectAccount_MultipleRunsOnlySendsSabbathTextOnce("37115");
+        }
+
+        /// <summary>
         /// Tests that the operation does not send out Sabbath message before sun down
         /// </summary>
         [TestMethod]
@@ -144,6 +153,15 @@
         public void InspectAccount_ShouldSendMessageUntilSabbathEnds_Boston()
         {
             this.InspectAccount_ShouldSendMessageUntilSabbathEnds("02110");
+        }
+
+        /// <summary>
+        /// Tests that inspecting the account will schedule sending out a Sabbath message.
+        /// </summary>
+        [TestMethod]
+        public void InspectAccount_ShouldScheduleSabbathMessageOperation_Houston()
+        {
+            this.InspectAccount_ShouldScheduleSabbathMessageOperation("77318");
         }
 
         /// <summary>
@@ -176,6 +194,51 @@
 
             InspectAccount(account.AccountId);
             AssertLastSentMessage(account.AccountId, MessageTemplate.Announcement);
+        }
+
+        private void InspectAccount_ShouldScheduleSabbathMessageOperation(string zipCode)
+        {
+            AccountEntity account = CreateAccount();
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "zip " + zipCode));
+
+            // suppose the next InspectAccount run will 1 second after Sabbath started
+            DateTime sabbathEndsUtc;
+            DateTime nextSabbathUtc = ClockHelper.GetSabbathStartTime(zipCode, out sabbathEndsUtc);
+            ClockHelper.GoTo(nextSabbathUtc.Subtract(new TestEnvironmentSettings().RunnerFrequency).AddSeconds(1));
+
+            InspectAccount(account.AccountId);
+
+            // make sure we have not sent out any Sabbath messages
+            AssertLastSentMessage(account.AccountId, MessageTemplate.SubscribedForZipCode);
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.SabbathText, 0);
+
+            // go to the Sabbath and run the checkpoint worker to send out a Sabbath message
+            ClockHelper.GoTo(nextSabbathUtc);
+            RunCheckpointWorker();
+            AssertLastSentMessage(account.AccountId, MessageTemplate.SabbathText);
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.SabbathText, 1);
+        }
+
+        private void InspectAccount_MultipleRunsOnlySendsSabbathTextOnce(string zipCode)
+        {
+            AccountEntity account = CreateAccount();
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "zip " + zipCode));
+
+            // go to the next Sabbath
+            DateTime sabbathEndsUtc;
+            DateTime nextSabbathUtc = ClockHelper.GetSabbathStartTime(zipCode, out sabbathEndsUtc);
+            ClockHelper.GoTo(nextSabbathUtc.AddSeconds(1));
+
+            for (int i = 0; i < 10; i++)
+            {
+                InspectAccount(account.AccountId);
+                Clock.Delay(new TestEnvironmentSettings().RunnerFrequency).Wait();
+            }
+
+            AssertLastSentMessage(account.AccountId, MessageTemplate.SabbathText);
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.SabbathText, 1);
         }
 
         private void InspectAccount_SendMessageOnSabbath(string zipCode)

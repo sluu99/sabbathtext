@@ -1,9 +1,13 @@
 ﻿namespace SabbathText.Tests.V1
 {
+    using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
+    using System.Net;
     using System.Threading;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Moq;
     using SabbathText.Entities;
     using SabbathText.V1;
 
@@ -51,6 +55,69 @@
                 account.RecentVerses.Distinct().Count(),
                 account.RecentVerses.Count,
                 "Bible verses are not distinct");
+        }
+
+        /// <summary>
+        /// Tests compensation logic for "Bible verse" incoming messages
+        /// </summary>
+        [TestMethod]
+        public void BibleVerseMessage_Compensation()
+        {
+            AccountEntity account = CreateAccount();
+            Message bibleVerseMessage = CreateIncomingMessage(account.PhoneNumber, "Bible verse");
+
+            Mock<MessageClient> mockMessageClient = new Mock<MessageClient>();
+            mockMessageClient
+                .Setup(m => m.SendMessage(It.IsAny<Message>(), It.IsAny<string>() /* trackingId */, It.IsAny<CancellationToken>()))
+                .Callback(() => { Trace.TraceInformation("MessageClient.SendMessage mock failure"); })
+                .Throws(new ApplicationException("MessageClient.SendMessage mock failure"));
+
+            GoodieBag.CreateFunc = (originalBag) =>
+            {
+                originalBag.MessageClient = mockMessageClient.Object;
+                return originalBag;
+            };
+
+            // the first run should result in an error
+            OperationResponse<bool> response = ProcessMessage(bibleVerseMessage);
+            GoodieBag.CreateFunc = null;
+            Assert.IsNotNull(response);
+            Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.BibleVerse, 0);
+
+            // retrying before compensation will result in "OperationInProgress"            
+            response = ProcessMessage(bibleVerseMessage);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(HttpStatusCode.Conflict, response.StatusCode);
+            Assert.AreEqual(CommonErrorCodes.OperationInProgress, response.ErrorCode);
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.BibleVerse, 0);
+
+            // run compensation
+            RunCheckpointWorkerAfterCheckpointLock();
+
+            // retrying now will return a successful response
+            response = ProcessMessage(bibleVerseMessage);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.BibleVerse, 1);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.BibleVerse);
+
+            // retrying will not process the message again
+            // so it should not hit the error
+            GoodieBag.CreateFunc = (originalBag) =>
+            {
+                originalBag.MessageClient = mockMessageClient.Object;
+                return originalBag;
+            };
+            response = ProcessMessage(bibleVerseMessage);
+            GoodieBag.CreateFunc = null;
+
+            Assert.IsNotNull(response);
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.BibleVerse, 1);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.BibleVerse);
+
+            mockMessageClient.VerifyAll();
         }
     }
 }

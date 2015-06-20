@@ -32,7 +32,7 @@
         }
 
         /// <summary>
-        /// Tests that subsequent calls of the same subscribe message will return an "OperationInProgress" response.
+        /// Tests subscribe message compensation logic.
         /// </summary>
         [TestMethod]
         public void SubscribeMessage_Compensation()
