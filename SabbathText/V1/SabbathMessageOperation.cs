@@ -6,7 +6,9 @@
     using System.Net;
     using System.Text;
     using System.Threading.Tasks;
+    using Newtonsoft.Json;
     using SabbathText.Entities;
+    using SabbathText.Location.V1;
 
     /// <summary>
     /// An operation to send out Sabbath messages.
@@ -67,6 +69,25 @@
 
         private async Task<OperationResponse<bool>> EnterSendMessage()
         {
+            TimeSpan timeSinceLastSabbathText = Clock.UtcNow - this.Context.Account.LastSabbathTextTime;
+
+            if (this.Context.Account.Status != Entities.AccountStatus.Subscribed ||
+                timeSinceLastSabbathText < this.Bag.Settings.SabbathTextGap ||
+                string.IsNullOrWhiteSpace(this.Context.Account.ZipCode))
+            {
+                // Don't need to send Sabbath text
+                return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.Forbidden, false);
+            }
+
+            LocationInfo locationInfo = LocationInfo.FromZipCode(this.Context.Account.ZipCode);
+            DateTime accountTime = locationInfo.LocalTime;
+
+            if (locationInfo.IsSabbath() == false)
+            {
+                // not Sabbath
+                return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.Forbidden, false);
+            }
+
             string bibleVerse = await this.ReserveBibleVerse(this.Context.TrackingId);
             string verseContent = DomainData.BibleVerses[bibleVerse];
             Message sabbathTextMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber, bibleVerse, verseContent);
@@ -117,7 +138,17 @@
         /// <returns>The operation response.</returns>
         protected override Task<OperationResponse<bool>> Resume(string serializedCheckpointData)
         {
-            throw new NotImplementedException();
+            this.checkpointData = JsonConvert.DeserializeObject<SabbathMessageOperationCheckpointData>(serializedCheckpointData);
+
+            switch (this.checkpointData.OperationState)
+            {
+                case ServiceMessageOperationState.SendingMessage:
+                    return this.EnterSendMessage();
+                case ServiceMessageOperationState.UpdatingAccount:
+                    return this.EnterUpdateAccount();
+                default:
+                    throw new InvalidOperationException("Cannot resume operation with the state {0}".InvariantFormat(this.checkpointData.OperationState));
+            }
         }
     }
 }

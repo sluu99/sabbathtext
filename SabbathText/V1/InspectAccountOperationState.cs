@@ -13,12 +13,7 @@
         /// Checking if it's Sabbath for the account
         /// </summary>
         CheckingSabbath,
-
-        /// <summary>
-        /// Storing the Sabbath text
-        /// </summary>
-        StoringSabbathText,
-
+        
         /// <summary>
         /// Checking for announcements to be sent out
         /// </summary>
