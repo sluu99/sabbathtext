@@ -20,7 +20,7 @@
         protected override void TrackEvent(string eventName, IDictionary<string, string> properties = null, IDictionary<string, double> metrics = null)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("Real clock: {0}. Virtual clock (UTC): {1}".InvariantFormat(DateTime.Now, Clock.UtcNow));
+            sb.AppendLine("Real clock: {0}. Virtual clock (UTC): {1}".InvariantFormat(DateTime.Now, Clock.UtcNow));
             sb.AppendLine("Event: {0}".InvariantFormat(eventName));
 
             if (properties != null)
@@ -45,7 +45,7 @@
         protected override void TrackException(Exception exception, IDictionary<string, string> properties = null, IDictionary<string, double> metrics = null)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("Real clock: {0}. Virtual clock (UTC): {1}".InvariantFormat(DateTime.Now, Clock.UtcNow));
+            sb.AppendLine("Real clock: {0}. Virtual clock (UTC): {1}".InvariantFormat(DateTime.Now, Clock.UtcNow));
             sb.AppendLine("Exception: {0}".InvariantFormat(exception.Message));
             sb.AppendLine(exception.StackTrace);
 
