@@ -113,7 +113,7 @@
         /// Move the clock a certain amount of time
         /// </summary>
         /// <param name="offset">The offset to be added</param>
-        public static void RollClock(TimeSpan offset)
+        private static void RollClock(TimeSpan offset)
         {
             if (offset < TimeSpan.Zero)
             {

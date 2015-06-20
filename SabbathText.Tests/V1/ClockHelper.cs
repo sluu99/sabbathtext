@@ -1,6 +1,7 @@
 ﻿namespace SabbathText.Tests.V1
 {
     using System;
+    using System.Threading;
     using SabbathText.Location.V1;
 
     /// <summary>
@@ -50,7 +51,7 @@
         /// <param name="dateTime">The date time to go to.</param>
         public static void GoTo(DateTime dateTime)
         {
-            Clock.RollClock(dateTime - Clock.UtcNow);
+            Clock.Delay(dateTime - Clock.UtcNow).Wait();
         }
 
         /// <summary>
@@ -67,7 +68,7 @@
                 hoursForward = 25 - Clock.UtcNow.Hour;
             }
 
-            Clock.RollClock(TimeSpan.FromHours(hoursForward));
+            Clock.Delay(TimeSpan.FromHours(hoursForward)).Wait();
 
             // go to the right day
             int dayDelta = dayOfWeek - Clock.UtcNow.DayOfWeek;
@@ -77,7 +78,7 @@
                 dayDelta = 7 + dayDelta;
             }
 
-            Clock.RollClock(TimeSpan.FromDays(dayDelta));
+            Clock.Delay(TimeSpan.FromDays(dayDelta)).Wait();
         }
     }
 }
