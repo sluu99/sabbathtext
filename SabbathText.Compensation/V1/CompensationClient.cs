@@ -124,7 +124,11 @@
 
             EntityReference checkpointRef = JsonConvert.DeserializeObject<EntityReference>(message.Body);
             Checkpoint checkpoint = await this.checkpointStore.Get(checkpointRef.PartitionKey, checkpointRef.RowKey, cancellationToken);
-            checkpoint.QueueMessage = message;
+
+            if (checkpoint != null)
+            {
+                checkpoint.QueueMessage = message;
+            }
 
             return checkpoint;
         }
