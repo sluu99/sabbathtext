@@ -8,7 +8,7 @@
     using Microsoft.ApplicationInsights;
     using Microsoft.ApplicationInsights.DataContracts;
     using Microsoft.ApplicationInsights.Extensibility;
-using SabbathText.Entities;
+    using SabbathText.Entities;
 
     /// <summary>
     /// A class used for tracking telemetry
@@ -58,7 +58,7 @@ using SabbathText.Entities;
         /// <param name="eventName">The event name.</param>
         /// <param name="properties">The optional event properties.</param>
         /// <param name="metrics">The optional event metrics.</param>
-        public virtual void TrackEvent(string eventName, IDictionary<string, string> properties = null, IDictionary<string, double> metrics = null)
+        protected virtual void TrackEvent(string eventName, IDictionary<string, string> properties = null, IDictionary<string, double> metrics = null)
         {
             this.telemetryClient.TrackEvent(eventName, properties, metrics);
         }
@@ -69,49 +69,9 @@ using SabbathText.Entities;
         /// <param name="exception">The exception to track.</param>
         /// <param name="properties">The optional event properties.</param>
         /// <param name="metrics">The optional event metrics.</param>
-        public virtual void TrackException(Exception exception, IDictionary<string, string> properties = null, IDictionary<string, double> metrics = null)
+        protected virtual void TrackException(Exception exception, IDictionary<string, string> properties = null, IDictionary<string, double> metrics = null)
         {
             this.telemetryClient.TrackException(exception, properties, metrics);
-        }
-
-        /// <summary>
-        /// Tracks a request
-        /// </summary>
-        /// <param name="name">The request name.</param>
-        /// <param name="requestTime">The request time.</param>
-        /// <param name="duration">The request duration.</param>
-        /// <param name="responseCode">The request response code.</param>
-        /// <param name="success">A value indicating if the request was successful.</param>
-        /// <param name="properties">The optional request properties.</param>
-        /// <param name="metrics">The optional request metrics.</param>
-        public virtual void TrackRequest(
-            string name, 
-            DateTime requestTime, 
-            TimeSpan duration, 
-            string responseCode, 
-            bool success,
-            IDictionary<string, string> properties = null, 
-            IDictionary<string, double> metrics = null)
-        {
-            RequestTelemetry requestTelemetry = new RequestTelemetry(name, new DateTimeOffset(requestTime), duration, responseCode, success);
-
-            if (properties != null)
-            {
-                foreach (KeyValuePair<string, string> prop in properties)
-                {
-                    requestTelemetry.Properties.Add(prop);
-                }
-            }
-
-            if (metrics != null)
-            {
-                foreach (KeyValuePair<string, double> metric in metrics)
-                {
-                    requestTelemetry.Metrics.Add(metric);
-                }
-            }
-
-            this.telemetryClient.TrackRequest(requestTelemetry);
         }
 
         /// <summary>
@@ -172,7 +132,8 @@ using SabbathText.Entities;
         /// <param name="partitionKey">The checkpoint partition key.</param>
         /// <param name="rowKey">The checkpoint row key.</param>
         /// <param name="checkpointType">The checkpoint type.</param>
-        public void CompletedCheckpoint(string partitionKey, string rowKey, string checkpointType)
+        /// <param name="duration">The time it took to complete the checkpoint.</param>
+        public void CompletedCheckpoint(string partitionKey, string rowKey, string checkpointType, TimeSpan duration)
         {
             this.TrackEvent(
                 "CompletedCheckpoint",
@@ -181,6 +142,10 @@ using SabbathText.Entities;
                     { "PartitionKey", partitionKey },
                     { "RowKey", rowKey },
                     { "CheckpointType", checkpointType },
+                },
+                new Dictionary<string, double>
+                {
+                    { "Duration", duration.TotalMilliseconds },
                 });
         }
 
@@ -212,7 +177,7 @@ using SabbathText.Entities;
         public void ExtendingCheckpoint(string partitionKey, string rowKey, string checkpointType, DateTime processTime)
         {
             this.TrackEvent(
-                "CancellingCheckpoint",
+                "ExtendingCheckpoint",
                 new Dictionary<string, string>
                 {
                     { "PartitionKey", partitionKey },
@@ -268,6 +233,49 @@ using SabbathText.Entities;
                 {
                     { "BibleVerse", bibleVerse },
                     { "ZipCode", zipCode },
+                });
+        }
+
+        /// <summary>
+        /// Tracks that a message is processed.
+        /// </summary>
+        /// <param name="sender">The message sender.</param>
+        /// <param name="content">The message content.</param>
+        /// <param name="duration">The time it took to process the message.</param>
+        public void MessageProcessed(string sender, string content, TimeSpan duration)
+        {
+            this.TrackEvent(
+                "MessageProcessed",
+                new Dictionary<string, string>
+                {
+                    { "Sender", sender },
+                    { "Content", content },
+                },
+                new Dictionary<string, double>
+                {
+                    { "Duration", duration.TotalMilliseconds },
+                });
+        }
+        
+        /// <summary>
+        /// Tracks that an exception happened while processing a message.
+        /// </summary>
+        /// <param name="exception">The exception to track.</param>
+        /// <param name="sender">The message sender.</param>
+        /// <param name="content">The message content.</param>
+        /// <param name="duration">The time it took before the exception was thrown.</param>
+        public void ProcessMessageException(Exception exception, string sender, string content, TimeSpan duration)
+        {
+            this.TrackException(
+                exception,
+                new Dictionary<string, string>
+                {
+                    { "Sender", sender },
+                    { "Content", content },
+                },
+                new Dictionary<string, double>
+                {
+                    { "Duration", duration.TotalMilliseconds },
                 });
         }
     }

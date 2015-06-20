@@ -19,7 +19,26 @@
         /// <param name="context">The operation context.</param>
         /// <param name="message">The message .</param>
         /// <returns>A response message.</returns>
-        public Task<OperationResponse<bool>> Process(OperationContext context, Message message)
+        public async Task<OperationResponse<bool>> Process(OperationContext context, Message message)
+        {
+            GoodieBag bag = GoodieBag.Create();
+            DateTime startTime = Clock.UtcNow;
+
+            try
+            {                
+                OperationResponse<bool> response = await this.InternalProcess(context, message);
+                bag.TelemetryTracker.MessageProcessed(message.Sender, message.Body, Clock.UtcNow - startTime);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                bag.TelemetryTracker.ProcessMessageException(ex, message.Sender, message.Body, Clock.UtcNow - startTime);
+                throw;
+            }            
+        }
+
+        private Task<OperationResponse<bool>> InternalProcess(OperationContext context, Message message)
         {
             if (message == null || string.IsNullOrWhiteSpace(message.Body))
             {
@@ -52,7 +71,7 @@
                 BibleVerseOperation bibleVerseOperation = new BibleVerseOperation(context);
                 return bibleVerseOperation.Run(message);
             }
-
+                        
             return Task.FromResult(
                 new OperationResponse<bool>
                 {

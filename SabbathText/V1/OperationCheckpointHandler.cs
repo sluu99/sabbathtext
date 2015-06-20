@@ -76,8 +76,12 @@
             try
             {
                 bag.TelemetryTracker.ProcessingCheckpoint(checkpoint.PartitionKey, checkpoint.RowKey, checkpoint.OperationType);
+                
+                DateTime startTime = Clock.UtcNow;
                 await ResumeOperation(checkpoint, cancellationToken, bag);
-                bag.TelemetryTracker.CompletedCheckpoint(checkpoint.PartitionKey, checkpoint.RowKey, checkpoint.OperationType);
+                DateTime endTime = Clock.UtcNow;
+
+                bag.TelemetryTracker.CompletedCheckpoint(checkpoint.PartitionKey, checkpoint.RowKey, checkpoint.OperationType, endTime - startTime);
 
                 return true;
             }
