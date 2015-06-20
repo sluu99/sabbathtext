@@ -142,6 +142,7 @@
     <Compile Include="V1\UpdateZipCodeOperation.cs" />
     <Compile Include="V1\UpdateZipCodeOperationCheckpointData.cs" />
     <Compile Include="V1\RespondingMessageOperationState.cs" />
+    <Compile Include="WorkerProgram.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\common\KeyValueStorage\KeyValueStorage.csproj">

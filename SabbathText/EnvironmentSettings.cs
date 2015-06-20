@@ -327,7 +327,7 @@ using SabbathText.V1;
         /// </summary>
         public virtual TimeSpan RunnerFrequency
         {
-            get { return TimeSpan.FromMinutes(1); }
+            get { return TimeSpan.FromMinutes(30); }
         }
 
         /// <summary>
