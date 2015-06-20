@@ -254,5 +254,21 @@ using SabbathText.Entities;
                     { "BibleVerse", bibleVerse },
                 });
         }
+
+        /// <summary>
+        /// Tracks that a Sabbath text was sent
+        /// </summary>
+        /// <param name="bibleVerse">The reserved Bible verse.</param>
+        /// <param name="zipCode">The ZIP code of the recipient.</param>
+        public void SabbathTextSent(string bibleVerse, string zipCode)
+        {
+            this.TrackEvent(
+                "SabbathTextSent",
+                new Dictionary<string, string>
+                {
+                    { "BibleVerse", bibleVerse },
+                    { "ZipCode", zipCode },
+                });
+        }
     }
 }
