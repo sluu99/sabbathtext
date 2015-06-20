@@ -35,7 +35,7 @@
         /// Tests that subsequent calls of the same subscribe message will return an "OperationInProgress" response.
         /// </summary>
         [TestMethod]
-        public void SubscribeMessage_OperationInProgress()
+        public void SubscribeMessage_Compensation()
         {
             AccountEntity account = CreateAccount();
             Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "Subscribe");
@@ -54,20 +54,46 @@
 
             // the first run should result in an error
             OperationResponse<bool> response = ProcessMessage(subscribeMessage);
+            GoodieBag.CreateFunc = null;
             Assert.IsNotNull(response);
             Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
+            AssertAccountStatus(account.AccountId, AccountStatus.BrandNew);
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.PromptZipCode, 0);
 
-            // retrying before compensation will result in "OperationInProgress"
-            GoodieBag.CreateFunc = null;
+            // retrying before compensation will result in "OperationInProgress"            
             response = ProcessMessage(subscribeMessage);
             Assert.IsNotNull(response);
             Assert.AreEqual(HttpStatusCode.Conflict, response.StatusCode);
             Assert.AreEqual(CommonErrorCodes.OperationInProgress, response.ErrorCode);
+            AssertAccountStatus(account.AccountId, AccountStatus.BrandNew);
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.PromptZipCode, 0);
 
+            // run compensation
             RunCheckpointWorkerAfterCheckpointLock();
+
+            // retrying now will return a successful response
             response = ProcessMessage(subscribeMessage);
             Assert.IsNotNull(response);
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            AssertAccountStatus(account.AccountId, AccountStatus.Subscribed);
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.PromptZipCode, 1);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.PromptZipCode);
+
+            // retrying will not process the message again
+            // so it should not hit the error
+            GoodieBag.CreateFunc = (originalBag) =>
+            {
+                originalBag.MessageClient = mockMessageClient.Object;
+                return originalBag;
+            };
+            response = ProcessMessage(subscribeMessage);
+            GoodieBag.CreateFunc = null;
+
+            Assert.IsNotNull(response);
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            AssertAccountStatus(account.AccountId, AccountStatus.Subscribed);
+            AssertMessageCount(account.PhoneNumber, MessageTemplate.PromptZipCode, 1);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.PromptZipCode);
 
             mockMessageClient.VerifyAll();
         }
