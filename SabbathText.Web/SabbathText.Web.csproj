@@ -257,14 +257,6 @@
       <Project>{88035141-476b-4625-a5df-738509b58e99}</Project>
       <Name>System2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SabbathText.Compensation\SabbathText.Compensation.csproj">
-      <Project>{89227b2c-ebc6-4235-a5a8-e28ee4e034e9}</Project>
-      <Name>SabbathText.Compensation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SabbathText.Location\SabbathText.Location.csproj">
-      <Project>{8434442e-36ae-4b1e-b37f-4cc89b4839dd}</Project>
-      <Name>SabbathText.Location</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SabbathText\SabbathText.csproj">
       <Project>{ab2bf8a3-020e-4cf6-b47a-e2a2c91de503}</Project>
       <Name>SabbathText</Name>
