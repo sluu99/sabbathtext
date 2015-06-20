@@ -45,20 +45,16 @@
             Checkpoint checkpoint = await this.compensationClient.GetCheckpoint(queueMessage, cancellationToken);
 
             if (checkpoint != null)
-            {
-                Trace.TraceInformation(string.Format("Checkpoint {0}/{1} found", checkpoint.PartitionKey, checkpoint.RowKey));
-                bool completed = await this.handler.Finish(checkpoint, cancellationToken);
-                Trace.TraceInformation(string.Format("Checkpoint {0}/{1} completed", checkpoint.PartitionKey, checkpoint.RowKey));
+            {                
+                bool completed = await this.handler.Finish(checkpoint, cancellationToken);             
 
                 if (completed)
                 {
-                    Trace.TraceInformation("Deleting queue message");
                     await this.compensationClient.DeleteMessge(queueMessage, cancellationToken);
                 }
             }
             else
             {
-                Trace.TraceInformation(string.Format("Checkpoint not found, deleting queue message"));
                 await this.compensationClient.DeleteMessge(queueMessage, cancellationToken);
             }
 
