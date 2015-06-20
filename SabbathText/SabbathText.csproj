@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\CsvHelper.2.13.0.0\lib\net40-client\CsvHelper.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.ApplicationInsights">
       <HintPath>..\packages\Microsoft.ApplicationInsights.0.17.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
@@ -84,12 +88,22 @@
   <ItemGroup>
     <Compile Include="Annoucement.cs" />
     <Compile Include="CommonErrorCodes.cs" />
+    <Compile Include="Compensation\V1\Checkpoint.cs" />
+    <Compile Include="Compensation\V1\CheckpointHandler.cs" />
+    <Compile Include="Compensation\V1\CheckpointWorker.cs" />
+    <Compile Include="Compensation\V1\CompensationClient.cs" />
     <Compile Include="DomainData.BibleVerses.cs" />
     <Compile Include="Entities\TrackerEntity.cs" />
     <Compile Include="Extensions\AssemblyExtension.cs" />
     <Compile Include="Extensions\IEnumerableExtension.cs" />
     <Compile Include="Extensions\LocationInfoExtension.cs" />
     <Compile Include="GoodieBag.cs" />
+    <Compile Include="Location\V1\LineReader.cs" />
+    <Compile Include="Location\V1\LocationInfo.cs" />
+    <Compile Include="Location\V1\LocationType.cs" />
+    <Compile Include="Location\V1\RawData.cs" />
+    <Compile Include="Location\V1\SunCalculator.cs" />
+    <Compile Include="Location\V1\TimeInfo.cs" />
     <Compile Include="SecretProvider.cs" />
     <Compile Include="StagingEnvironmentSettings.cs" />
     <Compile Include="DevEnvironmentSettings.cs" />
@@ -142,14 +156,6 @@
       <Project>{88035141-476b-4625-a5df-738509b58e99}</Project>
       <Name>System2</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SabbathText.Compensation\SabbathText.Compensation.csproj">
-      <Project>{89227b2c-ebc6-4235-a5a8-e28ee4e034e9}</Project>
-      <Name>SabbathText.Compensation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SabbathText.Location\SabbathText.Location.csproj">
-      <Project>{8434442e-36ae-4b1e-b37f-4cc89b4839dd}</Project>
-      <Name>SabbathText.Location</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Certs\devcert.pfx">
@@ -158,6 +164,7 @@
     </None>
     <None Include="app.config" />
     <Compile Include="DomainData.Announcements.cs" />
+    <EmbeddedResource Include="Location\V1\ZipCodeDatabase.csv" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
