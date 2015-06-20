@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using KeyValueStorage;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -80,7 +81,7 @@
                 InspectAccount(account.AccountId);
 
                 // go to the next day so that GetSabbathStartTime will return next week's Sabbath
-                Clock.RollClock(TimeSpan.FromDays(1));
+                Clock.Delay(TimeSpan.FromDays(1)).Wait();
             }
 
             account = GetAccount(account.AccountId); // get the updated account
@@ -156,7 +157,7 @@
             ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
             ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "zip " + zipCode));
 
-            Clock.RollClock(TimeSpan.FromDays(10));
+            Clock.Delay(TimeSpan.FromDays(10)).Wait();
             ClockHelper.GoToDay(DayOfWeek.Tuesday); // go to some time that's not the Sabbath
 
             LocationInfo locationInfo = LocationInfo.FromZipCode(zipCode);

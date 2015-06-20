@@ -1,6 +1,7 @@
 ﻿namespace SabbathText.V1
 {
     using System;
+    using System.Diagnostics;
     using System.Globalization;
     using System.Linq;
     using System.Net;
@@ -64,7 +65,7 @@
         {
             get { return this.checkpoint != null && this.checkpoint.Status == CheckpointStatus.Cancelling; }
         }
-        
+
         /// <summary>
         /// Try adding a message to the account.
         /// </summary>
@@ -194,11 +195,7 @@
             {
                 return response;
             }
-
-            await this.SetCheckpoint(
-                checkpointData,
-                CheckpointStatus.InProgress);
-
+            
             if (checkpointData.ProcessAfter != null)
             {
                 // delay process checkpoint
@@ -340,7 +337,7 @@
                 {
                     visibilityTimeout = TimeSpan.Zero;
                 }
-                
+
                 await this.Bag.CompensationClient.QueueCheckpoint(
                     this.checkpoint,
                     visibilityTimeout,
@@ -352,6 +349,8 @@
 
         private async Task<OperationResponse<TResponse>> UpdateCheckpoint(CheckpointData<TResponse> checkpointData, CheckpointStatus checkpointStatus)
         {
+            Debug.Assert(this.checkpoint != null, "Cannot update null checkpoint");
+
             this.checkpoint.CheckpointData = JsonConvert.SerializeObject(checkpointData);
             this.checkpoint.Status = checkpointStatus;
             await this.Bag.CompensationClient.UpdateCheckpoint(this.checkpoint, this.Context.CancellationToken);
@@ -361,6 +360,8 @@
 
         private async Task<OperationResponse<TResponse>> CreateCheckpoint(CheckpointData<TResponse> checkpointData, CheckpointStatus checkpointStatus)
         {
+            Debug.Assert(this.checkpoint == null, "Checkpoint is already created");
+
             this.checkpoint = new Checkpoint
             {
                 AccountId = this.Context.Account.AccountId,
@@ -370,15 +371,40 @@
                 CheckpointData = checkpointData == null ? null : JsonConvert.SerializeObject(checkpointData),
             };
 
-            this.checkpoint = await this.Bag.CompensationClient.InsertOrGetCheckpoint(this.checkpoint, this.Context.CancellationToken);
-
-            if (this.checkpoint.Status == CheckpointStatus.Completed || this.checkpoint.Status == CheckpointStatus.Cancelled)
+            bool checkpointAlreadyExists = true;
+            try
             {
-                // the checkpoint is at terminal states
-                CheckpointData<TResponse> existingCheckpointData =
-                    JsonConvert.DeserializeObject<CheckpointData<TResponse>>(this.checkpoint.CheckpointData);
+                await this.Bag.CompensationClient.InsertCheckpoint(this.checkpoint, this.Context.CancellationToken);
+                checkpointAlreadyExists = false;
+            }
+            catch (DuplicateKeyException)
+            {
+            }
 
-                return existingCheckpointData.Response;
+            if (checkpointAlreadyExists)
+            {
+                this.checkpoint = await this.Bag.CompensationClient.GetCheckpoint(
+                    this.checkpoint.PartitionKey,
+                    this.checkpoint.RowKey,
+                    this.Context.CancellationToken);
+                Debug.Assert(this.checkpoint != null, "Cannot create nor find the checkpoint");
+
+                if (this.checkpoint.CheckpointData != null)
+                {
+                    CheckpointData<TResponse> existingCheckpointData =
+                        JsonConvert.DeserializeObject<CheckpointData<TResponse>>(this.checkpoint.CheckpointData);
+
+                    if (existingCheckpointData.Response != null)
+                    {
+                        return existingCheckpointData.Response;
+                    }
+                }
+
+                return new OperationResponse<TResponse>
+                {
+                    StatusCode = HttpStatusCode.Conflict,
+                    ErrorCode = CommonErrorCodes.OperationInProgress,
+                };
             }
 
             return null;

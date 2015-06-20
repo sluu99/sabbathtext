@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -34,7 +35,11 @@
             catch (Exception ex)
             {
                 bag.TelemetryTracker.ProcessMessageException(ex, message.Sender, message.Body, Clock.UtcNow - startTime);
-                throw;
+
+                return new OperationResponse<bool>
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                };
             }            
         }
 
