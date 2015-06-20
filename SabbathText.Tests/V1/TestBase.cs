@@ -28,6 +28,7 @@
         public void TestInit()
         {
             GoodieBag.Initialize(new TestEnvironmentSettings());
+            GoodieBag.CreateFunc = null;
             this.fakeClock = new FakeClockScope();
         }
 
@@ -146,6 +147,16 @@
         }
 
         /// <summary>
+        /// Runs the checkpoint worker after the checkpoint lock expires.
+        /// </summary>
+        protected static void RunCheckpointWorkerAfterCheckpointLock()
+        {
+            GoodieBag bag = GoodieBag.Create();
+            Clock.Delay(bag.Settings.CheckpointVisibilityTimeout);
+            RunCheckpointWorker();
+        }
+
+        /// <summary>
         /// Ensures that the last message sent to the user has a particular template.
         /// </summary>
         /// <param name="accountId">The account ID.</param>
@@ -226,15 +237,18 @@
         /// Processes an incoming message.
         /// </summary>
         /// <param name="incomingMessage">The incoming message.</param>
-        protected static void ProcessMessage(Message incomingMessage)
+        /// <returns>The operation response from processing the message.</returns>
+        protected static OperationResponse<bool> ProcessMessage(Message incomingMessage)
         {
             string accountId = AccountEntity.GetAccountIdByPhoneNumber(incomingMessage.Sender);
             AccountEntity account =
                 GoodieBag.Create().AccountStore.Get(AccountEntity.GetReferenceById(accountId), CancellationToken.None).Result;
 
             OperationContext context = CreateContext(account);
+            context.TrackingId = incomingMessage.ExternalId;
+
             MessageProcessor processor = new MessageProcessor();
-            processor.Process(context, incomingMessage).Wait();
+            return processor.Process(context, incomingMessage).Result;
         }
     }
 }

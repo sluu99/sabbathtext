@@ -195,11 +195,7 @@
             {
                 return response;
             }
-
-            await this.SetCheckpoint(
-                checkpointData,
-                CheckpointStatus.InProgress);
-
+            
             if (checkpointData.ProcessAfter != null)
             {
                 // delay process checkpoint
