@@ -32,22 +32,26 @@
         }
 
         /// <summary>
-        /// Inserts or get a checkpoint
+        /// Inserts a checkpoint
         /// </summary>
         /// <param name="checkpoint">The checkpoint</param>
         /// <param name="cancellationToken">The cancellation token</param>
         /// <returns>The checkpoint itself</returns>
-        public async Task<Checkpoint> InsertOrGetCheckpoint(Checkpoint checkpoint, CancellationToken cancellationToken)
+        public Task InsertCheckpoint(Checkpoint checkpoint, CancellationToken cancellationToken)
         {
-            checkpoint = await this.checkpointStore.InsertOrGet(checkpoint, cancellationToken);
+            return this.checkpointStore.Insert(checkpoint, cancellationToken);
+        }
 
-            EntityReference checkpointRef = new EntityReference
-            {
-                PartitionKey = checkpoint.PartitionKey,
-                RowKey = checkpoint.RowKey,
-            };
-            
-            return checkpoint;
+        /// <summary>
+        /// Gets an existing checkpoint.
+        /// </summary>
+        /// <param name="partitionKey">The checkpoint partition key.</param>
+        /// <param name="rowKey">The checkpoint row key.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The checkpoint.</returns>
+        public Task<Checkpoint> GetCheckpoint(string partitionKey, string rowKey, CancellationToken cancellationToken)
+        {
+            return this.checkpointStore.Get(partitionKey, rowKey, cancellationToken);
         }
 
         /// <summary>
