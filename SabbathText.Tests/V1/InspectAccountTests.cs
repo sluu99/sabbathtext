@@ -22,6 +22,9 @@
         [TestMethod]
         public void InspectAccount_ArchiveMessage()
         {
+            // go to a non-Sabbath day to make sure InspectAccount does not send out any messages
+            ClockHelper.GoToDay(DayOfWeek.Wednesday);
+
             GoodieBag bag = GoodieBag.Create();
             AccountEntity account = CreateAccount();
             ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
