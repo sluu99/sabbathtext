@@ -172,7 +172,8 @@ using SabbathText.Entities;
         /// <param name="partitionKey">The checkpoint partition key.</param>
         /// <param name="rowKey">The checkpoint row key.</param>
         /// <param name="checkpointType">The checkpoint type.</param>
-        public void CompletedCheckpoint(string partitionKey, string rowKey, string checkpointType)
+        /// <param name="duration">The time it took to complete the checkpoint.</param>
+        public void CompletedCheckpoint(string partitionKey, string rowKey, string checkpointType, TimeSpan duration)
         {
             this.TrackEvent(
                 "CompletedCheckpoint",
@@ -181,6 +182,10 @@ using SabbathText.Entities;
                     { "PartitionKey", partitionKey },
                     { "RowKey", rowKey },
                     { "CheckpointType", checkpointType },
+                },
+                new Dictionary<string, double>
+                {
+                    { "Duration", duration.TotalMilliseconds },
                 });
         }
 
