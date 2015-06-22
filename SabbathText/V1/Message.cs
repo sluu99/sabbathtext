@@ -149,7 +149,7 @@
         /// <returns>The message.</returns>
         public static Message CreateSabbathText(string phoneNumber, string verseNumber, string verseContent)
         {
-            string body = "Happy Sabbath!\r\n\"{0}\" -- {1}".InvariantFormat(verseContent, verseNumber);
+            string body = "Happy Sabbath!\r\n{0}\r\n- {1}".InvariantFormat(verseContent, verseNumber);
 
             return CreateMessage(
                 phoneNumber,
@@ -166,7 +166,7 @@
         /// <returns>The message.</returns>
         public static Message CreateBibleVerse(string phoneNumber, string verseNumber, string verseContent)
         {
-            string body = "{0}\r\n-- {1}".InvariantFormat(verseContent, verseNumber);
+            string body = "{0}\r\n- {1}".InvariantFormat(verseContent, verseNumber);
 
             return CreateMessage(
                 phoneNumber,
