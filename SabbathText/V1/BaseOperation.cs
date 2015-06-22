@@ -282,7 +282,7 @@
                 return this.Context.Account.ReservedBibleVerse[trackingId];
             }
 
-            if (this.Context.Account.RecentVerses.Count == DomainData.BibleVerses.Count)
+            if (this.Context.Account.RecentVerses.Count >= DomainData.BibleVerses.Count)
             {
                 // the account has seen all the verse
                 // remove one of the older ones
