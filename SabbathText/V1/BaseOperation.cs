@@ -173,7 +173,7 @@
             TResponse responseData)
         {
             checkpointData.IsHandOffProcessing = true;
-            checkpointData.ProcessAfter = Clock.UtcNow + delay;
+            checkpointData.ProcessAfter = (delay == TimeSpan.Zero) ? DateTime.MinValue : Clock.UtcNow + delay;
             checkpointData.Response = new OperationResponse<TResponse>
             {
                 StatusCode = status,
