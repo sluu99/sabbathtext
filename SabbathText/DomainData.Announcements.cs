@@ -27,6 +27,7 @@
             return new Announcement(
                 "DoubleTextBug20150627",
                 "Hope you enjoyed the double doze of Sabbath texts! There was a glitch in our system, and it has been fixed. Sorry for the spam.",
+                true,
                 (account) =>
                 {
                     if (account.Status != AccountStatus.Subscribed || string.IsNullOrWhiteSpace(account.ZipCode))

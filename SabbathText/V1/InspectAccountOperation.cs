@@ -95,24 +95,23 @@
 
             return await this.TransitionToCheckAnnouncements();
         }
-        
+
         private async Task<OperationResponse<bool>> TransitionToCheckAnnouncements()
         {
             this.checkpointData.OperationState = InspectAccountOperationState.CheckingAnnouncements;
 
             DateTime timeForNextAnnouncement = this.Context.Account.LastAnnouncementTextTime + this.Bag.Settings.AnnouncementTextGap;
-            if (timeForNextAnnouncement <= Clock.UtcNow)
+
+            foreach (var announcement in DomainData.Announcements)
             {
-                foreach (var announcement in DomainData.Announcements)
+                if (this.Context.Account.SentAnnouncements.Contains(announcement.AnnouncementId) == false &&
+                    (announcement.OverrideAnnouncementGap || timeForNextAnnouncement <= Clock.UtcNow) &&
+                    announcement.IsEligible(this.Context.Account))
                 {
-                    if (this.Context.Account.SentAnnouncements.Contains(announcement.AnnouncementId) == false &&
-                        announcement.IsEligible(this.Context.Account))
-                    {
-                        this.checkpointData.SelectedAnnouncementId = announcement.AnnouncementId;
-                        break;
-                    }
+                    this.checkpointData.SelectedAnnouncementId = announcement.AnnouncementId;
+                    break;
                 }
-            }           
+            }
 
             return
                 await this.SetCheckpoint(this.checkpointData) ??
@@ -136,7 +135,7 @@
             Message announcementMessage = Message.CreateAnnouncement(
                 this.Context.Account.PhoneNumber,
                 DomainData.Announcements.First(a => a.AnnouncementId == this.checkpointData.SelectedAnnouncementId).Content);
-            
+
             if (await this.Bag.MessageClient.SendMessage(announcementMessage, trackingId, this.Context.CancellationToken))
             {
                 this.Context.Account.LastAnnouncementTextTime = Clock.UtcNow;
