@@ -93,7 +93,7 @@
             Message sabbathTextMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber, bibleVerse, verseContent);
 
             await this.Bag.MessageClient.SendMessage(sabbathTextMessage, this.Context.TrackingId, this.Context.CancellationToken);
-            
+
             return await this.TransitionToUpdateAccount(sabbathTextMessage);
         }
 
@@ -109,11 +109,9 @@
 
         private async Task<OperationResponse<bool>> EnterUpdateAccount()
         {
-            bool reservedBibleVerseRemoved = false;
             if (this.Context.Account.ReservedBibleVerse.ContainsKey(this.Context.TrackingId))
             {
                 this.Context.Account.ReservedBibleVerse.Remove(this.Context.TrackingId);
-                reservedBibleVerseRemoved = true;
             }
 
             MessageEntity messageEntity = this.checkpointData.OutgoingMessage.ToEntity(
@@ -123,10 +121,8 @@
                 MessageStatus.Sent);
             bool messageAdded = TryAddMessageEntity(this.Context.Account, messageEntity);
 
-            if (reservedBibleVerseRemoved || messageAdded)
-            {
-                await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
-            }
+            this.Context.Account.LastSabbathTextTime = Clock.UtcNow;
+            await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
             return await this.CompleteCheckpoint(this.checkpointData, HttpStatusCode.OK, true);
         }

@@ -6,7 +6,7 @@
     /// <summary>
     /// Represents an announcement
     /// </summary>
-    public class Annoucement
+    public class Announcement
     {
         /// <summary>
         /// Creates a new instance of this class.
@@ -14,7 +14,7 @@
         /// <param name="announcementId">The announcement ID</param>
         /// <param name="content">The announcement content</param>
         /// <param name="isEligibleFunc">The function to determine whether an account is eligible for the announcement</param>
-        public Annoucement(string announcementId, string content, Func<AccountEntity, bool> isEligibleFunc)
+        public Announcement(string announcementId, string content, Func<AccountEntity, bool> isEligibleFunc)
         {
             this.AnnouncementId = announcementId;
             this.Content = content;
