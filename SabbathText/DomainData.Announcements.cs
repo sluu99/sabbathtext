@@ -19,30 +19,7 @@
         public static readonly IEnumerable<Announcement> Announcements = new Announcement[]
         {
             CreateBibleVerseAnnouncement(),
-            CreateDoubleTextBug20150627Announcement(),
         };
-
-        private static Announcement CreateDoubleTextBug20150627Announcement()
-        {
-            return new Announcement(
-                "DoubleTextBug20150627",
-                "Hope you enjoyed the double doze of Sabbath texts! There was a glitch in our system, and it has been fixed. Sorry about the spam.",
-                true,
-                (account) =>
-                {
-                    if (account.Status != AccountStatus.Subscribed || string.IsNullOrWhiteSpace(account.ZipCode))
-                    {
-                        return false;
-                    }
-
-                    if (account.CreationTime > new DateTime(2015, 6, 26, 0, 0, 0, DateTimeKind.Utc))
-                    {
-                        return false;
-                    }
-
-                    return true;
-                });
-        }
 
         private static Announcement CreateBibleVerseAnnouncement()
         {
