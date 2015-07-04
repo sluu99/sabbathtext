@@ -12,11 +12,17 @@
     [TestClass]
     public static class Init
     {
-        private static readonly string WAStorageEmulatorPath = Path.Combine(
-            Environment.GetEnvironmentVariable("ProgramFiles(x86)"),
-            @"Microsoft SDKs\Azure\Storage Emulator\WAStorageEmulator.exe");
+        private static readonly string[] StorageEmulatorPaths = new string[]
+        {
+            Path.Combine(
+                Environment.GetEnvironmentVariable("ProgramFiles(x86)"),
+                @"Microsoft SDKs\Azure\Storage Emulator\WAStorageEmulator.exe"),
+            Path.Combine(
+                Environment.GetEnvironmentVariable("ProgramFiles(x86)"),
+                @"Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe"),
+        };        
 
-        private static readonly string[] WAStorageEmulatorProcessNames = { "WAStorageEmulator", "WASTOR~1" };
+        private static readonly string[] StorageEmulatorProcessNames = { "WAStorageEmulator", "WASTOR~1", "AzureStorageEmulator", "AZURES~1" };
 
         /// <summary>
         /// Initialization for all the tests in this assembly
@@ -25,25 +31,35 @@
         [AssemblyInitialize]
         public static void AssemblyInit(TestContext context)
         {
-            if (!IsWAStorageEmulatorStarted())
+            if (!IsStorageEmulatorStarted())
             {
-                ProcessStartInfo startInfo = new ProcessStartInfo
+                foreach (string emulatorPath in StorageEmulatorPaths)
                 {
-                    FileName = WAStorageEmulatorPath,
-                    Arguments = "start",
-                    CreateNoWindow = true,
-                };
+                    if (File.Exists(emulatorPath) == false)
+                    {
+                        continue;
+                    }
+                    
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = emulatorPath,
+                        Arguments = "start",
+                        CreateNoWindow = true,
+                    };
 
-                using (Process proc = Process.Start(startInfo))
-                {
-                    proc.WaitForExit();
+                    using (Process proc = Process.Start(startInfo))
+                    {
+                        proc.WaitForExit();
+                    }
+                    
+                    break;
                 }
             }
         }
 
-        private static bool IsWAStorageEmulatorStarted()
+        private static bool IsStorageEmulatorStarted()
         {
-            return WAStorageEmulatorProcessNames.Any(name => (Process.GetProcessesByName(name).FirstOrDefault() != null));
+            return StorageEmulatorProcessNames.Any(name => (Process.GetProcessesByName(name).FirstOrDefault() != null));
         }
     }
 }
