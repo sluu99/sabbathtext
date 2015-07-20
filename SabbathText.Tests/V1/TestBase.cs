@@ -54,18 +54,6 @@
         }
 
         /// <summary>
-        /// Ensures that the account has the expected conversation context.
-        /// </summary>
-        /// <param name="accountId">The account ID.</param>
-        /// <param name="expectedContext">The expected conversation context.</param>
-        protected static void AssertConversationContext(string accountId, ConversationContext expectedContext)
-        {
-            GoodieBag bag = GoodieBag.Create();
-            AccountEntity account = bag.AccountStore.Get(AccountEntity.GetReferenceById(accountId), CancellationToken.None).Result;
-            Assert.AreEqual<ConversationContext>(expectedContext, account.ConversationContext);
-        }
-
-        /// <summary>
         /// Creates an operation context for a specific account.
         /// </summary>
         /// <param name="account">The account.</param>
@@ -107,7 +95,6 @@
                     CreationTime = Clock.UtcNow,
                     PhoneNumber = phoneNumber,
                     Status = AccountStatus.BrandNew,
-                    ConversationContext = ConversationContext.Unknown,
                 },
                 CancellationToken.None).Result;
         }
@@ -124,7 +111,7 @@
                 CancellationToken.None)
                 .Result;
         }
-        
+
         /// <summary>
         /// Ensures an operation is finished base on the checkpoint.
         /// </summary>
@@ -219,7 +206,7 @@
                 Timestamp = Clock.UtcNow,
             };
         }
-        
+
         /// <summary>
         /// Inspect an <see cref="InspectAccountOperation"/> and pushes it to finish by invoking the compensation agent.
         /// </summary>

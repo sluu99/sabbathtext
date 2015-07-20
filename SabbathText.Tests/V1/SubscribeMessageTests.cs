@@ -26,7 +26,6 @@
             ProcessMessage(subscribeMessage);
 
             AssertAccountStatus(account.AccountId, AccountStatus.Subscribed);
-            AssertConversationContext(account.AccountId, ConversationContext.SubscriptionConfirmed);
             AssertLastSentMessage(account.AccountId, MessageTemplate.PromptZipCode);
             AssertMessageCount(account.PhoneNumber, MessageTemplate.PromptZipCode, 1);
         }
