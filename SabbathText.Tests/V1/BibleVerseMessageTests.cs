@@ -79,16 +79,12 @@
             };
 
             // the first run should result in an error
-            OperationResponse<bool> response = ProcessMessage(bibleVerseMessage);
+            OperationResponse<bool> response = ProcessMessage(bibleVerseMessage, HttpStatusCode.InternalServerError);
             GoodieBag.CreateFunc = null;
-            Assert.IsNotNull(response);
-            Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
             AssertMessageCount(account.PhoneNumber, MessageTemplate.BibleVerse, 0);
 
             // retrying before compensation will result in "OperationInProgress"            
-            response = ProcessMessage(bibleVerseMessage);
-            Assert.IsNotNull(response);
-            Assert.AreEqual(HttpStatusCode.Conflict, response.StatusCode);
+            response = ProcessMessage(bibleVerseMessage, HttpStatusCode.Conflict);
             Assert.AreEqual(CommonErrorCodes.OperationInProgress, response.ErrorCode);
             AssertMessageCount(account.PhoneNumber, MessageTemplate.BibleVerse, 0);
 

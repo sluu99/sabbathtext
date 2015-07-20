@@ -224,8 +224,9 @@
         /// Processes an incoming message.
         /// </summary>
         /// <param name="incomingMessage">The incoming message.</param>
+        /// <param name="expectedResponseCode">The expected response code when processing this message.</param>
         /// <returns>The operation response from processing the message.</returns>
-        protected static OperationResponse<bool> ProcessMessage(Message incomingMessage)
+        protected static OperationResponse<bool> ProcessMessage(Message incomingMessage, HttpStatusCode expectedResponseCode = HttpStatusCode.OK)
         {
             string accountId = AccountEntity.GetAccountIdByPhoneNumber(incomingMessage.Sender);
             AccountEntity account =
@@ -235,7 +236,11 @@
             context.TrackingId = incomingMessage.ExternalId;
 
             MessageProcessor processor = new MessageProcessor();
-            return processor.Process(context, incomingMessage).Result;
+            var operationResponse = processor.Process(context, incomingMessage).Result;
+            Assert.IsNotNull(operationResponse);
+            Assert.AreEqual(expectedResponseCode, operationResponse.StatusCode);
+
+            return operationResponse;
         }
     }
 }
