@@ -62,7 +62,9 @@
                 SubscribeMessageOperation subscribe = new SubscribeMessageOperation(context);
                 return subscribe.Run(message);
             }
-            else if (body.ToLowerInvariant().StartsWith("zip", StringComparison.OrdinalIgnoreCase))
+            else if (
+                body.ToLowerInvariant().StartsWith("zip", StringComparison.OrdinalIgnoreCase) ||
+                body.IsUSZipCode())
             {
                 UpdateZipCodeOperation updateZipCode = new UpdateZipCodeOperation(context);
                 return updateZipCode.Run(message);
@@ -86,7 +88,7 @@
                 });
         }
 
-        private bool IsPositiveMessage(string message)
+        private static bool IsPositiveMessage(string message)
         {
             return
                 "yes".OicEquals(message) ||
@@ -96,24 +98,6 @@
                 "certainly".OicEquals(message) ||
                 "of course".OicEquals(message) ||
                 "for sure".OicEquals(message);
-        }
-
-        private bool IsZipCode(string str)
-        {
-            if (string.IsNullOrWhiteSpace(str))
-            {
-                return false;
-            }
-
-            str = str.Trim();
-
-            int n;
-            if (str.Length == 5 && int.TryParse(str, out n))
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }

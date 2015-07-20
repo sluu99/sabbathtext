@@ -121,6 +121,21 @@
         }
 
         /// <summary>
+        /// Tests that a zip code without the "Zip" prefix is accepted right after the user subscribed.
+        /// </summary>
+        [TestMethod]
+        public void ZipMessage_WithoutZipPrefix_IsAcceptedAfterSubscribe()
+        {
+            const string ZipCode = "37724";
+
+            AccountEntity account = CreateAccount();
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, ZipCode));
+
+            AssertZipCode(account.AccountId, ZipCode);
+        }
+
+        /// <summary>
         /// Ensures that the account has a certain ZIP code.
         /// </summary>
         /// <param name="accountId">The account ID.</param>

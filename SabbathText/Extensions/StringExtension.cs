@@ -174,6 +174,29 @@ public static class StringExtension
         return Encoding.UTF8.GetString(Convert.FromBase64String(base64Str));
     }
 
+    /// <summary>
+    /// Checks whether a string is a valid US ZIP code.
+    /// </summary>
+    /// <param name="str">The string</param>
+    /// <returns>A value indicating whether a string is a valid US ZIP code.</returns>
+    public static bool IsUSZipCode(this string str)
+    {
+        if (string.IsNullOrWhiteSpace(str))
+        {
+            return false;
+        }
+
+        str = str.Trim();
+
+        int n;
+        if (str.Length == 5 && int.TryParse(str, out n))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     private static string NormalizePhoneNumber(string phoneNumber)
     {
         if (phoneNumber.Length == 11)
