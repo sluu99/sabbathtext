@@ -113,10 +113,7 @@
                 Template = MessageTemplate.Greetings,
             };
 
-            if (TryAddMessageEntity(this.Context.Account, messageEntity))
-            {
-                this.Context.Account.ConversationContext = ConversationContext.Greetings;
-            }
+            TryAddMessageEntity(this.Context.Account, messageEntity);
 
             this.Context.Account.HasBeenGreeted = true;
             await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);

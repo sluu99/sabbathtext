@@ -121,6 +121,45 @@
         }
 
         /// <summary>
+        /// Tests that a zip code without the "Zip" prefix is accepted right after the user subscribed.
+        /// </summary>
+        [TestMethod]
+        public void ZipMessage_WithoutZipPrefix_IsAcceptedAfterSubscribe()
+        {
+            const string ZipCode = "37724";
+
+            AccountEntity account = CreateAccount();
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, ZipCode));
+
+            AssertZipCode(account.AccountId, ZipCode);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.SubscribedForZipCode);
+        }
+
+        /// <summary>
+        /// Tests that when a user just randomly sends in a zip code without the "Zip" prefix,
+        /// we respond with the instruction to start the message with "Zip".
+        /// </summary>
+        [TestMethod]
+        public void ZipMessage_WithoutZipPrefix_SendsInstruction()
+        {
+            const string ZipCode1 = "37724";
+            const string ZipCode2 = "68936";
+
+            AccountEntity account = CreateAccount();
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, ZipCode1));
+
+            AssertZipCode(account.AccountId, ZipCode1);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.SubscribedForZipCode);
+
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, ZipCode2));
+            account = GetAccount(account.AccountId);
+            Assert.AreEqual(ZipCode1, account.ZipCode, "The ZIP code should not change");
+            AssertLastSentMessage(account.AccountId, MessageTemplate.UpdateZipInstruction);
+        }
+
+        /// <summary>
         /// Ensures that the account has a certain ZIP code.
         /// </summary>
         /// <param name="accountId">The account ID.</param>

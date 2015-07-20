@@ -108,7 +108,6 @@
     <Compile Include="StagingEnvironmentSettings.cs" />
     <Compile Include="DevEnvironmentSettings.cs" />
     <Compile Include="Entities\AccountEntity.cs" />
-    <Compile Include="Entities\ConversationContext.cs" />
     <Compile Include="Entities\MessageEntity.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Telemetry\TelemetryTracker.cs" />

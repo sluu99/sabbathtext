@@ -1,6 +1,7 @@
 ﻿namespace SabbathText.V1
 {
     using System;
+    using System.Linq;
     using System.Net;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -36,7 +37,7 @@
             this.checkpointData = new UpdateZipCodeOperationCheckpointData(this.Context.Account.AccountId);
             return this.TransitionToProcessMessage(incomingMessage);
         }
-        
+
         /// <summary>
         /// Resumes the operation.
         /// </summary>
@@ -71,27 +72,41 @@
         {
             Message outgoingMessage = null;
             string body = this.checkpointData.IncomingMessage.Body.ExtractAlphaNumericSpace().Trim();
-            
+
+            string zipCode = null;
+
             Match match = ZipMessageRegex.Match(body);
             if (match.Success == false ||
                 match.Groups == null ||
                 match.Groups["ZipCode"] == null ||
                 string.IsNullOrWhiteSpace(match.Groups["ZipCode"].Value))
             {
+                if (body.IsUSZipCode() &&
+                    this.Context.Account.RecentMessages.Last().Template == MessageTemplate.PromptZipCode)
+                {
+                    zipCode = body;
+                }
+            }
+            else
+            {
+                zipCode = match.Groups["ZipCode"].Value;
+            }
+
+            if (zipCode == null)
+            {
                 outgoingMessage = Message.CreateUpdateZipInstruction(this.Context.Account.PhoneNumber);
             }
             else
             {
-                string zipCode = match.Groups["ZipCode"].Value;
                 LocationInfo location = LocationInfo.FromZipCode(zipCode);
 
-                if (location == null)
+                if (location == null || string.IsNullOrWhiteSpace(location.TimeZoneName))
                 {
                     outgoingMessage = Message.CreateLocationNotFound(this.Context.Account.PhoneNumber, zipCode);
                 }
                 else if (this.checkpointData.CurrentZipCode == this.Context.Account.ZipCode)
                 {
-                    // the ZIP code has not been updated
+                    // the ZIP code has not been updated by another process
                     this.Context.Account.ZipCode = zipCode;
                     await this.Bag.AccountStore.Update(this.Context.Account, this.Context.CancellationToken);
 
@@ -113,7 +128,7 @@
 
             return await this.TranstitionToUpdateAccount(outgoingMessage);
         }
-        
+
         private async Task<OperationResponse<bool>> TranstitionToUpdateAccount(Message outgoingMessage)
         {
             this.checkpointData.State = RespondingMessageOperationState.UpdatingAccount;

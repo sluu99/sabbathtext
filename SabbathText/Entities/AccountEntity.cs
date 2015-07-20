@@ -78,12 +78,7 @@
         /// Gets or sets the recent Bible verses sent to the user
         /// </summary>
         public List<string> RecentVerses { get; set; }
-
-        /// <summary>
-        /// Gets or sets the account conversation context.
-        /// </summary>
-        public ConversationContext ConversationContext { get; set; }
-
+        
         /// <summary>
         /// Gets or sets a value indicating whether the user has been greeted.
         /// </summary>

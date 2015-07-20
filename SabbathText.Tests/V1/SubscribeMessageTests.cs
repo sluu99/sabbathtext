@@ -26,7 +26,6 @@
             ProcessMessage(subscribeMessage);
 
             AssertAccountStatus(account.AccountId, AccountStatus.Subscribed);
-            AssertConversationContext(account.AccountId, ConversationContext.SubscriptionConfirmed);
             AssertLastSentMessage(account.AccountId, MessageTemplate.PromptZipCode);
             AssertMessageCount(account.PhoneNumber, MessageTemplate.PromptZipCode, 1);
         }
@@ -53,17 +52,14 @@
             };
 
             // the first run should result in an error
-            OperationResponse<bool> response = ProcessMessage(subscribeMessage);
+            OperationResponse<bool> response = ProcessMessage(subscribeMessage, HttpStatusCode.InternalServerError);
             GoodieBag.CreateFunc = null;
-            Assert.IsNotNull(response);
-            Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
             AssertAccountStatus(account.AccountId, AccountStatus.BrandNew);
             AssertMessageCount(account.PhoneNumber, MessageTemplate.PromptZipCode, 0);
 
             // retrying before compensation will result in "OperationInProgress"            
-            response = ProcessMessage(subscribeMessage);
+            response = ProcessMessage(subscribeMessage, HttpStatusCode.Conflict);
             Assert.IsNotNull(response);
-            Assert.AreEqual(HttpStatusCode.Conflict, response.StatusCode);
             Assert.AreEqual(CommonErrorCodes.OperationInProgress, response.ErrorCode);
             AssertAccountStatus(account.AccountId, AccountStatus.BrandNew);
             AssertMessageCount(account.PhoneNumber, MessageTemplate.PromptZipCode, 0);
@@ -96,6 +92,30 @@
             AssertLastSentMessage(account.AccountId, MessageTemplate.PromptZipCode);
 
             mockMessageClient.VerifyAll();
+        }
+
+        /// <summary>
+        /// Tests that sending another subscribe message after the user has provided the ZIP code
+        /// will not affect the account.
+        /// </summary>
+        [TestMethod]
+        public void SubscribeMessage_SubscribeAfterZipCode()
+        {
+            const string ZipCode = "71940";
+
+            AccountEntity account = CreateAccount();
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "zip " + ZipCode));
+
+            AssertAccountStatus(account.AccountId, AccountStatus.Subscribed);
+            account = GetAccount(account.AccountId);
+            Assert.AreEqual(ZipCode, account.ZipCode, "Initial ZIP code validation failed");
+        
+            // Send another subscribe message
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe!!!"));
+            AssertAccountStatus(account.AccountId, AccountStatus.Subscribed);
+            account = GetAccount(account.AccountId);
+            Assert.AreEqual(ZipCode, account.ZipCode, "ZIP code should not have changed");
         }
     }
 }
