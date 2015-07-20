@@ -104,7 +104,6 @@
         private async Task<OperationResponse<bool>> EnterUpdateAccount()
         {
             this.Context.Account.Status = AccountStatus.Subscribed;
-            this.Context.Account.ZipCode = null;
             this.Context.Account.ConversationContext = ConversationContext.SubscriptionConfirmed;
 
             MessageEntity incomingEntity = this.checkpointData.IncomingMessage.ToEntity(

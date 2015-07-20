@@ -97,5 +97,29 @@
 
             mockMessageClient.VerifyAll();
         }
+
+        /// <summary>
+        /// Tests that sending another subscribe message after the user has provided the ZIP code
+        /// will not affect the account.
+        /// </summary>
+        [TestMethod]
+        public void SubscribeMessage_SubscribeAfterZipCode()
+        {
+            const string ZipCode = "71940";
+
+            AccountEntity account = CreateAccount();
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe"));
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "zip " + ZipCode));
+
+            AssertAccountStatus(account.AccountId, AccountStatus.Subscribed);
+            account = GetAccount(account.AccountId);
+            Assert.AreEqual(ZipCode, account.ZipCode, "Initial ZIP code validation failed");
+        
+            // Send another subscribe message
+            ProcessMessage(CreateIncomingMessage(account.PhoneNumber, "subscribe!!!"));
+            AssertAccountStatus(account.AccountId, AccountStatus.Subscribed);
+            account = GetAccount(account.AccountId);
+            Assert.AreEqual(ZipCode, account.ZipCode, "ZIP code should not have changed");
+        }
     }
 }
