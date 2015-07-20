@@ -1,6 +1,7 @@
 ﻿namespace SabbathText.V1
 {
     using System;
+    using System.Linq;
     using System.Net;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -80,7 +81,8 @@
                 match.Groups["ZipCode"] == null ||
                 string.IsNullOrWhiteSpace(match.Groups["ZipCode"].Value))
             {
-                if (body.IsUSZipCode())
+                if (body.IsUSZipCode() &&
+                    this.Context.Account.RecentMessages.Last().Template == MessageTemplate.PromptZipCode)
                 {
                     zipCode = body;
                 }
