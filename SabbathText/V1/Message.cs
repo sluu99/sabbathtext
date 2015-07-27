@@ -92,7 +92,7 @@
                 message += " Expect a text from us when Sabbath starts!";
             }
 
-            message += " (You can change your ZIP code at anytime by texting \"Zip <zip>\")";
+            message += " (Change your ZIP code at anytime by texting \"Zip <zip>\")";
 
             return CreateMessage(
                 phoneNumber,
@@ -196,7 +196,7 @@
         public static Message CreateCommandListMessage(string phoneNumber)
         {
             const string MessageContent =
-                "Hello there! How can we help you? Text one of the commands below\r\n" +
+                "How can we help? Text one of these commands\r\n" +
                 "- Zip <zip>: update your ZIP code\r\n" +
                 "- Bible verse: get a Bible verse\r\n" +
                 "- Unsubscribe: unsubscribe from Sabbath Text";
