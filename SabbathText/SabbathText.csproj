@@ -117,6 +117,8 @@
     <Compile Include="V1\BibleVerseOperation.cs" />
     <Compile Include="V1\BibleVerseOperationCheckpointData.cs" />
     <Compile Include="V1\CheckpointData.cs" />
+    <Compile Include="V1\HelloMessageOperation.cs" />
+    <Compile Include="V1\HelloMessageOperationCheckpointData.cs" />
     <Compile Include="V1\InMemoryMessageClient.cs" />
     <Compile Include="V1\InspectAccountOperation.cs" />
     <Compile Include="V1\InspectAccountOperationCheckpointData.cs" />

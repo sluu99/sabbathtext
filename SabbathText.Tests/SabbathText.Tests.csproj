@@ -93,6 +93,7 @@
     <Compile Include="TestHelper.cs" />
     <Compile Include="SecretSettingTests.cs" />
     <Compile Include="SecretProviderTests.cs" />
+    <Compile Include="V1\HelloMessageTests.cs" />
     <Compile Include="V1\InspectAccountTests.cs" />
     <Compile Include="V1\MessageTests.cs" />
     <Compile Include="V1\ZipMessageTests.cs" />
