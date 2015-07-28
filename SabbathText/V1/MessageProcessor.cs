@@ -78,14 +78,21 @@
                 BibleVerseOperation bibleVerseOperation = new BibleVerseOperation(context);
                 return bibleVerseOperation.Run(message);
             }
-                        
-            return Task.FromResult(
-                new OperationResponse<bool>
-                {
-                    StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    ErrorCode = CommonErrorCodes.UnrecognizedIncomingMessage,
-                    ErrorDescription = "Cannot process message with the content '{0}'".InvariantFormat(body),
-                });
+            else if ("hi".OicEquals(body) || "hello".OicEquals(body))
+            {
+                HelloMessageOperation helloMessageOperation = new HelloMessageOperation(context);
+                return helloMessageOperation.Run(message);
+            }
+            else
+            {
+                return Task.FromResult(
+                    new OperationResponse<bool>
+                    {
+                        StatusCode = System.Net.HttpStatusCode.BadRequest,
+                        ErrorCode = CommonErrorCodes.UnrecognizedIncomingMessage,
+                        ErrorDescription = "Cannot process message with the content '{0}'".InvariantFormat(body),
+                    });
+            }
         }
 
         private static bool IsPositiveMessage(string message)

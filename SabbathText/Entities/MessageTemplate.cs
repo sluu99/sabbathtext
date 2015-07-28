@@ -53,7 +53,7 @@
         /// Sabbath text.
         /// </summary>
         SabbathText,
-        
+
         /// <summary>
         /// A Bible verse
         /// </summary>
@@ -63,5 +63,10 @@
         /// An announcement
         /// </summary>
         Announcement,
+        
+        /// <summary>
+        /// Lists the commands for subscribed users
+        /// </summary>
+        CommandList,
     }
 }

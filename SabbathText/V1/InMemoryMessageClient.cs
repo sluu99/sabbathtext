@@ -15,6 +15,8 @@
     /// </summary>
     public class InMemoryMessageClient : MessageClient
     {
+        private const int MaxMessageLength = 160;
+
         private List<string> messages;
 
         /// <summary>
@@ -42,6 +44,12 @@
         /// <returns>Whether the message was sent</returns>
         public override async Task<bool> SendMessage(Message message, string trackingId, CancellationToken cancellationToken)
         {
+            if (message.Body.Length > MaxMessageLength)
+            {
+                Trace.WriteLine("Body: " + message.Body);
+                throw new NotSupportedException(string.Format("Message length ({0}) exceeds the maximum length allowed {1}", message.Body.Length, MaxMessageLength));
+            }
+
             GoodieBag bag = GoodieBag.Create();
 
             if (trackingId != null)

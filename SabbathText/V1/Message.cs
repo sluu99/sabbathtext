@@ -48,7 +48,7 @@
         {
             return CreateMessage(
                 phoneNumber,
-                MessageTemplate.FreeForm,
+                MessageTemplate.Greetings,
                 "Greetings from SabbathText.com! Text \"subscribe\" to get started. (Messaging rates may apply. Text \"STOP\" anytime)");
         }
 
@@ -92,7 +92,7 @@
                 message += " Expect a text from us when Sabbath starts!";
             }
 
-            message += " (You can change your ZIP code at anytime by texting \"Zip <zip>\")";
+            message += " (Change your ZIP code at anytime by texting \"Zip <zip>\")";
 
             return CreateMessage(
                 phoneNumber,
@@ -186,6 +186,22 @@
                 phoneNumber,
                 MessageTemplate.Announcement,
                 content);
+        }
+
+        /// <summary>
+        /// Creates a new text to list out the commands.
+        /// </summary>
+        /// <param name="phoneNumber">The account phone number.</param>
+        /// <returns>The message.</returns>
+        public static Message CreateCommandListMessage(string phoneNumber)
+        {
+            const string MessageContent =
+                "How can we help? Text one of these commands\r\n" +
+                "- Zip <zip>: update your ZIP code\r\n" +
+                "- Bible verse: get a Bible verse\r\n" +
+                "- Unsubscribe: unsubscribe from Sabbath Text";
+
+            return CreateMessage(phoneNumber, MessageTemplate.CommandList, MessageContent);
         }
 
         /// <summary>
