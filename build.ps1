@@ -12,8 +12,6 @@ if (-not(Test-Path $vstest)) {
 
 $solution = "$root\SabbathText.sln"
 $testAssemblies = @(
-    "$root\Common\KeyValueStorage.Tests\bin\Release\KeyValueStorage.Tests.dll",
-    "$root\Common\QueueStorage.Tests\bin\Release\QueueStorage.Tests.dll",
     "$root\SabbathText.Tests\bin\Release\SabbathText.Tests.dll"
 )
 
