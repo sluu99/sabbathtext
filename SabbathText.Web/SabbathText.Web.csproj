@@ -41,6 +41,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="KeyValueStorage, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AppEssentials.1.0.0\lib\net451\KeyValueStorage.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
@@ -95,6 +99,10 @@
     </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="QueueStorage, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AppEssentials.1.0.0\lib\net451\QueueStorage.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=104.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -169,6 +177,10 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="System2, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AppEssentials.1.0.0\lib\net451\System2.dll</HintPath>
+    </Reference>
     <Reference Include="Twilio.Api, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Twilio.3.6.20\lib\3.5\Twilio.Api.dll</HintPath>
@@ -223,8 +235,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="fonts\" />
-    <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -245,18 +255,6 @@
     <Content Include="Views\ManageAccounts\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\common\KeyValueStorage\KeyValueStorage.csproj">
-      <Project>{baeac47d-ea85-4a29-9651-a48ae1cc31e6}</Project>
-      <Name>KeyValueStorage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Common\QueueStorage\QueueStorage.csproj">
-      <Project>{c6cc3315-77e5-48f0-beae-e4ae8c584983}</Project>
-      <Name>QueueStorage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Common\System2\System2.csproj">
-      <Project>{88035141-476b-4625-a5df-738509b58e99}</Project>
-      <Name>System2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SabbathText\SabbathText.csproj">
       <Project>{ab2bf8a3-020e-4cf6-b47a-e2a2c91de503}</Project>
       <Name>SabbathText</Name>
