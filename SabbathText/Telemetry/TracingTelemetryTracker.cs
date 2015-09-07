@@ -49,13 +49,10 @@
             sb.AppendLine("Exception: {0}".InvariantFormat(exception.Message));
             sb.AppendLine(exception.StackTrace);
 
-            if (properties == null)
+            if (properties != null)
             {
-                properties = new Dictionary<string, string>();
+                sb.AppendLine(JsonConvert.SerializeObject(properties, Formatting.Indented));
             }
-
-            properties["SerializedException"] = JsonConvert.SerializeObject(exception);
-            sb.AppendLine(JsonConvert.SerializeObject(properties, Formatting.Indented));
 
             if (metrics != null)
             {
