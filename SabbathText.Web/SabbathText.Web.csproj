@@ -41,9 +41,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="KeyValueStorage, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="KeyValueStorage, Version=1.1.0.18, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AppEssentials.1.0.0\lib\net451\KeyValueStorage.dll</HintPath>
+      <HintPath>..\packages\AppEssentials.1.1.0\lib\net451\KeyValueStorage.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -100,9 +100,9 @@
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
-    <Reference Include="QueueStorage, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="QueueStorage, Version=1.1.0.18, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AppEssentials.1.0.0\lib\net451\QueueStorage.dll</HintPath>
+      <HintPath>..\packages\AppEssentials.1.1.0\lib\net451\QueueStorage.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=104.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -177,9 +177,9 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="System2, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="System2, Version=1.1.0.18, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AppEssentials.1.0.0\lib\net451\System2.dll</HintPath>
+      <HintPath>..\packages\AppEssentials.1.1.0\lib\net451\System2.dll</HintPath>
     </Reference>
     <Reference Include="Twilio.Api, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
