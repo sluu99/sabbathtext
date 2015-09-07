@@ -8,6 +8,7 @@
     using Microsoft.ApplicationInsights;
     using Microsoft.ApplicationInsights.DataContracts;
     using Microsoft.ApplicationInsights.Extensibility;
+    using Newtonsoft.Json;
     using SabbathText.Entities;
 
     /// <summary>
@@ -71,6 +72,13 @@
         /// <param name="metrics">The optional event metrics.</param>
         protected virtual void TrackException(Exception exception, IDictionary<string, string> properties = null, IDictionary<string, double> metrics = null)
         {
+            if (properties == null)
+            {
+                properties = new Dictionary<string, string>();
+            }
+
+            properties["SerializedException"] = JsonConvert.SerializeObject(exception);
+
             this.telemetryClient.TrackException(exception, properties, metrics);
         }
 
