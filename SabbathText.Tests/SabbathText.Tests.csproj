@@ -37,6 +37,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="KeyValueStorage, Version=1.2.0.21, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AppEssentials.1.2.0\lib\net451\KeyValueStorage.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Data.Edm.5.6.2\lib\net40\Microsoft.Data.Edm.dll</HintPath>
@@ -62,11 +66,19 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="QueueStorage, Version=1.2.0.21, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AppEssentials.1.2.0\lib\net451\QueueStorage.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Spatial, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Spatial.5.6.2\lib\net40\System.Spatial.dll</HintPath>
+    </Reference>
+    <Reference Include="System2, Version=1.2.0.21, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AppEssentials.1.2.0\lib\net451\System2.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Choose>
@@ -107,18 +119,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\common\KeyValueStorage\KeyValueStorage.csproj">
-      <Project>{baeac47d-ea85-4a29-9651-a48ae1cc31e6}</Project>
-      <Name>KeyValueStorage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Common\QueueStorage\QueueStorage.csproj">
-      <Project>{c6cc3315-77e5-48f0-beae-e4ae8c584983}</Project>
-      <Name>QueueStorage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Common\System2\System2.csproj">
-      <Project>{88035141-476b-4625-a5df-738509b58e99}</Project>
-      <Name>System2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SabbathText.Runner\SabbathText.Runner.csproj">
       <Project>{9e5f643a-d207-44c6-9a8a-902542101597}</Project>
       <Name>SabbathText.Runner</Name>

@@ -148,6 +148,13 @@
                         break;
                     }
 
+                case "HelloMessageOperation.V1":
+                    {
+                        HelloMessageOperation operation = new HelloMessageOperation(context);
+                        await operation.Resume(checkpoint);
+                        break;
+                    }
+
                 default:
                     throw new NotSupportedException("{0} is not handled for compensation.".InvariantFormat(checkpoint.OperationType));
             }
