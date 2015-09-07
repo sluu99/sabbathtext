@@ -268,29 +268,12 @@
         /// <param name="duration">The time it took before the exception was thrown.</param>
         public void ProcessMessageException(Exception exception, string sender, string content, TimeSpan duration)
         {
-            string webExceptionContent = string.Empty;
-
-            if (exception.InnerException != null && exception.InnerException is WebException)
-            {
-                var webException = (WebException)exception.InnerException;
-                using (var stream = webException.Response.GetResponseStream())
-                {
-                    if (stream != null && stream.Length > 0)
-                    {
-                        byte[] buffer = new byte[stream.Length];
-                        stream.Read(buffer, 0, buffer.Length);
-                        webExceptionContent = Encoding.UTF8.GetString(buffer);
-                    }
-                }
-            }
-
             this.TrackException(
                 exception,
                 new Dictionary<string, string>
                 {
                     { "Sender", sender },
                     { "Content", content },
-                    { "WebExceptionContent", webExceptionContent },
                 },
                 new Dictionary<string, double>
                 {

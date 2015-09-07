@@ -87,10 +87,10 @@ using SabbathText.V1;
         public static void Initialize(EnvironmentSettings settings)
         {
             environmentSettings = settings;
-            accountStore = KeyValueStore<AccountEntity>.Create(settings.AccountStoreConfiguration);
-            messageStore = KeyValueStore<MessageEntity>.Create(settings.MessageStoreConfiguration);
-            trackerStore = KeyValueStore<TrackerEntity>.Create(settings.TrackerStoreConfiguration);
-            checkpointStore = KeyValueStore<Checkpoint>.Create(settings.CheckpointStoreConfiguration);
+            accountStore = KeyValueStore<AccountEntity>.Create(settings.AccountStoreConfiguration, SerializerType.BinaryGzip);
+            messageStore = KeyValueStore<MessageEntity>.Create(settings.MessageStoreConfiguration, SerializerType.BinaryGzip);
+            trackerStore = KeyValueStore<TrackerEntity>.Create(settings.TrackerStoreConfiguration, SerializerType.BinaryGzip);
+            checkpointStore = KeyValueStore<Checkpoint>.Create(settings.CheckpointStoreConfiguration, SerializerType.BinaryGzip);
             checkpointQueue = QueueStore.Create(settings.CheckpointQueueConfiguration);
             compensationClient = new CompensationClient(checkpointStore, checkpointQueue, settings.CheckpointVisibilityTimeout);
             messageClient = CreateMessageClient(settings);
