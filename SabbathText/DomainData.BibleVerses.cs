@@ -57,7 +57,7 @@
             { "Philippians 4:13", "I can do all things through Him who strengthens me." },
             { "Proverbs 11:2", "When pride comes, then comes disgrace, but with himility comes wisdom." },
             { "Proverbs 16:3", "Commit your works to the Lord; And your plans will be established." },
-            { "Proverbs 16:24", "easant words are a honeycomb, sweet to the soul and healing to the bones." },
+            { "Proverbs 16:24", "Pleasant words are a honeycomb, sweet to the soul and healing to the bones." },
             { "Proverbs 17:22", "A cheerful heart is good medicine, but a crushed spirit dries up the bones." },
             { "Proverbs 18:10", "The name of the Lord is a strong tower; The righteous runs into it and is safe." },
             { "Proverbs 18:12", "Before a downfall the heart is haughty, but humility comes before honor." },
