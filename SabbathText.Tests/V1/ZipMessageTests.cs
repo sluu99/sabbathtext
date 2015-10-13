@@ -16,19 +16,32 @@
         /// Tests the first time a user updates the ZIP code after subscribing
         /// </summary>
         [TestMethod]
-        public void ZipMessage_FirstTimeZipUpdate()
+        public void ZipMessage_FirstTimeZipUpdate_Mancelona()
         {
-            const string ZipCode = "60290"; // Chicago
+            this.ZipMessage_FirstTimeZipUpdate("49659", "Mancelona");
+        }
+
+        /// <summary>
+        /// Tests the first time a user updates the ZIP code after subscribing
+        /// </summary>
+        [TestMethod]
+        public void ZipMessage_FirstTimeZipUpdate_Chicago()
+        {
+            this.ZipMessage_FirstTimeZipUpdate("60290", "Chicago");
+        }
+
+        private void ZipMessage_FirstTimeZipUpdate(string zipCode, string cityName)
+        {
             AccountEntity account = CreateAccount();
             
             Message subscribeMessage = CreateIncomingMessage(account.PhoneNumber, "subscribe!!");
             ProcessMessage(subscribeMessage);
 
-            Message zipMessage = CreateIncomingMessage(account.PhoneNumber, "Zip " + ZipCode);
+            Message zipMessage = CreateIncomingMessage(account.PhoneNumber, "Zip " + zipCode);
             ProcessMessage(zipMessage);
 
-            AssertZipCode(account.AccountId, ZipCode);
-            AssertLastSentMessage(account.AccountId, MessageTemplate.SubscribedForZipCode, mustContain: "Chicago");
+            AssertZipCode(account.AccountId, zipCode);
+            AssertLastSentMessage(account.AccountId, MessageTemplate.SubscribedForZipCode, mustContain: cityName);
             AssertMessageCount(account.PhoneNumber, MessageTemplate.SubscribedForZipCode, 1);
         }
 
