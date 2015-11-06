@@ -55,7 +55,7 @@
             { "Philippians 1:6", "For I am confident of this very thing, that He who began a good work in you will perfect it until the day of Christ Jesus." },
             { "Philippians 4:7", "And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus." },
             { "Philippians 4:13", "I can do all things through Him who strengthens me." },
-            { "Proverbs 11:2", "When pride comes, then comes disgrace, but with himility comes wisdom." },
+            { "Proverbs 11:2", "When pride comes, then comes disgrace, but with humility comes wisdom." },
             { "Proverbs 16:3", "Commit your works to the Lord; And your plans will be established." },
             { "Proverbs 16:24", "Pleasant words are a honeycomb, sweet to the soul and healing to the bones." },
             { "Proverbs 17:22", "A cheerful heart is good medicine, but a crushed spirit dries up the bones." },
