@@ -1,12 +1,12 @@
 ﻿namespace SabbathText
 {
     using System;
-using System.Collections.Generic;
-using System.Linq;
-using KeyValueStorage;
-using QueueStorage;
-using SabbathText.Telemetry;
-using SabbathText.V1;
+    using System.Collections.Generic;
+    using System.Linq;
+    using KeyValueStorage;
+    using QueueStorage;
+    using SabbathText.Telemetry;
+    using SabbathText.V1;
 
     /// <summary>
     /// Environment settings
@@ -304,7 +304,7 @@ using SabbathText.V1;
         {
             get { return TimeSpan.FromDays(5); }
         }
-        
+
         /// <summary>
         /// Gets the amount of time gap between two announcement texts.
         /// </summary>
