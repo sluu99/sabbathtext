@@ -18,7 +18,7 @@ namespace SabbathText.V1
             var adminSmsNumber = Environment.GetEnvironmentVariable("ADMIN_SMS");
             adminSmsNumber = adminSmsNumber.ExtractUSPhoneNumber();
 
-            if (string.IsNullOrWhiteSpace(adminSmsNumber))
+            if (string.IsNullOrWhiteSpace(adminSmsNumber) == false)
             {
                 var notificationMessage = new Message
                 {
