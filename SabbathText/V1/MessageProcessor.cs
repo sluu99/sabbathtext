@@ -85,13 +85,8 @@
             }
             else
             {
-                return Task.FromResult(
-                    new OperationResponse<bool>
-                    {
-                        StatusCode = System.Net.HttpStatusCode.BadRequest,
-                        ErrorCode = CommonErrorCodes.UnrecognizedIncomingMessage,
-                        ErrorDescription = "Cannot process message with the content '{0}'".InvariantFormat(body),
-                    });
+                UnknownMessageOperation unknownMessageOperation = new UnknownMessageOperation(context);
+                return unknownMessageOperation.Run(message);
             }
         }
 
