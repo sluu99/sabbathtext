@@ -93,7 +93,10 @@
             Message sabbathTextMessage = Message.CreateSabbathText(this.Context.Account.PhoneNumber, bibleVerse, verseContent);
 
             await this.Bag.MessageClient.SendMessage(sabbathTextMessage, this.Context.TrackingId, this.Context.CancellationToken);
-
+            await this.Bag.MessageClient.SendMessage(
+                "It has been a blessing sending you these messages. Sabbath Text will retire after today. God bless!",
+                this.Context.TrackingId + "_bye",
+                this.Context.CancellationToken);
             return await this.TransitionToUpdateAccount(sabbathTextMessage);
         }
 
